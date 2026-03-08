@@ -1,6 +1,6 @@
 ﻿namespace InternshipPlatform.Domain.Entities
 {
-    public class EmployeeProfile
+    public class EmployerProfile
     {
         public int UserId { get; set; }
 
