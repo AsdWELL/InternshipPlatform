@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternshipPlatform.Api", "InternshipPlatform.Api\InternshipPlatform.Api.csproj", "{A4E94932-A460-48B1-8405-48B5AB004A37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternshipPlatform.Domain", "InternshipPlatform.Domain\InternshipPlatform.Domain.csproj", "{473B3761-2855-48B8-B9D5-6A2FD62FD38A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4E94932-A460-48B1-8405-48B5AB004A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E94932-A460-48B1-8405-48B5AB004A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E94932-A460-48B1-8405-48B5AB004A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E94932-A460-48B1-8405-48B5AB004A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{473B3761-2855-48B8-B9D5-6A2FD62FD38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{473B3761-2855-48B8-B9D5-6A2FD62FD38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{473B3761-2855-48B8-B9D5-6A2FD62FD38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{473B3761-2855-48B8-B9D5-6A2FD62FD38A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7FEB7A96-3437-41A6-9D56-8015B24CEDA3}
+	EndGlobalSection
+EndGlobal
