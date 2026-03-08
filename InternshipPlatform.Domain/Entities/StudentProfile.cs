@@ -1,8 +1,8 @@
 ﻿namespace InternshipPlatform.Domain.Entities
 {
-    public class StudentProfiles
+    public class StudentProfile
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         public string Name { get; set; }
 
