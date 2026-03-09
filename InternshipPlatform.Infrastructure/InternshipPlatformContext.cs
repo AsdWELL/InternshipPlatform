@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InternshipPlatform.Infrastructure
 {
-    public class IntershipPlatformContext(DbContextOptions<IntershipPlatformContext> options) : DbContext(options)
+    public class InternshipPlatformContext(DbContextOptions<InternshipPlatformContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
 

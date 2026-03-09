@@ -10,7 +10,9 @@
 
         public bool IsVerified { get; set; }
 
-        public DateTime LastLogin { get; set; }
+        public string? RefreshToken { get; set; }
+
+        public DateTime RefreshTokenExpiredAt { get; set; }
 
         public Role Role { get; set; }
     }
