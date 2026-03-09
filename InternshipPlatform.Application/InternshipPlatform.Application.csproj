@@ -11,6 +11,12 @@
     <Folder Include="Interfaces\Repositories\" />
     <Folder Include="Services\" />
     <Folder Include="Dtos\" />
+	<Folder Include="Validators\" />
+	<Folder Include="Values\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
