@@ -19,11 +19,21 @@ namespace InternshipPlatform.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<StudentProfile>()
-                .HasKey(sp => sp.UserId);
+            modelBuilder.Entity<StudentProfile>(entity =>
+            {
+                entity.HasKey(sp => sp.UserId);
+                entity.HasOne<User>()
+                    .WithOne()
+                    .HasForeignKey<StudentProfile>(sp => sp.UserId);
+            });
 
-            modelBuilder.Entity<EmployerProfile>()
-                .HasKey(ep => ep.UserId);
+            modelBuilder.Entity<EmployerProfile>(entity =>
+            {
+                entity.HasKey(sp => sp.UserId);
+                entity.HasOne<User>()
+                    .WithOne()
+                    .HasForeignKey<EmployerProfile>(sp => sp.UserId);
+            });
         }
     }
 }

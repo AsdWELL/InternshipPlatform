@@ -1,0 +1,56 @@
+﻿using DbUp;
+using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace InternshipPlatform.Infrastructure.Extensions
+{
+    public static class DatabaseExtension
+    {
+        private const string DatabaseConnectionStringName = "InternshipPlatformDB";
+
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString(DatabaseConnectionStringName);
+
+            if (string.IsNullOrEmpty(connectionString))
+                throw new InvalidOperationException("Отсутствует строка подключения для БД");
+
+            services
+                .AddDbContext<InternshipPlatformContext>(options => options.UseNpgsql(connectionString))
+                .MigrateDatabase(connectionString);
+
+            return services;
+        }
+
+        private static IServiceCollection MigrateDatabase(this IServiceCollection services, string connectionString)
+        {
+            EnsureDatabase.For.PostgresqlDatabase(connectionString);
+
+            var upgrader = DeployChanges.To
+                .PostgresqlDatabase(connectionString)
+                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                .WithTransaction()
+                .WithVariablesDisabled()
+                .LogToConsole()
+                .Build();
+
+            if (upgrader.IsUpgradeRequired())
+            {
+                upgrader.PerformUpgrade();
+            }
+
+            return services;
+        }
+
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+        }
+    }
+}
