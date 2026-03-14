@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Migration\01_CreateTables.sql" />
+    <EmbeddedResource Include="Migration\02_InsertRoles.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\InternshipPlatform.Application\InternshipPlatform.Application.csproj" />
   </ItemGroup>
 

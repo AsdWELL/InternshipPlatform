@@ -40,6 +40,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
         {
             return await context.Users
                 .AsNoTracking()
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(user => user.Email == email);
         }
 
