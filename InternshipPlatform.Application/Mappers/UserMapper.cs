@@ -23,7 +23,7 @@ namespace InternshipPlatform.Application.Mappers
         }
 
         public static User ToUser(
-            this RegisterEmployerRequest request,
+            this RegisterCompanyRequest request,
             string passwordHash,
             Role role,
             string refreshToken,

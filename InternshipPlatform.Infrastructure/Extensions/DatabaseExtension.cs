@@ -50,7 +50,9 @@ namespace InternshipPlatform.Infrastructure.Extensions
         {
             return services
                 .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+                .AddScoped<IStudentProfileRepository, StudentProfileRepository>()
+                .AddScoped<IEmployerProfileRepository, EmployerProfileRepository>()
+                .AddScoped<ICompanyRepository, CompanyRepository>();
         }
     }
 }

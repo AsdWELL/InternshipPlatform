@@ -14,9 +14,8 @@ builder.Services.AddDatabase(builder.Configuration)
 
 builder.Services.AddJWTAuth(builder.Configuration);
 
-builder.Services.AddFluentValidationAutoValidation();
-
 builder.Services
+    .AddFluentValidationAutoValidation()
     .AddControllers(options => options.Filters.Add<ExceptionFilter>());
 
 var app = builder.Build();

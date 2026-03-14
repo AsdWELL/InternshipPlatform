@@ -31,7 +31,7 @@ namespace InternshipPlatform.Api.Controllers
         }
 
         [HttpPost("registeremployer")]
-        public async Task<IActionResult> RegisterEmployer([FromBody] RegisterEmployerRequest request)
+        public async Task<IActionResult> RegisterEmployer([FromBody] RegisterCompanyRequest request)
         {
             var authResponse = await authService.RegisterEmployer(request);
 

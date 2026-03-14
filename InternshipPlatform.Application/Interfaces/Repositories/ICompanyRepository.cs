@@ -6,6 +6,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
     {
         Task<int> CreateCompany(Company company);
 
-        Task<Company> GetCompanyById(int id);
+        Task<Company?> GetCompanyById(int id);
+
+        Task UpdateCompany(Company company);
     }
 }

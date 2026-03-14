@@ -18,6 +18,8 @@
 
         public string? TgLink { get; set; }
 
+        public string? MaxLink { get; set; }
+
         public string? GithubLink { get; set; }
 
         public string? University { get; set; }

@@ -5,6 +5,7 @@ using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Mappers;
 using InternshipPlatform.Application.Values;
+using InternshipPlatform.Domain.Entities;
 using Microsoft.Extensions.Options;
 
 namespace InternshipPlatform.Application.Services
@@ -14,7 +15,9 @@ namespace InternshipPlatform.Application.Services
         IPasswordHasher passwordHasher,
         ITokenService tokenService,
         IUserRepository userRepository,
-        IStudentProfileRepository studentProfileRepository) : IAuthService
+        IStudentProfileRepository studentProfileRepository,
+        ICompanyRepository companyRepository,
+        IEmployerProfileRepository employerRepository) : IAuthService
     {
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
         
@@ -53,12 +56,11 @@ namespace InternshipPlatform.Application.Services
             };
         }
 
-        public async Task<AuthResponse> RegisterEmployer(RegisterEmployerRequest request)
+        public async Task<AuthResponse> RegisterEmployer(RegisterCompanyRequest request)
         {
             var roleName = Roles.Employer;
 
-            if (userRepository.GetUserByEmail(request.Email) != null)
-                throw new EmailAlreadyTakenException(request.Email);
+            await ThrowIfEmailAlreadyTaken(request.Email);
 
             var hashPassword = passwordHasher.Generate(request.Password);
 
@@ -70,6 +72,16 @@ namespace InternshipPlatform.Application.Services
                 refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
 
             user.Id = await userRepository.CreateUser(user);
+
+            var companyId = await companyRepository.CreateCompany(
+                request.ToCompany());
+
+            await employerRepository.CreateEmployer(
+                new EmployerProfile
+                {
+                    UserId = user.Id,
+                    CompanyId = companyId
+                });
 
             string accessToken = tokenService.GenerateAccessToken(user);
 

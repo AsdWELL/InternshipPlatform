@@ -7,7 +7,7 @@ namespace InternshipPlatform.Application.Interfaces.Services.Auth
     {
         Task<AuthResponse> RegisterStudent(RegisterStudentRequest request);
 
-        Task<AuthResponse> RegisterEmployer(RegisterEmployerRequest request);
+        Task<AuthResponse> RegisterEmployer(RegisterCompanyRequest request);
 
         Task<AuthResponse> Login(LoginUserRequest request);
 

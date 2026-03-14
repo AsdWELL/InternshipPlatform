@@ -19,6 +19,7 @@ CREATE TABLE "StudentProfiles" (
   "BirthdayDate"   timestamp, 
   "Phone"          varchar(11), 
   "VkLink"         text, 
+  "MaxLink"         text, 
   "TgLink"         text, 
   "GithubLink"     text, 
   "University"     text, 

@@ -36,7 +36,7 @@ namespace InternshipPlatform.Api.Extensions
             return services
                 .AddScoped<IValidator<LoginUserRequest>, LoginRequestValidator>()
                 .AddScoped<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
-                .AddScoped<IValidator<RegisterEmployerRequest>, RegisterEmployerValidator>();
+                .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>();
         }
     }
 }

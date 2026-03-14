@@ -3,9 +3,9 @@ using InternshipPlatform.Application.Dtos.User;
 
 namespace InternshipPlatform.Application.Validators
 {
-    public class RegisterEmployerValidator : AbstractValidator<RegisterEmployerRequest>
+    public class RegisterCompanyValidator : AbstractValidator<RegisterCompanyRequest>
     {
-        public RegisterEmployerValidator()
+        public RegisterCompanyValidator()
         {
             RuleFor(x => x.Email).NotEmpty().WithMessage("Поле Email является обязательным")
                 .EmailAddress().WithMessage("Неверный формат электронной почты");
