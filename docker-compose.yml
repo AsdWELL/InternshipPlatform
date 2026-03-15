@@ -1,0 +1,35 @@
+services:
+  internshipplatform.api:
+    image: ${DOCKER_REGISTRY-}internshipplatformapi
+    build:
+      context: .
+      dockerfile: InternshipPlatform.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__InternshipPlatformDB=Host=postgres_internship_platform;Port=5432;Database=InternshipPlatform;Username=postgres;Password=admin;
+    depends_on:
+      postgres_internship_platform:
+        condition: service_healthy
+
+  postgres_internship_platform:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=InternshipPlatform
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - pgdata_internship_platform:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pgdata_internship_platform:
