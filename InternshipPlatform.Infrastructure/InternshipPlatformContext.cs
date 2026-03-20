@@ -22,17 +22,17 @@ namespace InternshipPlatform.Infrastructure
             modelBuilder.Entity<StudentProfile>(entity =>
             {
                 entity.HasKey(sp => sp.UserId);
-                entity.HasOne<User>()
+                entity.HasOne(sp => sp.User)
                     .WithOne()
                     .HasForeignKey<StudentProfile>(sp => sp.UserId);
             });
 
             modelBuilder.Entity<EmployerProfile>(entity =>
             {
-                entity.HasKey(sp => sp.UserId);
-                entity.HasOne<User>()
+                entity.HasKey(ep => ep.UserId);
+                entity.HasOne(ep => ep.User)
                     .WithOne()
-                    .HasForeignKey<EmployerProfile>(sp => sp.UserId);
+                    .HasForeignKey<EmployerProfile>(ep => ep.UserId);
             });
         }
     }

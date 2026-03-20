@@ -5,13 +5,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class EmployerProfileRepository(InternshipPlatformContext context) : IEmployerProfileRepository
     {
-        public async Task<int> CreateEmployer(EmployerProfile employerProfile)
+        public async Task AddEmployer(EmployerProfile employerProfile)
         {
-            context.EmployerProfiles.Add(employerProfile);
-
-            await context.SaveChangesAsync();
-
-            return employerProfile.UserId;
+            await context.EmployerProfiles.AddAsync(employerProfile);
         }
     }
 }

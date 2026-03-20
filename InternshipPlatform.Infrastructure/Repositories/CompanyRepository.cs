@@ -6,13 +6,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class CompanyRepository(InternshipPlatformContext context) : ICompanyRepository
     {
-        public async Task<int> CreateCompany(Company company)
+        public async Task AddCompany(Company company)
         {
-            context.Companies.Add(company);
-
-            await context.SaveChangesAsync();
-
-            return company.Id;
+            await context.Companies.AddAsync(company);
         }
 
         public async Task<Company?> GetCompanyById(int id)
@@ -26,19 +22,17 @@ namespace InternshipPlatform.Infrastructure.Repositories
         {
             var dbCompany = await context.Companies.FindAsync(company.Id);
 
-            if (company.Inn != null)
+            if (company.Inn is not null)
                 dbCompany.Inn = company.Inn;
 
-            if (company.Name != null)
+            if (company.Name is not null)
                 dbCompany.Name = company.Name;
 
-            if (company.Link != null)
+            if (company.Link is not null)
                 dbCompany.Link = company.Link;
 
-            if (company.Description != null)
+            if (company.Description is not null)
                 dbCompany.Description = company.Description;
-
-            await context.SaveChangesAsync();
         }
     }
 }

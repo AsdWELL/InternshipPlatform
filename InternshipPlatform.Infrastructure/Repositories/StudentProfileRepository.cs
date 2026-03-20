@@ -12,32 +12,24 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AnyAsync(st => st.UserId == userId);
         }
 
-        public async Task<int> CreateStudentProfile(StudentProfile studentProfile)
+        public async Task AddStudentProfile(StudentProfile studentProfile)
         {
-            context.StudentProfiles.Add(studentProfile);
-            await context.SaveChangesAsync();
-
-            return studentProfile.UserId;
+            await context.StudentProfiles.AddAsync(studentProfile);
         }
 
         public async Task<StudentProfile?> GetStudentByEmail(string email)
         {
-            var user = await context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null)
-                return null;
-
             return await context.StudentProfiles
                 .AsNoTracking()
-                .FirstOrDefaultAsync(st => st.UserId == user.Id);
+                .Include(sp => sp.User)
+                .FirstOrDefaultAsync(sp => sp.User.Email == email);
         }
 
         public async Task<StudentProfile?> GetStudentById(int userId)
         {
             return await context.StudentProfiles
                 .AsNoTracking()
+                .Include(sp => sp.User)
                 .FirstOrDefaultAsync(st => st.UserId == userId);
         }
 
@@ -45,40 +37,41 @@ namespace InternshipPlatform.Infrastructure.Repositories
         {
             var student = await context.StudentProfiles.FindAsync(studentProfile.UserId);
 
-            if (studentProfile.Name != null)
+            if (student == null)
+                return;
+
+            if (studentProfile.Name is not null)
                 student.Name = studentProfile.Name;
 
-            if (studentProfile.Surname != null)
+            if (studentProfile.Surname is not null)
                 student.Surname = studentProfile.Surname;
 
-            if (studentProfile.Patronymic != null)
+            if (studentProfile.Patronymic is not null)
                 student.Patronymic = studentProfile.Patronymic;
 
-            if (studentProfile.BirthdayDate != null)
+            if (studentProfile.BirthdayDate is not null)
                 student.BirthdayDate = studentProfile.BirthdayDate;
 
-            if (studentProfile.Phone != null)
+            if (studentProfile.Phone is not null)
                 student.Phone = studentProfile.Phone;
 
-            if (studentProfile.VkLink != null)
+            if (studentProfile.VkLink is not null)
                 student.VkLink = studentProfile.VkLink;
 
-            if (studentProfile.TgLink != null)
+            if (studentProfile.TgLink is not null)
                 student.TgLink = studentProfile.TgLink;
 
-            if (studentProfile.GithubLink != null)
+            if (studentProfile.GithubLink is not null)
                 student.GithubLink = studentProfile.GithubLink;
 
-            if (studentProfile.University != null)
+            if (studentProfile.University is not null)
                 student.University = studentProfile.University;
 
-            if (studentProfile.Specialization != null)
+            if (studentProfile.Specialization is not null)
                 student.Specialization = studentProfile.Specialization;
 
-            if (studentProfile.GraduationYear != null)
+            if (studentProfile.GraduationYear is not null)
                 student.GraduationYear = studentProfile.GraduationYear;
-
-            await context.SaveChangesAsync();
         }
     }
 }

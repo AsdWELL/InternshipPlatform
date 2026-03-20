@@ -12,21 +12,23 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AnyAsync(user => user.Id == userId);
         }
 
-        public async Task<int> CreateUser(User user)
+        public async Task AddUser(User user)
         {
             context.Entry(user.Role).State = EntityState.Unchanged;
 
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
-
-            return user.Id;
+            await context.Users.AddAsync(user);
         }
 
         public async Task DeleteUserById(int id)
         {
-            await context.Users
+            var user = await context.Users
                 .Where(user => user.Id == id)
-                .ExecuteDeleteAsync();
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return;
+
+            context.Users.Remove(user);
         }
 
         public async Task<Role> GetRoleByName(string roleName)
@@ -53,11 +55,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task UpdateRefreshToken(int userId, string? refreshToken, DateTime refreshTokenExpiredAt)
         {
-            await context.Users
+            var user = await context.Users
                 .Where(u => u.Id == userId)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(u => u.RefreshToken, refreshToken)
-                    .SetProperty(u => u.RefreshTokenExpiredAt, refreshTokenExpiredAt));
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return;
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiredAt = refreshTokenExpiredAt;
         }
     }
 }

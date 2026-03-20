@@ -1,6 +1,7 @@
 ﻿using InternshipPlatform.Application.Dtos.Auth;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Exceptions.User;
+using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Mappers;
@@ -17,7 +18,8 @@ namespace InternshipPlatform.Application.Services
         IUserRepository userRepository,
         IStudentProfileRepository studentProfileRepository,
         ICompanyRepository companyRepository,
-        IEmployerProfileRepository employerRepository) : IAuthService
+        IEmployerProfileRepository employerRepository,
+        IUnitOfWork unitOfWork) : IAuthService
     {
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
         
@@ -42,10 +44,12 @@ namespace InternshipPlatform.Application.Services
             var user = request.ToUser(hashPassword, role,
                 refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
 
-            user.Id = await userRepository.CreateUser(user);
+            await userRepository.AddUser(user);
 
-            await studentProfileRepository.CreateStudentProfile(
-                request.ToStudentProfile(user.Id));
+            await studentProfileRepository.AddStudentProfile(
+                request.ToStudentProfile(user));
+
+            await unitOfWork.SaveChangesAsync();
 
             string accessToken = tokenService.GenerateAccessToken(user);
 
@@ -71,17 +75,20 @@ namespace InternshipPlatform.Application.Services
             var user = request.ToUser(hashPassword, role,
                 refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
 
-            user.Id = await userRepository.CreateUser(user);
+            await userRepository.AddUser(user);
 
-            var companyId = await companyRepository.CreateCompany(
-                request.ToCompany());
+            var company = request.ToCompany();
 
-            await employerRepository.CreateEmployer(
+            await companyRepository.AddCompany(company);
+
+            await employerRepository.AddEmployer(
                 new EmployerProfile
                 {
-                    UserId = user.Id,
-                    CompanyId = companyId
+                    User = user,
+                    Company = company
                 });
+
+            await unitOfWork.SaveChangesAsync();
 
             string accessToken = tokenService.GenerateAccessToken(user);
 
@@ -110,6 +117,8 @@ namespace InternshipPlatform.Application.Services
 
                 await userRepository.UpdateRefreshToken(user.Id,
                     refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
+
+                await unitOfWork.SaveChangesAsync();
             }
 
             return new AuthResponse
@@ -131,6 +140,8 @@ namespace InternshipPlatform.Application.Services
             await userRepository.UpdateRefreshToken(user.Id,
                 newRefreshToken,
                 DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
+
+            await unitOfWork.SaveChangesAsync();
 
             return new AuthResponse
             {

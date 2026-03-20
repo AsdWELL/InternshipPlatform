@@ -1,4 +1,5 @@
 ﻿using DbUp;
+using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,8 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<IStudentProfileRepository, StudentProfileRepository>()
                 .AddScoped<IEmployerProfileRepository, EmployerProfileRepository>()
-                .AddScoped<ICompanyRepository, CompanyRepository>();
+                .AddScoped<ICompanyRepository, CompanyRepository>()
+                .AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }
