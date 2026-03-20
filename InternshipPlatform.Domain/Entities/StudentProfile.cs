@@ -12,7 +12,7 @@
 
         public string? Patronymic { get; set; }
 
-        public DateTime? BirthdayDate { get; set; }
+        public DateOnly? BirthdayDate { get; set; }
 
         public string? Phone { get; set; }
 

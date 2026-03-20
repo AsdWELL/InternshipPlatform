@@ -1,4 +1,5 @@
 ﻿using InternshipPlatform.Application.Dtos.User;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Mappers
@@ -9,8 +10,8 @@ namespace InternshipPlatform.Application.Mappers
         {
             return new Company
             {
-                Inn = request.Inn,
-                Name = request.Name
+                Inn = StringNormalizer.NormalizeRequired(request.Inn),
+                Name = StringNormalizer.NormalizeRequired(request.Name)
             };
         }
     }

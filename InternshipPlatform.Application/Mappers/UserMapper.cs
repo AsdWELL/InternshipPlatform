@@ -1,4 +1,5 @@
 ﻿using InternshipPlatform.Application.Dtos.User;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Mappers
@@ -14,7 +15,7 @@ namespace InternshipPlatform.Application.Mappers
         {
             return new User
             {
-                Email = request.Email,
+                Email = StringNormalizer.NormalizeToLower(request.Email)!,
                 PasswordHash = passwordHash,
                 Role = role,
                 RefreshToken = refreshToken,
@@ -31,7 +32,7 @@ namespace InternshipPlatform.Application.Mappers
         {
             return new User
             {
-                Email = request.Email,
+                Email = StringNormalizer.NormalizeToLower(request.Email)!,
                 PasswordHash = passwordHash,
                 Role = role,
                 RefreshToken = refreshToken,
@@ -41,13 +42,13 @@ namespace InternshipPlatform.Application.Mappers
 
         public static StudentProfile ToStudentProfile(
             this RegisterStudentRequest request,
-            int userId)
+            User user)
         {
             return new StudentProfile
             {
-                UserId = userId,
-                Name = request.Name,
-                Surname = request.Surname
+                User = user,
+                Name = StringNormalizer.NormalizeName(request.Name)!,
+                Surname = StringNormalizer.NormalizeName(request.Surname)!
             };
         }
     }
