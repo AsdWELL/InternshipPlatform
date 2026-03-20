@@ -4,6 +4,6 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IEmployerProfileRepository
     {
-        Task<int> CreateEmployer(EmployerProfile employerProfile);
+        Task AddEmployer(EmployerProfile employerProfile);
     }
 }

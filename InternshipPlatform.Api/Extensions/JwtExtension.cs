@@ -31,7 +31,7 @@ namespace InternshipPlatform.Api.Extensions
                     {
                         ValidateIssuer = true,
                         ValidIssuer = tokenOptions.Issuer,
-                        ValidateAudience = true,
+                        ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.Key))

@@ -6,7 +6,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
     {
         Task<bool> IsStudentExists(int userId);
         
-        Task<int> CreateStudentProfile(StudentProfile studentProfile);
+        Task AddStudentProfile(StudentProfile studentProfile);
 
         Task<StudentProfile?> GetStudentById(int userId);
 

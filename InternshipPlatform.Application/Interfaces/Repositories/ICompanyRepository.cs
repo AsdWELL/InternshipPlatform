@@ -4,7 +4,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface ICompanyRepository
     {
-        Task<int> CreateCompany(Company company);
+        Task AddCompany(Company company);
 
         Task<Company?> GetCompanyById(int id);
 

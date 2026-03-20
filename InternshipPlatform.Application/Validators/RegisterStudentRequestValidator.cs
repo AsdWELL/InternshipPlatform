@@ -13,9 +13,10 @@ namespace InternshipPlatform.Application.Validators
 
             RuleFor(x => x.Surname)
                 .NotEmpty().WithMessage("Поле Фамилия является обязательным")
-                .Matches(@"^[а-яА-Я]+$").WithMessage("Поле Фамилия должно содержать только русские буквы"); ;
+                .Matches(@"^[а-яА-Я]+$").WithMessage("Поле Фамилия должно содержать только русские буквы");
 
-            RuleFor(x => x.Email).NotEmpty().WithMessage("Поле Email является обязательным")
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Поле Email является обязательным")
                 .EmailAddress().WithMessage("Неверный формат электронной почты");
 
             RuleFor(x => x.Password)

@@ -6,7 +6,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
     {
         Task<bool> IsUserExists(int userId);
         
-        Task<int> CreateUser(User user);
+        Task AddUser(User user);
 
         Task<Role> GetRoleByName(string roleName);
 

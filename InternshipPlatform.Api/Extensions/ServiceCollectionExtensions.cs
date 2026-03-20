@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
+using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators;
@@ -28,7 +30,8 @@ namespace InternshipPlatform.Api.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             return services
-                .AddScoped<IAuthService, AuthService>();
+                .AddScoped<IAuthService, AuthService>()
+                .AddScoped<IStudentProfileService, StudentProfileService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -36,7 +39,8 @@ namespace InternshipPlatform.Api.Extensions
             return services
                 .AddScoped<IValidator<LoginUserRequest>, LoginRequestValidator>()
                 .AddScoped<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
-                .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>();
+                .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
+                .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>();
         }
     }
 }

@@ -35,10 +35,19 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task UpdateStudentProfile(StudentProfile studentProfile)
         {
-            var student = await context.StudentProfiles.FindAsync(studentProfile.UserId);
+            var student = await context.StudentProfiles
+                .Where(x => x.UserId == studentProfile.UserId)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync();
 
             if (student == null)
                 return;
+
+            if (studentProfile.User.Email is not null)
+                student.User.Email = studentProfile.User.Email;
+
+            if (studentProfile.User.PasswordHash is not null)
+                student.User.PasswordHash = studentProfile.User.PasswordHash;
 
             if (studentProfile.Name is not null)
                 student.Name = studentProfile.Name;
