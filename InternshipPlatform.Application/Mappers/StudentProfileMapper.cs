@@ -24,7 +24,8 @@ namespace InternshipPlatform.Application.Mappers
                 Specialization = studentProfile.Specialization,
                 TgLink = studentProfile.TgLink,
                 University = studentProfile.University,
-                VkLink = studentProfile.VkLink
+                VkLink = studentProfile.VkLink,
+                AvatarPath = studentProfile.AvatarPath
             };
         }
 
@@ -38,7 +39,7 @@ namespace InternshipPlatform.Application.Mappers
                 User = new User
                 {
                     Id = request.UserId,
-                    Email = request.Email,
+                    Email = StringNormalizer.NormalizeToLower(request.Email),
                     PasswordHash = passwordHash
                 },
                 Name = StringNormalizer.NormalizeName(request.Name),

@@ -40,5 +40,14 @@ namespace InternshipPlatform.Api.Controllers
 
             return Ok();
         }
+
+        [Authorize(Roles = Roles.Student)]
+        [HttpPost("avatar")]
+        public async Task<IActionResult> UpdateStudentAvatar(IFormFile avatarFile)
+        {
+            await studentProfileService.UpdateStudentAvatar(UserId, avatarFile);
+
+            return Ok();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentProfile;
+using Microsoft.AspNetCore.Http;
 
 namespace InternshipPlatform.Application.Interfaces.Services
 {
@@ -9,5 +10,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
         Task<StudentProfileResponse> GetStudentByEmail(string email);
 
         Task UpdateStudentProfile(UpdateStudentProfileRequest request);
+
+        Task UpdateStudentAvatar(int id, IFormFile avatarFile);
     }
 }

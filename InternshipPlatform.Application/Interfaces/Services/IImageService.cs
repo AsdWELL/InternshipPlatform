@@ -4,6 +4,8 @@
     {
         Task<string> SaveCompanyLogo(Stream stream, string extension);
 
+        Task<string> SaveStudentProfileAvatar(Stream stream, string extension);
+
         Task DeleteIfExists(string? relativePath);
     }
 }

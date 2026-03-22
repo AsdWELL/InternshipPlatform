@@ -13,5 +13,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         Task<StudentProfile?> GetStudentByEmail(string email);
 
         Task UpdateStudentProfile(StudentProfile studentProfile);
+
+        Task UpdateAvatar(int userId, string avatarPath);
     }
 }

@@ -24,7 +24,8 @@ CREATE TABLE "StudentProfiles" (
   "GithubLink"     text, 
   "University"     text, 
   "Specialization" text, 
-  "GraduationYear" integer, 
+  "GraduationYear" integer,
+  "AvatarPath"       text,
   PRIMARY KEY ("UserId"));
 CREATE TABLE "EmployerProfiles" (
   "UserId"    integer NOT NULL, 

@@ -36,11 +36,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
         public async Task UpdateStudentProfile(StudentProfile studentProfile)
         {
             var student = await context.StudentProfiles
-                .Where(x => x.UserId == studentProfile.UserId)
                 .Include(x => x.User)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.UserId == studentProfile.UserId);
 
-            if (student == null)
+            if (student is null)
                 return;
 
             if (studentProfile.User.Email is not null)
@@ -81,6 +80,16 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             if (studentProfile.GraduationYear is not null)
                 student.GraduationYear = studentProfile.GraduationYear;
+        }
+
+        public async Task UpdateAvatar(int userId, string avatarPath)
+        {
+            var student = await context.StudentProfiles.FindAsync(userId);
+
+            if (student == null)
+                return;
+
+            student.AvatarPath = avatarPath;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using InternshipPlatform.Application.Exceptions.Company.Logo;
+﻿using InternshipPlatform.Application.Exceptions.Image;
 using InternshipPlatform.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Hosting;
 
@@ -8,20 +8,21 @@ namespace InternshipPlatform.Infrastructure.Services
     {
         private const string UploadsFolder = "uploads";
         private const string CompanyLogoFolder = "company-logos";
+        private const string StudentProfileAvatarsFolder = "student-avatars";
 
         private static readonly HashSet<string> AllowedExtensions =
         [
             ".jpg", ".jpeg", ".png", ".webp"
         ];
 
-        public async Task<string> SaveCompanyLogo(Stream stream, string extension)
+        private async Task<string> SaveImage(Stream stream, string extension, string imageFolder)
         {
             extension = extension.ToLowerInvariant();
 
             if (!AllowedExtensions.Contains(extension))
-                throw new InvalidLogoTypeException(AllowedExtensions);
+                throw new InvalidImageTypeException(AllowedExtensions);
 
-            var folder = Path.Combine(env.WebRootPath, UploadsFolder, CompanyLogoFolder);
+            var folder = Path.Combine(env.WebRootPath, UploadsFolder, imageFolder);
             Directory.CreateDirectory(folder);
 
             var fileName = $"{Guid.NewGuid():N}{extension}";
@@ -30,7 +31,17 @@ namespace InternshipPlatform.Infrastructure.Services
             await using var fstream = new FileStream(fullPath, FileMode.CreateNew, FileAccess.Write);
             await stream.CopyToAsync(fstream);
 
-            return $"/{UploadsFolder}/{CompanyLogoFolder}/{fileName}";
+            return $"/{UploadsFolder}/{imageFolder}/{fileName}";
+        }
+
+        public Task<string> SaveCompanyLogo(Stream stream, string extension)
+        {
+            return SaveImage(stream, extension, CompanyLogoFolder);
+        }
+
+        public Task<string> SaveStudentProfileAvatar(Stream stream, string extension)
+        {
+            return SaveImage(stream, extension, StudentProfileAvatarsFolder);
         }
 
         public Task DeleteIfExists(string? relativePath)

@@ -31,5 +31,7 @@
         public string? Specialization { get; set; }
 
         public int? GraduationYear { get; set; }
+
+        public string? AvatarPath { get; set; }
     }
 }

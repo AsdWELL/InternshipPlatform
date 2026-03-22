@@ -1,6 +1,6 @@
 ﻿using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Exceptions.Company;
-using InternshipPlatform.Application.Exceptions.Company.Logo;
+using InternshipPlatform.Application.Exceptions.Image;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
@@ -42,10 +42,10 @@ namespace InternshipPlatform.Application.Services
             int maxLogoSizeBytes = MaxLogoSizeMb * 1024 * 1024;
 
             if (logoFile.Length == 0)
-                throw new EmptyLogoFileException();
+                throw new EmptyImageException();
 
             if (logoFile.Length > maxLogoSizeBytes)
-                throw new MaxLogoSizeException(MaxLogoSizeMb);
+                throw new MaxImageSizeException(MaxLogoSizeMb);
 
             var oldLogoPath = company.LogoPath;
 
