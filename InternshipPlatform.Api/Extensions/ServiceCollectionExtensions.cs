@@ -5,6 +5,7 @@ using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators;
+using InternshipPlatform.Infrastructure.Services;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -30,8 +31,10 @@ namespace InternshipPlatform.Api.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             return services
+                .AddScoped<IImageService, ImageService>()
                 .AddScoped<IAuthService, AuthService>()
-                .AddScoped<IStudentProfileService, StudentProfileService>();
+                .AddScoped<IStudentProfileService, StudentProfileService>()
+                .AddScoped<ICompanyService, CompanyService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)

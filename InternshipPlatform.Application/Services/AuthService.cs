@@ -77,7 +77,7 @@ namespace InternshipPlatform.Application.Services
 
             await userRepository.AddUser(user);
 
-            var company = request.ToCompany();
+            var company = request.ToDomain();
 
             await companyRepository.AddCompany(company);
 

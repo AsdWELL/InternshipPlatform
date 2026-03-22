@@ -18,6 +18,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Company?> GetCompanyByEmployerId(int employerId)
+        {
+            return await context.EmployerProfiles
+                .AsNoTracking()
+                .Where(ep => ep.UserId == employerId)
+                .Select(ep => ep.Company)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task UpdateCompany(Company company)
         {
             var dbCompany = await context.Companies.FindAsync(company.Id);
@@ -33,6 +42,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             if (company.Description is not null)
                 dbCompany.Description = company.Description;
+        }
+
+        public async Task UpdateCompanyLogo(int companyId, string logoPath)
+        {
+            var dbCompany = await context.Companies.FindAsync(companyId);
+
+            dbCompany.LogoPath = logoPath;
         }
     }
 }

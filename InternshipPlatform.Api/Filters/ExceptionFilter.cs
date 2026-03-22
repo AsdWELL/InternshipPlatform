@@ -12,9 +12,11 @@ namespace InternshipPlatform.Api.Filters
 
             httpContext.Response.StatusCode = exception switch
             {
+                BadRequestException => StatusCodes.Status400BadRequest,
                 UnathorizedException => StatusCodes.Status401Unauthorized,
                 NotFoundException => StatusCodes.Status404NotFound,
                 ConflictException => StatusCodes.Status409Conflict,
+                UnsupportedMediaTypeException => StatusCodes.Status415UnsupportedMediaType,
                 _ => StatusCodes.Status500InternalServerError
             };
 
