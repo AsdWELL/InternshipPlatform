@@ -30,13 +30,13 @@ namespace InternshipPlatform.Application.Services
             var normalizedEmail = StringNormalizer.NormalizeToLower(email)!;
             
             if (await userRepository.GetUserByEmail(normalizedEmail) != null)
-                throw new EmailAlreadyTakenException(email);
+                throw new EmailAlreadyTakenException(nameof(email), email);
         }
 
         private async Task ThrowIfInnAlreadyTaken(string inn)
         {
             if (await companyRepository.GetCompanyByInn(inn) != null)
-                throw new InnAlreadyTakenException(inn);
+                throw new InnAlreadyTakenException(nameof(inn), inn);
         }
         
         public async Task<AuthResponse> RegisterStudent(RegisterStudentRequest request)

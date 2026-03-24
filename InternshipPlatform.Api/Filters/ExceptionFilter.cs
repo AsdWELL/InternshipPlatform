@@ -20,12 +20,22 @@ namespace InternshipPlatform.Api.Filters
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            httpContext.Response.WriteAsJsonAsync(new
-            {
-                ActionName = context.ActionDescriptor.DisplayName,
-                exception.Message,
-                exception.StackTrace
-            });
+            if (exception is ConflictException validationException)
+                httpContext.Response.WriteAsJsonAsync(new
+                {
+                    Title = "One or more validation errors occurred.",
+                    Errors = new Dictionary<string, string>
+                    {
+                        [validationException.PropertyName] = validationException.Message
+                    }
+                });
+            else
+                httpContext.Response.WriteAsJsonAsync(new
+                {
+                    ActionName = context.ActionDescriptor.DisplayName,
+                    exception.Message,
+                    exception.StackTrace
+                });
 
             context.ExceptionHandled = true;
 
