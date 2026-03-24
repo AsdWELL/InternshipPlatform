@@ -1,16 +1,19 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Exceptions.Image;
 using InternshipPlatform.Application.Exceptions.StudentProfile;
+using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Mappers;
+using InternshipPlatform.Application.Utils;
 using Microsoft.AspNetCore.Http;
 
 namespace InternshipPlatform.Application.Services
 {
     public class StudentProfileService(
+        IUserRepository userRepository,
         IStudentProfileRepository studentProfileRepository,
         IPasswordHasher passwordHasher,
         IImageService imageService,
@@ -18,9 +21,24 @@ namespace InternshipPlatform.Application.Services
     {
         private const int MaxAvatarSizeMb = 10;
 
+        private async Task ThrowIfEmailAlreadyTaken(UpdateStudentProfileRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email))
+                return;
+
+            var normalizedEmail = StringNormalizer.NormalizeToLower(request.Email)!;
+
+            var user = await userRepository.GetUserByEmail(normalizedEmail);
+
+            if (user is not null && user.Id != request.UserId)
+                throw new EmailAlreadyTakenException(request.Email);
+        }
+
         public async Task<StudentProfileResponse> GetStudentByEmail(string email)
         {
-            var student = await studentProfileRepository.GetStudentByEmail(email)
+            var normalizedEmail = StringNormalizer.NormalizeToLower(email)!;
+
+            var student = await studentProfileRepository.GetStudentByEmail(normalizedEmail)
                 ?? throw new StudentProfileNotFoundException();
 
             return student.ToResponse();
@@ -36,9 +54,11 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateStudentProfile(UpdateStudentProfileRequest request)
         {
-            if (await studentProfileRepository.IsStudentExists(request.UserId))
+            if (!await studentProfileRepository.IsStudentExists(request.UserId))
                 throw new StudentProfileNotFoundException();
-            
+
+            await ThrowIfEmailAlreadyTaken(request);
+
             string? passwordHash = null;
 
             if (request.Password is not null)

@@ -10,6 +10,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<Company?> GetCompanyByEmployerId(int employerId);
 
+        Task<Company?> GetCompanyByInn(string inn);
+
         Task UpdateCompany(Company company);
 
         Task UpdateCompanyLogo(int companyId, string logoPath);

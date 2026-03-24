@@ -1,10 +1,12 @@
 ﻿using InternshipPlatform.Application.Dtos.Auth;
 using InternshipPlatform.Application.Dtos.User;
+using InternshipPlatform.Application.Exceptions.Company;
 using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Mappers;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Application.Values;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -25,8 +27,16 @@ namespace InternshipPlatform.Application.Services
         
         private async Task ThrowIfEmailAlreadyTaken(string email)
         {
-            if (await userRepository.GetUserByEmail(email) != null)
+            var normalizedEmail = StringNormalizer.NormalizeToLower(email)!;
+            
+            if (await userRepository.GetUserByEmail(normalizedEmail) != null)
                 throw new EmailAlreadyTakenException(email);
+        }
+
+        private async Task ThrowIfInnAlreadyTaken(string inn)
+        {
+            if (await companyRepository.GetCompanyByInn(inn) != null)
+                throw new InnAlreadyTakenException(inn);
         }
         
         public async Task<AuthResponse> RegisterStudent(RegisterStudentRequest request)
@@ -65,6 +75,8 @@ namespace InternshipPlatform.Application.Services
             var roleName = Roles.Employer;
 
             await ThrowIfEmailAlreadyTaken(request.Email);
+
+            await ThrowIfInnAlreadyTaken(request.Inn);
 
             var hashPassword = passwordHasher.Generate(request.Password);
 

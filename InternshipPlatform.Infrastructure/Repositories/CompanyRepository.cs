@@ -27,6 +27,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Company?> GetCompanyByInn(string inn)
+        {
+            return await context.Companies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Inn == inn);
+        }
+
         public async Task UpdateCompany(Company company)
         {
             var dbCompany = await context.Companies.FindAsync(company.Id);
