@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using InternshipPlatform.Application.Dtos.Company;
+using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Interfaces.Services;
@@ -34,7 +36,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IImageService, ImageService>()
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IStudentProfileService, StudentProfileService>()
-                .AddScoped<ICompanyService, CompanyService>();
+                .AddScoped<ICompanyService, CompanyService>()
+                .AddScoped<IEmployerProflieService, EmployerProflieService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -43,7 +46,9 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IValidator<LoginUserRequest>, LoginRequestValidator>()
                 .AddScoped<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
                 .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
-                .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>();
+                .AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
+                .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
+                .AddScoped<IValidator<UpdateEmployerProflieRequest>, UpdateEmployerProflieValidator>();
         }
     }
 }

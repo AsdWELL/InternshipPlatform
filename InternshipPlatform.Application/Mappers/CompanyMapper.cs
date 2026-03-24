@@ -12,7 +12,7 @@ namespace InternshipPlatform.Application.Mappers
             return new Company
             {
                 Inn = StringNormalizer.NormalizeRequired(request.Inn),
-                Name = StringNormalizer.NormalizeRequired(request.Name)
+                Name = StringNormalizer.NormalizeRequired(request.CompanyName)
             };
         }
 

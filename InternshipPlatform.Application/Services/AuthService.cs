@@ -81,7 +81,7 @@ namespace InternshipPlatform.Application.Services
 
             await companyRepository.AddCompany(company);
 
-            await employerRepository.AddEmployer(
+            await employerRepository.AddEmployerProfile(
                 new EmployerProfile
                 {
                     User = user,
