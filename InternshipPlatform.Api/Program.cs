@@ -24,6 +24,14 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseCors(cors =>
+{
+    cors.WithOrigins("http://localhost:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+});
+
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     Secure = CookieSecurePolicy.SameAsRequest
