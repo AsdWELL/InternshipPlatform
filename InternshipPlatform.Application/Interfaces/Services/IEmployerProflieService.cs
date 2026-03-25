@@ -7,5 +7,9 @@ namespace InternshipPlatform.Application.Interfaces.Services
         Task<EmployerProflieResponse> GetEmployerProfileById(int employerId);
 
         Task UpdateEmployerProfile(UpdateEmployerProflieRequest request);
+
+        Task Logout(int employerId);
+
+        Task DeleteEmployerProfile(int employerId);
     }
 }

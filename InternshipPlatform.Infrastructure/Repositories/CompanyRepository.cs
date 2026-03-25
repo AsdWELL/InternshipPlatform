@@ -57,5 +57,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             dbCompany.LogoPath = logoPath;
         }
+
+        public async Task DeleteCompany(int companyId)
+        {
+            var company = await context.Companies.FindAsync(companyId);
+
+            context.Companies.Remove(company);
+        }
     }
 }

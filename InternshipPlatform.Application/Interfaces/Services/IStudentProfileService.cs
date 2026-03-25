@@ -12,5 +12,9 @@ namespace InternshipPlatform.Application.Interfaces.Services
         Task UpdateStudentProfile(UpdateStudentProfileRequest request);
 
         Task UpdateStudentAvatar(int id, IFormFile avatarFile);
+
+        Task Logout(int id);
+
+        Task DeleteStudentProfile(int id);
     }
 }

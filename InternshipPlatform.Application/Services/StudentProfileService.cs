@@ -21,6 +21,12 @@ namespace InternshipPlatform.Application.Services
     {
         private const int MaxAvatarSizeMb = 10;
 
+        private async Task ThrowIfStudentProfileNotExists(int userId)
+        {
+            if (!await studentProfileRepository.IsStudentExists(userId))
+                throw new StudentProfileNotFoundException();
+        }
+        
         private async Task ThrowIfEmailAlreadyTaken(UpdateStudentProfileRequest request)
         {
             if (string.IsNullOrEmpty(request.Email))
@@ -54,8 +60,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateStudentProfile(UpdateStudentProfileRequest request)
         {
-            if (!await studentProfileRepository.IsStudentExists(request.UserId))
-                throw new StudentProfileNotFoundException();
+            await ThrowIfStudentProfileNotExists(request.UserId);
 
             await ThrowIfEmailAlreadyTaken(request);
 
@@ -100,6 +105,20 @@ namespace InternshipPlatform.Application.Services
             }
 
             await imageService.DeleteIfExists(oldAvatarPath);
+        }
+
+        public async Task Logout(int id)
+        {
+            await userRepository.UpdateRefreshToken(id, null, DateTime.UtcNow);
+        }
+
+        public async Task DeleteStudentProfile(int id)
+        {
+            await ThrowIfStudentProfileNotExists(id);
+
+            await userRepository.DeleteUserById(id);
+
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using InternshipPlatform.Application.Dtos.EmployerProflie;
+using InternshipPlatform.Application.Exceptions.Company;
 using InternshipPlatform.Application.Exceptions.EmployerProfile;
 using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
@@ -13,9 +14,16 @@ namespace InternshipPlatform.Application.Services
     public class EmployerProflieService(
         IUserRepository userRepository,
         IEmployerProfileRepository employerProfileRepository,
+        ICompanyRepository companyRepository,
         IPasswordHasher passwordHasher, 
         IUnitOfWork unitOfWork) : IEmployerProflieService
     {
+        private async Task ThrowIfEmployerProfileNotExists(int employerId)
+        {
+            if (!await employerProfileRepository.IsEmployerProfileExists(employerId))
+                throw new EmployerProflieNotFoundException();
+        }
+        
         private async Task ThrowIfEmailAlreadyTaken(UpdateEmployerProflieRequest request)
         {
             if (string.IsNullOrEmpty(request.Email))
@@ -39,8 +47,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateEmployerProfile(UpdateEmployerProflieRequest request)
         {
-            if (!await employerProfileRepository.IsEmployerProfileExists(request.UserId))
-                throw new EmployerProflieNotFoundException();
+            await ThrowIfEmployerProfileNotExists(request.UserId);
 
             await ThrowIfEmailAlreadyTaken(request);
 
@@ -50,6 +57,25 @@ namespace InternshipPlatform.Application.Services
                 passwordHash = passwordHasher.Generate(request.Password);
 
             await employerProfileRepository.UpdateEmployerProfile(request.ToDomain(passwordHash));
+
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task Logout(int employerId)
+        {
+            await userRepository.UpdateRefreshToken(employerId, null, DateTime.UtcNow);
+        }
+
+        public async Task DeleteEmployerProfile(int employerId)
+        {
+            await ThrowIfEmployerProfileNotExists(employerId);
+            
+            var company = await companyRepository.GetCompanyByEmployerId(employerId)
+                ?? throw new CompanyNotFoundException();
+            
+            await userRepository.DeleteUserById(employerId);
+
+            await companyRepository.DeleteCompany(company.Id);
 
             await unitOfWork.SaveChangesAsync();
         }
