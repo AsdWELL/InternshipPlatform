@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.User;
 
-namespace InternshipPlatform.Application.Validators
+namespace InternshipPlatform.Application.Validators.Auth
 {
     public class RegisterStudentRequestValidator : AbstractValidator<RegisterStudentRequest>
     {

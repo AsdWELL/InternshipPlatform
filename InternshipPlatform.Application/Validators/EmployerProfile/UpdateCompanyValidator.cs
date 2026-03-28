@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.Company;
 
-namespace InternshipPlatform.Application.Validators
+namespace InternshipPlatform.Application.Validators.EmployerProfile
 {
     public class UpdateCompanyValidator : AbstractValidator<UpdateCompanyRequest>
     {
@@ -23,7 +23,7 @@ namespace InternshipPlatform.Application.Validators
         public UpdateCompanyValidator()
         {
             RuleFor(x => x.Link)
-                .Must(x => ValidUrl(x))
+                .Must(x => ValidUrl(x!))
                 .WithMessage("Укажите корректную ссылку")
                 .When(x => x.Link is not null);
         }

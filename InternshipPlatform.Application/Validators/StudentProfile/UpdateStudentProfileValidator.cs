@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 
-namespace InternshipPlatform.Application.Validators
+namespace InternshipPlatform.Application.Validators.StudentProfile
 {
     public class UpdateStudentProfileValidator : AbstractValidator<UpdateStudentProfileRequest>
     {
