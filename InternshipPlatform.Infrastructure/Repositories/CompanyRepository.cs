@@ -38,6 +38,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
         {
             var dbCompany = await context.Companies.FindAsync(company.Id);
 
+            if (dbCompany == null)
+                return;
+
             if (company.Inn is not null)
                 dbCompany.Inn = company.Inn;
 
@@ -51,9 +54,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 dbCompany.Description = company.Description;
         }
 
-        public async Task UpdateCompanyLogo(int companyId, string logoPath)
+        public async Task UpdateCompanyLogo(int companyId, string? logoPath)
         {
             var dbCompany = await context.Companies.FindAsync(companyId);
+
+            if (dbCompany == null)
+                return;
 
             dbCompany.LogoPath = logoPath;
         }
@@ -61,6 +67,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
         public async Task DeleteCompany(int companyId)
         {
             var company = await context.Companies.FindAsync(companyId);
+
+            if (company == null)
+                return;
 
             context.Companies.Remove(company);
         }

@@ -14,7 +14,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task UpdateCompany(Company company);
 
-        Task UpdateCompanyLogo(int companyId, string logoPath);
+        Task UpdateCompanyLogo(int companyId, string? logoPath);
 
         Task DeleteCompany(int companyId);
     }

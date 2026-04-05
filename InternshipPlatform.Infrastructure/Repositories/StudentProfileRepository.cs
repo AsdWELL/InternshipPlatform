@@ -82,7 +82,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 student.GraduationYear = studentProfile.GraduationYear;
         }
 
-        public async Task UpdateAvatar(int userId, string avatarPath)
+        public async Task UpdateAvatar(int userId, string? avatarPath)
         {
             var student = await context.StudentProfiles.FindAsync(userId);
 

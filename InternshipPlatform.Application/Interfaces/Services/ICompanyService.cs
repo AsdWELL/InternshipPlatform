@@ -10,5 +10,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
         Task UpdateCompany(UpdateCompanyRequest request);
 
         Task UpdateCompanyLogoByEmployerId(int employerId, IFormFile logoFile);
+
+        Task DeleteCompanyLogoByEmployerId(int employerId);
     }
 }

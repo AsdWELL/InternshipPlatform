@@ -8,6 +8,7 @@ using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Mappers;
 using InternshipPlatform.Application.Utils;
+using InternshipPlatform.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace InternshipPlatform.Application.Services
@@ -40,6 +41,14 @@ namespace InternshipPlatform.Application.Services
                 throw new EmailAlreadyTakenException(nameof(request.Email), request.Email);
         }
 
+        private async Task<StudentProfile> GetStudentByIdOrThrow(int id)
+        {
+            var student = await studentProfileRepository.GetStudentById(id)
+                ?? throw new StudentProfileNotFoundException();
+
+            return student;
+        }
+
         public async Task<StudentProfileResponse> GetStudentByEmail(string email)
         {
             var normalizedEmail = StringNormalizer.NormalizeToLower(email)!;
@@ -52,8 +61,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task<StudentProfileResponse> GetStudentById(int id)
         {
-            var student = await studentProfileRepository.GetStudentById(id)
-                ?? throw new StudentProfileNotFoundException();
+            var student = await GetStudentByIdOrThrow(id);
 
             return student.ToResponse();
         }
@@ -76,8 +84,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateStudentAvatar(int id, IFormFile avatarFile)
         {
-            var student = await studentProfileRepository.GetStudentById(id)
-                ?? throw new StudentProfileNotFoundException();
+            var student = await GetStudentByIdOrThrow(id);
 
             int maxAvatarSizeBytes = MaxAvatarSizeMb * 1024 * 1024;
 
@@ -105,6 +112,16 @@ namespace InternshipPlatform.Application.Services
             }
 
             await imageService.DeleteIfExists(oldAvatarPath);
+        }
+
+        public async Task DeleteAvatar(int studentId)
+        {
+            var student = await GetStudentByIdOrThrow(studentId);
+
+            await studentProfileRepository.UpdateAvatar(studentId, null);
+            await imageService.DeleteIfExists(student.AvatarPath);
+
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task Logout(int id)

@@ -25,7 +25,7 @@ namespace InternshipPlatform.Application.Mappers
                 Name = company.Name,
                 Description = company.Description,
                 Link = company.Link,
-                LogoUrl = company.LogoPath
+                LogoPath = company.LogoPath
             };
         }
 

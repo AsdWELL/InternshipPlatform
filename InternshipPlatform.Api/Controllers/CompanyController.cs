@@ -27,7 +27,7 @@ namespace InternshipPlatform.Api.Controllers
         }
 
         [Authorize(Roles = Roles.Employer)]
-        [HttpPost("upload-logo")]
+        [HttpPost("logo")]
         public async Task<IActionResult> UpdateCompanyLogoByEmployerId(IFormFile logoFile)
         {
             await companyService.UpdateCompanyLogoByEmployerId(UserId, logoFile);
@@ -35,5 +35,13 @@ namespace InternshipPlatform.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = Roles.Employer)]
+        [HttpDelete("logo")]
+        public async Task<IActionResult> DeleteCompanyLogoByEmployerId()
+        {
+            await companyService.DeleteCompanyLogoByEmployerId(UserId);
+
+            return Ok();
+        }
     }
 }

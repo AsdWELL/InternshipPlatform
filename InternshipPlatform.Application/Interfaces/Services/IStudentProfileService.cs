@@ -13,6 +13,8 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task UpdateStudentAvatar(int id, IFormFile avatarFile);
 
+        Task DeleteAvatar(int studentId);
+
         Task Logout(int id);
 
         Task DeleteStudentProfile(int id);

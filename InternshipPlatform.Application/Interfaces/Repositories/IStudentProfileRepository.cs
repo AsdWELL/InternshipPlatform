@@ -14,6 +14,6 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task UpdateStudentProfile(StudentProfile studentProfile);
 
-        Task UpdateAvatar(int userId, string avatarPath);
+        Task UpdateAvatar(int userId, string? avatarPath);
     }
 }

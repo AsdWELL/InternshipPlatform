@@ -5,6 +5,7 @@ using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
+using InternshipPlatform.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace InternshipPlatform.Application.Services
@@ -65,6 +66,18 @@ namespace InternshipPlatform.Application.Services
             }
 
             await imageService.DeleteIfExists(oldLogoPath);
+        }
+
+        public async Task DeleteCompanyLogoByEmployerId(int employerId)
+        {
+            var company = await companyRepository.GetCompanyByEmployerId(employerId)
+                ?? throw new CompanyNotFoundException();
+
+            await companyRepository.UpdateCompanyLogo(company.Id, null);
+
+            await imageService.DeleteIfExists(company.LogoPath);
+
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

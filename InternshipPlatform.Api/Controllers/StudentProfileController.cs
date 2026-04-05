@@ -52,6 +52,15 @@ namespace InternshipPlatform.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = Roles.Student)]
+        [HttpDelete("avatar")]
+        public async Task<IActionResult> DeleteAvatar()
+        {
+            await studentProfileService.DeleteAvatar(UserId);
+
+            return Ok();
+        }
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(IOptions<TokenOptions> tokenOption)
         {
