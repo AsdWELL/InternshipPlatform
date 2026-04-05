@@ -11,12 +11,6 @@ namespace InternshipPlatform.Api.Controllers
     [Route("api/[controller]")]
     public class StudentProfileController(IStudentProfileService studentProfileService) : AuthorizedUserController
     {
-        [NonAction]
-        private void ClearToken(string cookieTitle)
-        {
-            Response.Cookies.Delete(cookieTitle);
-        }
-
         [Authorize(Roles = Roles.Student)]
         [HttpGet]
         public async Task<IActionResult> GetCurrentStudentProfile()
@@ -25,14 +19,14 @@ namespace InternshipPlatform.Api.Controllers
         }
 
         [Authorize(Roles = Roles.Employer)]
-        [HttpGet("{id:int}")]
+        [HttpGet("by-id/{id:int}")]
         public async Task<IActionResult> GetStudentById([FromRoute] int id)
         {
             return Ok(await studentProfileService.GetStudentById(id));
         }
 
         [Authorize(Roles = Roles.Employer)]
-        [HttpGet("{email}")]
+        [HttpGet("by-email/{email}")]
         public async Task<IActionResult> GetStudentByEmail([FromRoute] string email)
         {
             return Ok(await studentProfileService.GetStudentByEmail(email));

@@ -13,5 +13,11 @@ namespace InternshipPlatform.Api.Controllers
         public string Email => User.FindFirstValue(ClaimTypes.Email)!;
 
         public string Role => User.FindFirstValue(ClaimTypes.Role)!;
+
+        [NonAction]
+        protected void ClearToken(string cookieTitle)
+        {
+            Response.Cookies.Delete(cookieTitle);
+        }
     }
 }

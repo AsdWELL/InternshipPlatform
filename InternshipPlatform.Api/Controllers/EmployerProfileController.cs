@@ -12,14 +12,8 @@ namespace InternshipPlatform.Api.Controllers
     [Route("api/[controller]")]
     public class EmployerProfileController(IEmployerProflieService employerProflieService) : AuthorizedUserController
     {
-        [NonAction]
-        private void ClearToken(string cookieTitle)
-        {
-            Response.Cookies.Delete(cookieTitle);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetEmployerProfile()
+        public async Task<IActionResult> GetCurrentEmployerProfile()
         {
             return Ok(await employerProflieService.GetEmployerProfileById(UserId));
         }
