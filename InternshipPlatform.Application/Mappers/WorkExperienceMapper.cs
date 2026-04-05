@@ -15,6 +15,7 @@ namespace InternshipPlatform.Application.Mappers
             return new WorkExperienceItem
             {
                 Id = workExperience.Id,
+                CompanyName = workExperience.CompanyName,
                 StartDateWork = workExperience.StartDateWork,
                 EndDateWork = workExperience.EndDateWork,
                 Profession = workExperience.Profession,

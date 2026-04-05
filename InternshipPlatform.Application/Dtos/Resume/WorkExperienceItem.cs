@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
 
+        public string CompanyName { get; set; }
+
         public string Profession { get; set; }
 
         public DateOnly StartDateWork { get; set; }
