@@ -35,13 +35,19 @@ namespace InternshipPlatform.Application.Services
 
         private async Task ThrowIfStudentDoesNotOwnResume(int studentId, int resumeId)
         {
-            if (!await resumeRepository.EnsureStudentOwnsResume(studentId, resumeId))
+            if (!await resumeRepository.IsStudentOwnsResume(studentId, resumeId))
                 throw new ResumeNotFoundException();
         }
 
         private async Task ThrowIfWorkExperienceNotExists(int workExperienceId)
         {
             if (!await resumeRepository.IsWorkExperienceExists(workExperienceId))
+                throw new WorkExperienceNotFoundException();
+        }
+
+        private async Task ThrowIfWorkExperienceNotBelongsResume(int resumeId, int workExperienceId)
+        {
+            if (!await resumeRepository.IsWorkExperienceBelongsToResume(resumeId, workExperienceId))
                 throw new WorkExperienceNotFoundException();
         }
 
@@ -111,6 +117,8 @@ namespace InternshipPlatform.Application.Services
             await ThrowIfStudentDoesNotOwnResume(request.StudentId, request.ResumeId);
 
             await ThrowIfWorkExperienceNotExists(request.Id);
+
+            await ThrowIfWorkExperienceNotBelongsResume(request.ResumeId, request.Id);
 
             await resumeRepository.UpdateWorkExperience(request.ToDomain());
 

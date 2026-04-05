@@ -6,10 +6,12 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IResumeRepository
     {
-        Task<bool> EnsureStudentOwnsResume(int studentId, int resumeId);
+        Task<bool> IsStudentOwnsResume(int studentId, int resumeId);
 
         Task<bool> IsWorkExperienceExists(int workExperienceId);
-        
+
+        Task<bool> IsWorkExperienceBelongsToResume(int resumeId, int workExperienceId);
+
         Task AddResume(Resume resume);
 
         Task<List<Resume>> GetStudentResumes(int studentId);

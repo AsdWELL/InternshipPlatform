@@ -15,6 +15,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AnyAsync(we => we.Id == workExperienceId);
         }
 
+        public async Task<bool> IsWorkExperienceBelongsToResume(int resumeId, int workExperienceId)
+        {
+            return await context.WorkExperiences
+                .AsNoTracking()
+                .AnyAsync(we => we.Id == workExperienceId && we.ResumeId == resumeId);
+        }
+
         public async Task AddResume(Resume resume)
         {
             await context.Resumes.AddAsync(resume);
@@ -69,7 +76,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             context.Resumes.Remove(resume);
         }
 
-        public Task<bool> EnsureStudentOwnsResume(int studentId, int resumeId)
+        public Task<bool> IsStudentOwnsResume(int studentId, int resumeId)
         {
             return context.Resumes
                 .AsNoTracking()
