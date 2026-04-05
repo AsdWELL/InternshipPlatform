@@ -15,6 +15,14 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<EmployerProfile> EmployerProfiles { get; set; }
 
+        public DbSet<Specialization> Specializations { get; set; }
+
+        public DbSet<Skill> Skills { get; set; }
+
+        public DbSet<WorkExperience> WorkExperiences { get; set; }
+
+        public DbSet<Resume> Resumes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -34,6 +42,29 @@ namespace InternshipPlatform.Infrastructure
                     .WithOne()
                     .HasForeignKey<EmployerProfile>(ep => ep.UserId);
             });
+
+            modelBuilder.Entity<Resume>()
+                .HasOne(r => r.StudentProfile)
+                .WithMany()
+                .HasForeignKey(r => r.StudentId);
+
+            modelBuilder.Entity<Resume>()
+                .HasMany(r => r.Skills)
+                .WithMany()
+                .UsingEntity(
+                    "SkillsToResume",
+                    r => r.HasOne(typeof(Skill))
+                          .WithMany()
+                          .HasForeignKey("SkillId"),
+                    l => l.HasOne(typeof(Resume))
+                          .WithMany()
+                          .HasForeignKey("ResumeId"),
+                    j => j.HasKey("SkillId", "ResumeId"));
+
+            modelBuilder.Entity<Resume>()
+                .HasMany(r => r.WorkExperiences)
+                .WithOne()
+                .HasForeignKey(we => we.ResumeId);
         }
     }
 }

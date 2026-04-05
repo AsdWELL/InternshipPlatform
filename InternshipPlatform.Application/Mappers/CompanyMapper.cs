@@ -36,10 +36,10 @@ namespace InternshipPlatform.Application.Mappers
             return new Company
             {
                 Id = companyId,
-                Inn = request.Inn,
-                Name = request.Name,
-                Description = request.Description,
-                Link = request.Link
+                Inn = StringNormalizer.NormalizeOptional(request.Inn),
+                Name = StringNormalizer.NormalizeOptional(request.Name),
+                Description = StringNormalizer.NormalizeOptional(request.Description),
+                Link = StringNormalizer.NormalizeToLower(request.Link)
             };
         }
     }

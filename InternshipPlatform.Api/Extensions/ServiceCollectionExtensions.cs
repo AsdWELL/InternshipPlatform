@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
+using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Interfaces.Services;
@@ -8,6 +9,7 @@ using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators.Auth;
 using InternshipPlatform.Application.Validators.EmployerProfile;
+using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentProfile;
 using InternshipPlatform.Infrastructure.Services;
 using Microsoft.OpenApi;
@@ -39,7 +41,10 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IStudentProfileService, StudentProfileService>()
                 .AddScoped<ICompanyService, CompanyService>()
-                .AddScoped<IEmployerProflieService, EmployerProflieService>();
+                .AddScoped<IEmployerProflieService, EmployerProflieService>()
+                .AddScoped<ISkillService, SkillService>()
+                .AddScoped<ISpecializationService, SpecializationService>()
+                .AddScoped<IResumeService, ResumeService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -50,7 +55,12 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
                 .AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
                 .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
-                .AddScoped<IValidator<UpdateEmployerProflieRequest>, UpdateEmployerProflieValidator>();
+                .AddScoped<IValidator<UpdateEmployerProflieRequest>, UpdateEmployerProflieValidator>()
+                .AddScoped<IValidator<CreateResumeRequest>, CreateResumeValidator>()
+                .AddScoped<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()
+                .AddScoped<IValidator<AddWorkExperienceRequest>, AddWorkExperienceValidator>()
+                .AddScoped<IValidator<UpdateWorkExperienceRequest>, UpdateWorkExperienceValidator>()
+                .AddScoped<IValidator<SearchResumeParameters>, SearchResumeParametersValidator>();
         }
     }
 }

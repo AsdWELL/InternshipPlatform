@@ -73,21 +73,27 @@ CREATE TABLE "Skills" (
   "Id"   SERIAL NOT NULL, 
   "Name" text NOT NULL UNIQUE, 
   PRIMARY KEY ("Id"));
-CREATE TABLE "Categories" (
-  "Id"   SERIAL NOT NULL, 
-  "Name" text NOT NULL UNIQUE, 
-  PRIMARY KEY ("Id"));
 CREATE TABLE "Specializations" (
   "Id"         SERIAL NOT NULL, 
-  "Name"       text NOT NULL UNIQUE, 
-  "CategoryId" integer NOT NULL, 
+  "Name"       text NOT NULL UNIQUE,
   PRIMARY KEY ("Id"));
 CREATE TABLE "Resumes" (
-  "Id"               SERIAL NOT NULL, 
-  "Description"      text NOT NULL, 
+  "Id"               SERIAL NOT NULL,
+  "LastUpdateDate"   date NOT NULL,
+  "Description"      text, 
+  "DesiredSalary"    integer,
   "IsActive"         bool NOT NULL, 
   "SpecializationId" integer NOT NULL, 
   "StudentId"        integer NOT NULL, 
+  PRIMARY KEY ("Id"));
+CREATE TABLE "WorkExperiences" (
+  "Id" SERIAL NOT NULL,
+  "ResumeId" integer NOT NULL,
+  "CompanyName" text NOT NULL,
+  "Profession" text NOT NULL,
+  "StartDateWork" date NOT NULL,
+  "EndDateWork" date,
+  "WorkDescription" text,
   PRIMARY KEY ("Id"));
 CREATE TABLE "SkillsToResume" (
   "SkillId"  integer NOT NULL, 
@@ -144,8 +150,6 @@ CREATE INDEX "Responses1"
   ON "Responses" ("ResumeId");
 CREATE INDEX "Responses2" 
   ON "Responses" ("VacancyId");
-CREATE INDEX "Specializations1" 
-  ON "Specializations" ("CategoryId");
 CREATE INDEX "Resumes1" 
   ON "Resumes" ("StudentId");
 CREATE INDEX "Resumes2" 
@@ -154,11 +158,12 @@ CREATE INDEX "Messages1"
   ON "Messages" ("ChatId", "CreatedAt");
 CREATE INDEX "Subscriptions1" 
   ON "Subscriptions" ("UserId");
+CREATE INDEX "WorkExperiences1" 
+  ON "WorkExperiences" ("ResumeId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr861889" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr684251" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Specializations" ADD CONSTRAINT "FKSpecializa451916" FOREIGN KEY ("CategoryId") REFERENCES "Categories" ("Id");
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies430548" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "SkillsToResume" ADD CONSTRAINT "FKSkillsToRe373177" FOREIGN KEY ("SkillId") REFERENCES "Skills" ("Id");
 ALTER TABLE "SkillsToResume" ADD CONSTRAINT "FKSkillsToRe581449" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id");
@@ -173,5 +178,6 @@ ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages297040" FOREIGN KEY ("ChatId") 
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti215862" FOREIGN KEY ("PlanId") REFERENCES "SubscriptionPlans" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti256259" FOREIGN KEY ("StatusId") REFERENCES "SubscribtionStatuses" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti192955" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id");
-ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes739148" FOREIGN KEY ("StudentId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes739148" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages187268" FOREIGN KEY ("SenderId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "WorkExperiences" ADD CONSTRAINT "FKWorkExperiences12341" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
