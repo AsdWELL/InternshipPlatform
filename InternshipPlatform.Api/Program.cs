@@ -1,6 +1,7 @@
 using InternshipPlatform.Api.Extensions;
 using InternshipPlatform.Api.Filters;
 using InternshipPlatform.Infrastructure.Extensions;
+using InternshipPlatform.Infrastructure.Migration;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -23,6 +24,18 @@ builder.Services
     .AddControllers(options => options.Filters.Add<ExceptionFilter>());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var seeder = services.GetRequiredService<DbSeeder>();
+
+    seeder.Seed();
+
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Ѕаза данных успешно заполнена тестовыми данными.");
+}
 
 app.UseCors(cors =>
 {

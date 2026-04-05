@@ -1,6 +1,7 @@
 ﻿using DbUp;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Infrastructure.Migration;
 using InternshipPlatform.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,8 @@ namespace InternshipPlatform.Infrastructure.Extensions
 
             services
                 .AddDbContext<InternshipPlatformContext>(options => options.UseNpgsql(connectionString))
-                .MigrateDatabase(connectionString);
+                .MigrateDatabase(connectionString)
+                .AddScoped<DbSeeder>();
 
             return services;
         }
