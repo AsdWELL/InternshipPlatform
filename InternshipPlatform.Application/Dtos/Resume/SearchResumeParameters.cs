@@ -28,6 +28,8 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public int? SalaryTo { get; set; }
 
+        public string? Region { get; set; }
+
         public int? SpecializationId { get; set; }
 
         public int? AgeFrom { get; set; }

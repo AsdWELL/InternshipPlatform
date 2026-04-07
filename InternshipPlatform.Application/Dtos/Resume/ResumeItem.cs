@@ -8,6 +8,8 @@
 
         public int? DesiredSalary { get; set; }
 
+        public string? Region { get; set; }
+
         public string SpecializationName { get; set; }
 
         public List<WorkExperienceItem> WorkExperiences { get; set; }

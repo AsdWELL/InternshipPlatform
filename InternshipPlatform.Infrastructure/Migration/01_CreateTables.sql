@@ -46,9 +46,9 @@ CREATE TABLE "Vacancies" (
   "SalaryFrom"       integer, 
   "SalaryTo"         integer, 
   "IsRemote"         bool NOT NULL, 
-  "City"             text, 
-  "IsActive"         bool, 
-  "ViewsCount"       integer, 
+  "Region"           text, 
+  "IsActive"         bool NOT NULL, 
+  "ViewsCount"       integer NOT NULL, 
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 
   PRIMARY KEY ("Id"));
@@ -82,6 +82,7 @@ CREATE TABLE "Resumes" (
   "LastUpdateDate"   date NOT NULL,
   "Description"      text, 
   "DesiredSalary"    integer,
+  "Region"           text,
   "IsActive"         bool NOT NULL, 
   "SpecializationId" integer NOT NULL, 
   "StudentId"        integer NOT NULL, 
@@ -145,7 +146,7 @@ CREATE INDEX "Vacancies2"
 CREATE INDEX "Vacancies3" 
   ON "Vacancies" ("Title");
 CREATE INDEX "Vacancies4" 
-  ON "Vacancies" ("City");
+  ON "Vacancies" ("Region");
 CREATE INDEX "Responses1" 
   ON "Responses" ("ResumeId");
 CREATE INDEX "Responses2" 

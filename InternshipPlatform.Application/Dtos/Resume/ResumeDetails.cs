@@ -15,7 +15,9 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public int? DesiredSalary { get; set; }
 
-        public string SpecializationTitle { get; set; }
+        public string? Region { get; set; }
+
+        public Specialization Specialization { get; set; }
 
         public int TotalWorkExperienceMonths { get; set; }
 

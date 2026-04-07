@@ -269,6 +269,7 @@ namespace InternshipPlatform.Infrastructure.Migration
                                 DateTime.UtcNow)),
                         Description = faker.PickRandom(resumeDescriptions),
                         IsActive = faker.Random.Bool(0.8f),
+                        Region = faker.Address.City(),
                         DesiredSalary = faker.Random.Bool(0.85f)
                             ? faker.Random.Int(2000, 20000) * 10
                             : null,

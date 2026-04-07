@@ -47,6 +47,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 StudentId = sourceResume.StudentId,
                 Description = sourceResume.Description,
                 DesiredSalary = sourceResume.DesiredSalary,
+                Region = sourceResume.Region,
                 SpecializationId = sourceResume.SpecializationId,
                 LastUpdateDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 IsActive = sourceResume.IsActive,
@@ -123,6 +124,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 query = query.Where(r =>
                     r.DesiredSalary != null &&
                     r.DesiredSalary <= parameters.SalaryTo.Value);
+
+            if (parameters.Region is not null)
+                query = query.Where(r => r.Region.Contains(parameters.Region));
 
             if (parameters.SpecializationId is not null)
                 query = query.Where(r => r.SpecializationId == parameters.SpecializationId.Value);
@@ -266,6 +270,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             if (resume.DesiredSalary is not null)
                 existingResume.DesiredSalary = resume.DesiredSalary;
+
+            if (resume.Region is not null)
+                existingResume.Region = resume.Region;
 
             if (resume.Description is not null)
                 existingResume.Description = resume.Description;

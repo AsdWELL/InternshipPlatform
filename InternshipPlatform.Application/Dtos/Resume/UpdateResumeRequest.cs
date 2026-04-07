@@ -13,6 +13,8 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public int? DesiredSalary { get; set; }
 
+        public string? Region { get; set; }
+
         public bool? IsActive { get; set; }
 
         public int? SpecializationId { get; set; }
