@@ -2,15 +2,6 @@
 
 namespace InternshipPlatform.Application.Dtos.Resume
 {
-    public enum ResumeExperienceFilter
-    {
-        NoMatter,
-        NoExperience,
-        OneToThreeYears,
-        ThreeToSixYears,
-        MoreThanSixYears
-    }
-
     public enum ResumeUpdatedDateFilter
     {
         AllTime,
@@ -38,7 +29,9 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public List<int>? SkillIds { get; set; }
 
-        public ResumeExperienceFilter? ExperienceFilter { get; set; }
+        public int? MinWorkExperienceYears { get; set; }
+
+        public int? MaxWorkExperienceYears { get; set; }
 
         public ResumeUpdatedDateFilter? ResumeUpdatedDateFilter { get; set; }
 

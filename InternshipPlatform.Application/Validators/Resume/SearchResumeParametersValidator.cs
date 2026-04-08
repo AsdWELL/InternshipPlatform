@@ -27,6 +27,16 @@ namespace InternshipPlatform.Application.Validators.Resume
                 .When(x => x.AgeTo.HasValue)
                 .WithMessage("Не может быть меньше 0");
 
+            RuleFor(x => x.MinWorkExperienceYears)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.MinWorkExperienceYears.HasValue)
+                .WithMessage("Не может быть меньше 0");
+
+            RuleFor(x => x.MaxWorkExperienceYears)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.MaxWorkExperienceYears.HasValue)
+                .WithMessage("Не может быть меньше 0");
+
             RuleFor(x => x)
                 .Must(x => !x.SalaryFrom.HasValue || !x.SalaryTo.HasValue || x.SalaryFrom.Value <= x.SalaryTo.Value)
                 .WithMessage("Левая граница з/п должна быть меньше правой");
@@ -38,6 +48,10 @@ namespace InternshipPlatform.Application.Validators.Resume
             RuleFor(x => x)
                 .Must(x => !x.UpdatedFrom.HasValue || !x.UpdatedTo.HasValue || x.UpdatedFrom.Value <= x.UpdatedTo.Value)
                 .WithMessage("Левая граница интервала обновления должна быть меньше правой");
+
+            RuleFor(x => x)
+                .Must(x => !x.MinWorkExperienceYears.HasValue || !x.MaxWorkExperienceYears.HasValue || x.MaxWorkExperienceYears <= x.MinWorkExperienceYears)
+                .WithMessage("Левая граница опыта должна быть меньше правой");
         }
     }
 }

@@ -197,8 +197,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             IQueryable<Resume> filteredQuery = query;
 
-            if (parameters.ExperienceFilter is not null &&
-                parameters.ExperienceFilter != ResumeExperienceFilter.NoMatter)
+            if (parameters.MinWorkExperienceYears is not null ||
+                parameters.MaxWorkExperienceYears is not null)
             {
                 var queryWithExperience = filteredQuery
                     .Select(r => new
@@ -210,22 +210,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
                             (((we.EndDateWork ?? today).Day < we.StartDateWork.Day) ? 1 : 0))
                     });
 
-                queryWithExperience = parameters.ExperienceFilter.Value switch
-                {
-                    ResumeExperienceFilter.NoExperience =>
-                        queryWithExperience.Where(x => x.TotalMonths == 0),
-
-                    ResumeExperienceFilter.OneToThreeYears =>
-                        queryWithExperience.Where(x => x.TotalMonths >= 12 && x.TotalMonths < 36),
-
-                    ResumeExperienceFilter.ThreeToSixYears =>
-                        queryWithExperience.Where(x => x.TotalMonths >= 36 && x.TotalMonths < 72),
-
-                    ResumeExperienceFilter.MoreThanSixYears =>
-                        queryWithExperience.Where(x => x.TotalMonths >= 72),
-
-                    _ => queryWithExperience
-                };
+                if (parameters.MinWorkExperienceYears is not null)
+                    queryWithExperience = queryWithExperience.Where(x => x.TotalMonths >= parameters.MinWorkExperienceYears * 12);
+                if (parameters.MaxWorkExperienceYears is not null)
+                    queryWithExperience = queryWithExperience.Where(x => x.TotalMonths <= parameters.MaxWorkExperienceYears * 12);
 
                 filteredQuery = queryWithExperience.Select(x => x.Resume);
             }
