@@ -15,7 +15,6 @@ namespace InternshipPlatform.Infrastructure.Migration
         IOptions<TokenOptions> tokenOptions,
         ILogger<DbSeeder> logger)
     {
-        private const string Email = "qwerty";
         private const string BasePassword = "qwerty123";
         private const int RandomizerSeed = 8675309;
 
@@ -30,6 +29,9 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int WorkExperienceChancePercent = 50;
         private const int MinWorkExperiencesPerResume = 1;
         private const int MaxWorkExperiencesPerResume = 3;
+
+        private const int MinVacanciesPerCompany = 2;
+        private const int MaxVacanciesPerCompany = 8;
 
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
 
@@ -316,6 +318,84 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private void GenerateVacancies()
+        {
+            if (context.Vacancies.Any())
+                return;
+
+            var companies = context.Companies.ToList();
+            var specializations = context.Specializations.ToList();
+
+            if (companies.Count == 0 || specializations.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed);
+
+            var vacancyTitles = new[]
+            {
+                "Стажёр-разработчик .NET",
+                "Стажёр backend-разработчик",
+                "Стажёр frontend-разработчик",
+                "Стажёр fullstack-разработчик",
+                "Junior .NET Developer",
+                "Junior Frontend Developer",
+                "Junior Backend Developer",
+                "Стажёр QA Engineer",
+                "Стажёр тестировщик",
+                "Стажёр бизнес-аналитик",
+                "Стажёр системный аналитик",
+                "Стажёр DevOps Engineer",
+                "Стажёр Data Analyst",
+                "Стажёр Python Developer"
+            };
+
+            var vacancyDescriptions = new[]
+            {
+                "Приглашаем студента или начинающего специалиста для участия в коммерческих и внутренних проектах компании. Предусмотрено наставничество, обучение и постепенное погружение в рабочие задачи.",
+                "Ищем стажёра в команду разработки. Нужно будет помогать в реализации нового функционала, исправлении ошибок и сопровождении существующего решения.",
+                "Подойдёт кандидатам, которые хотят получить первый практический опыт, развиваться в команде и работать с современным стеком технологий.",
+                "В рамках стажировки предстоит взаимодействовать с командой, участвовать в код-ревью, изучать внутренние процессы разработки и выполнять реальные задачи проекта.",
+                "Отличная возможность начать карьеру в IT, получить опыт командной работы и прокачать профессиональные навыки под руководством опытных специалистов."
+            };
+
+            var faker = new Faker("ru");
+            var vacancies = new List<Vacancy>();
+
+            foreach (var company in companies)
+            {
+                var vacanciesCount = faker.Random.Int(MinVacanciesPerCompany, MaxVacanciesPerCompany);
+
+                for (int i = 0; i < vacanciesCount; i++)
+                {
+                    var specialization = faker.PickRandom(specializations);
+
+                    int salaryFrom = faker.Random.Int(2000, 20000) * 10;
+                    int salaryTo = salaryFrom + faker.Random.Int(20, 150) * 10;
+
+                    bool salaryHidden = faker.Random.Bool(0.15f);
+                    bool isRemote = faker.Random.Bool(0.35f);
+
+                    vacancies.Add(new Vacancy
+                    {
+                        Title = faker.PickRandom(vacancyTitles),
+                        Description = faker.PickRandom(vacancyDescriptions),
+                        SalaryFrom = salaryHidden ? null : salaryFrom,
+                        SalaryTo = salaryHidden ? null : salaryTo,
+                        IsRemote = isRemote,
+                        Region = isRemote ? null : faker.Address.City(),
+                        IsActive = faker.Random.Bool(0.85f),
+                        ViewsCount = faker.Random.Int(0, 5000),
+                        MinWorkExperienceYears = faker.Random.Int(0, 3),
+                        SpecializationId = specialization.Id,
+                        CompanyId = company.Id
+                    });
+                }
+            }
+
+            context.Vacancies.AddRange(vacancies);
+            context.SaveChanges();
+        }
+
         public void Seed()
         {
             int totalTime = Environment.TickCount;
@@ -327,6 +407,10 @@ namespace InternshipPlatform.Infrastructure.Migration
             startTime = Environment.TickCount;
             GenerateResumes();
             logger.LogInformation($"Резюме студентов сгенерированы за {Environment.TickCount - startTime}мс");
+
+            startTime = Environment.TickCount;
+            GenerateVacancies();
+            logger.LogInformation($"Вакансии комипаний сгенерированы за {Environment.TickCount - startTime}мс");
 
             logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс");
         }

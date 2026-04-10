@@ -4,6 +4,7 @@ using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
+using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
@@ -11,6 +12,7 @@ using InternshipPlatform.Application.Validators.Auth;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentProfile;
+using InternshipPlatform.Application.Validators.Vacancy;
 using InternshipPlatform.Infrastructure.Services;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
@@ -44,7 +46,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IEmployerProflieService, EmployerProflieService>()
                 .AddScoped<ISkillService, SkillService>()
                 .AddScoped<ISpecializationService, SpecializationService>()
-                .AddScoped<IResumeService, ResumeService>();
+                .AddScoped<IResumeService, ResumeService>()
+                .AddScoped<IVacancyService, VacancyService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -56,11 +59,16 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
                 .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
                 .AddScoped<IValidator<UpdateEmployerProflieRequest>, UpdateEmployerProflieValidator>()
+                
                 .AddScoped<IValidator<CreateResumeRequest>, CreateResumeValidator>()
                 .AddScoped<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()
                 .AddScoped<IValidator<AddWorkExperienceRequest>, AddWorkExperienceValidator>()
                 .AddScoped<IValidator<UpdateWorkExperienceRequest>, UpdateWorkExperienceValidator>()
-                .AddScoped<IValidator<SearchResumeParameters>, SearchResumeParametersValidator>();
+                .AddScoped<IValidator<SearchResumeParameters>, SearchResumeParametersValidator>()
+                
+                .AddScoped<IValidator<CreateVacancyRequest>, CreateVacancyValidator>()
+                .AddScoped<IValidator<UpdateVacancyRequest>, UpdateVacancyValidator>()
+                .AddScoped<IValidator<SearchVacancyParameters>, SearchVacancyValidator>();
         }
     }
 }

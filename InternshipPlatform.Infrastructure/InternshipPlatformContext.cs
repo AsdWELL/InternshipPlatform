@@ -23,6 +23,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<Resume> Resumes { get; set; }
 
+        public DbSet<Vacancy> Vacancies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -65,6 +67,11 @@ namespace InternshipPlatform.Infrastructure
                 .HasMany(r => r.WorkExperiences)
                 .WithOne()
                 .HasForeignKey(we => we.ResumeId);
+
+            modelBuilder.Entity<Vacancy>()
+                .HasOne(v => v.Company)
+                .WithMany()
+                .HasForeignKey(v => v.CompanyId);
         }
     }
 }
