@@ -34,7 +34,7 @@ namespace InternshipPlatform.Application.Services
             var user = await userRepository.GetUserByEmail(normalizedEmail);
 
             if (user is not null && user.Id != request.UserId)
-                throw new EmailAlreadyTakenException(nameof(request.Email), request.Email);
+                throw new EmailAlreadyTakenException(request.Email);
         }
         
         public async Task<EmployerProflieResponse> GetEmployerProfileById(int employerId)

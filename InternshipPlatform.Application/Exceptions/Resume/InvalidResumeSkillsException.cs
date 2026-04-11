@@ -2,5 +2,6 @@
 
 namespace InternshipPlatform.Application.Exceptions.Resume
 {
-    public class InvalidResumeSkillsException() : BadRequestException("В резюме указаны один или несколько несуществующих навыков");
+    public class InvalidResumeSkillsException() 
+        : ConflictException("SkillIds", "В резюме указаны один или несколько несуществующих навыков");
 }

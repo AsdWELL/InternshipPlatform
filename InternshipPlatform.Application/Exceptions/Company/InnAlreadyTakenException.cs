@@ -2,6 +2,6 @@
 
 namespace InternshipPlatform.Application.Exceptions.Company
 {
-    public class InnAlreadyTakenException(string propertyName, string inn) 
-        : ConflictException(propertyName, $"ИНН {inn} уже используется в системе");
+    public class InnAlreadyTakenException(string inn) 
+        : ConflictException("Inn", $"ИНН {inn} уже используется в системе");
 }
