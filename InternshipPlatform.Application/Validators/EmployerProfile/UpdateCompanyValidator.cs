@@ -22,6 +22,10 @@ namespace InternshipPlatform.Application.Validators.EmployerProfile
 
         public UpdateCompanyValidator()
         {
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Название компании не может быть пустой строкой")
+                .When(x => x.Name is not null);
+
             RuleFor(x => x.Link)
                 .Must(x => ValidUrl(x!))
                 .WithMessage("Укажите корректную ссылку")

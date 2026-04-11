@@ -10,9 +10,9 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<StudentProfile?> GetStudentById(int userId);
 
-        Task<StudentProfile?> GetStudentByEmail(string email);
+        Task<StudentProfile?> GetStudentForUpdate(int userId);
 
-        Task UpdateStudentProfile(StudentProfile studentProfile);
+        Task<StudentProfile?> GetStudentByEmail(string email);
 
         Task UpdateAvatar(int userId, string? avatarPath);
     }

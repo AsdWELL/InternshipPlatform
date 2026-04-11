@@ -40,7 +40,7 @@ namespace InternshipPlatform.Application.Validators.StudentProfile
                 return true;
 
             if (string.IsNullOrWhiteSpace(value))
-                return false;
+                return true;
 
             if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
                 return false;
@@ -89,10 +89,8 @@ namespace InternshipPlatform.Application.Validators.StudentProfile
                 .When(x => x.Password is not null);
 
             RuleFor(x => x.Patronymic)
-                .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("Отчество не может быть пустой строкой")
                 .Matches(@"^[а-яА-Я]+$").WithMessage("Поле Отчество должно содержать только русские буквы")
-                .When(x => x.Patronymic is not null);
+                .When(x => !string.IsNullOrWhiteSpace(x.Patronymic));
 
             RuleFor(x => x.BirthdayDate)
                 .Cascade(CascadeMode.Stop)

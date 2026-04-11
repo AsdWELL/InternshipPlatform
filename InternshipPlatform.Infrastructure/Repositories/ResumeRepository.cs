@@ -132,7 +132,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     r.DesiredSalary != null &&
                     r.DesiredSalary <= parameters.SalaryTo.Value);
 
-            if (!string.IsNullOrEmpty(parameters.Region))
+            if (!string.IsNullOrWhiteSpace(parameters.Region))
                 query = query.Where(r => r.Region != null && r.Region.ToLower().Contains(parameters.Region.ToLower().Trim()));
 
             if (parameters.SpecializationId is not null)

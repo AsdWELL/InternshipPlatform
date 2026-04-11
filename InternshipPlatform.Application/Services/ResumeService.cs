@@ -152,10 +152,10 @@ namespace InternshipPlatform.Application.Services
             var workExperience = await resumeRepository.GetWorkExperienceForUpdate(request.Id)
                 ?? throw new WorkExperienceNotFoundException();
 
-            if (request.CompanyName is not null)
+            if (!string.IsNullOrWhiteSpace(request.CompanyName))
                 workExperience.CompanyName = StringNormalizer.NormalizeOptional(request.CompanyName);
 
-            if (request.Profession is not null)
+            if (!string.IsNullOrWhiteSpace(request.Profession))
                 workExperience.Profession = StringNormalizer.NormalizeOptional(request.Profession);
 
             if (request.StartDateWork.HasValue)

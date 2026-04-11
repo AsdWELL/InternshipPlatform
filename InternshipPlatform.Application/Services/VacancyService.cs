@@ -89,7 +89,7 @@ namespace InternshipPlatform.Application.Services
                 vacancy.SpecializationId = request.SpecializationId.Value;
             }
 
-            if (request.Title is not null)
+            if (!string.IsNullOrWhiteSpace(request.Title))
                 vacancy.Title = StringNormalizer.NormalizeRequired(request.Title);
 
             if (request.Description is not null)

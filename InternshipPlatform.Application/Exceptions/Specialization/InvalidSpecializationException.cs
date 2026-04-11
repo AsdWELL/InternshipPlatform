@@ -2,5 +2,6 @@
 
 namespace InternshipPlatform.Application.Exceptions.Specialization
 {
-    public class InvalidSpecializationException() : BadRequestException("Указанная специализация не найдена");
+    public class InvalidSpecializationException() 
+        : ConflictException("SpecializationId", "Указанная специализация не найдена");
 }

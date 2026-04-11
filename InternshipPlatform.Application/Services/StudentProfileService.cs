@@ -68,16 +68,51 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateStudentProfile(UpdateStudentProfileRequest request)
         {
-            await ThrowIfStudentProfileNotExists(request.UserId);
+            var student = await studentProfileRepository.GetStudentForUpdate(request.UserId)
+                ?? throw new StudentProfileNotFoundException();
 
-            await ThrowIfEmailAlreadyTaken(request);
+            if (!string.IsNullOrWhiteSpace(request.Email))
+            {
+                await ThrowIfEmailAlreadyTaken(request);
 
-            string? passwordHash = null;
+                student.User.Email = StringNormalizer.NormalizeToLower(request.Email)!;
+            }
 
-            if (request.Password is not null)
-                passwordHash = passwordHasher.Generate(request.Password);
-            
-            await studentProfileRepository.UpdateStudentProfile(request.ToDomain(passwordHash));
+            if (!string.IsNullOrWhiteSpace(request.Password))
+                student.User.PasswordHash = passwordHasher.Generate(request.Password);
+
+            if (!string.IsNullOrWhiteSpace(request.Name))
+                student.Name = StringNormalizer.NormalizeName(request.Name)!;
+
+            if (!string.IsNullOrWhiteSpace(request.Surname))
+                student.Surname = StringNormalizer.NormalizeName(request.Surname)!;
+
+            if (request.Patronymic is not null)
+                student.Patronymic = StringNormalizer.NormalizeName(request.Patronymic);
+
+            if (request.BirthdayDate is not null)
+                student.BirthdayDate = request.BirthdayDate;
+
+            if (request.Phone is not null)
+                student.Phone = StringNormalizer.NormalizePhone(request.Phone);
+
+            if (request.VkLink is not null)
+                student.VkLink = StringNormalizer.NormalizeToLower(request.VkLink);
+
+            if (request.TgLink is not null)
+                student.TgLink = StringNormalizer.NormalizeToLower(request.TgLink);
+
+            if (request.GithubLink is not null)
+                student.GithubLink = StringNormalizer.NormalizeToLower(request.GithubLink);
+
+            if (request.University is not null)
+                student.University = StringNormalizer.NormalizeOptional(request.University);
+
+            if (request.Specialization is not null)
+                student.Specialization = StringNormalizer.NormalizeOptional(request.Specialization);
+
+            if (request.GraduationYear is not null)
+                student.GraduationYear = request.GraduationYear;
 
             await unitOfWork.SaveChangesAsync();
         }

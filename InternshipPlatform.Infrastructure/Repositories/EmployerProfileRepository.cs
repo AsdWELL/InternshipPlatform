@@ -26,20 +26,11 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ep => ep.UserId == employerId);
         }
 
-        public async Task UpdateEmployerProfile(EmployerProfile employerProfile)
+        public async Task<EmployerProfile?> GetEmployerProfileForUpdate(int employerId)
         {
-            var employer = await context.EmployerProfiles
+            return await context.EmployerProfiles
                 .Include(ep => ep.User)
-                .FirstOrDefaultAsync(ep => ep.UserId == employerProfile.UserId);
-
-            if (employerProfile is null)
-                return;
-
-            if (employerProfile.User.Email is not null)
-                employer.User.Email = employerProfile.User.Email;
-
-            if (employerProfile.User.PasswordHash is not null)
-                employer.User.PasswordHash = employerProfile.User.PasswordHash;
+                .FirstOrDefaultAsync(ep => ep.UserId == employerId);
         }
     }
 }

@@ -28,19 +28,5 @@ namespace InternshipPlatform.Application.Mappers
                 LogoPath = company.LogoPath
             };
         }
-
-        public static Company ToDomain(
-            this UpdateCompanyRequest request,
-            int companyId)
-        {
-            return new Company
-            {
-                Id = companyId,
-                Inn = StringNormalizer.NormalizeOptional(request.Inn),
-                Name = StringNormalizer.NormalizeOptional(request.Name),
-                Description = StringNormalizer.NormalizeOptional(request.Description),
-                Link = StringNormalizer.NormalizeToLower(request.Link)
-            };
-        }
     }
 }

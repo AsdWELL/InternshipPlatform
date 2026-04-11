@@ -47,16 +47,18 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateEmployerProfile(UpdateEmployerProflieRequest request)
         {
-            await ThrowIfEmployerProfileNotExists(request.UserId);
+            var employer = await employerProfileRepository.GetEmployerProfileForUpdate(request.UserId)
+                ?? throw new EmployerProflieNotFoundException();
 
-            await ThrowIfEmailAlreadyTaken(request);
+            if (!string.IsNullOrWhiteSpace(request.Email))
+            {
+                await ThrowIfEmailAlreadyTaken(request);
 
-            string? passwordHash = null;
+                employer.User.Email = StringNormalizer.NormalizeToLower(request.Email);
+            }
 
-            if (request.Password is not null)
-                passwordHash = passwordHasher.Generate(request.Password);
-
-            await employerProfileRepository.UpdateEmployerProfile(request.ToDomain(passwordHash));
+            if (!string.IsNullOrWhiteSpace(request.Password))
+                employer.User.PasswordHash = passwordHasher.Generate(request.Password);
 
             await unitOfWork.SaveChangesAsync();
         }

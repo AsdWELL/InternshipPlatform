@@ -5,6 +5,7 @@ using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
@@ -27,10 +28,17 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateCompany(UpdateCompanyRequest request)
         {
-            var company = await companyRepository.GetCompanyByEmployerId(request.EmployerId)
+            var company = await companyRepository.GetCompanyForUpdate(request.EmployerId)
                 ?? throw new CompanyNotFoundException();
-            
-            await companyRepository.UpdateCompany(request.ToDomain(company.Id));
+
+            if (!string.IsNullOrWhiteSpace(request.Name))
+                company.Name = StringNormalizer.NormalizeRequired(request.Name);
+
+            if (request.Link is not null)
+                company.Link = StringNormalizer.NormalizeOptional(request.Link);
+
+            if (request.Description is not null)
+                company.Description = StringNormalizer.NormalizeOptional(request.Description);
 
             await unitOfWork.SaveChangesAsync();
         }
