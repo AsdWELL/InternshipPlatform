@@ -23,6 +23,24 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
+        public static WorkExperienceDetails ToDetails(this WorkExperience workExperience)
+        {
+            var workDurationMonths = WorkExperienceUtils.CalculateExperienceMonths(
+                workExperience.StartDateWork,
+                workExperience.EndDateWork);
+
+            return new WorkExperienceDetails
+            {
+                Id = workExperience.Id,
+                CompanyName = workExperience.CompanyName,
+                StartDateWork = workExperience.StartDateWork,
+                EndDateWork = workExperience.EndDateWork,
+                Profession = workExperience.Profession,
+                WorkDurationMonths = workDurationMonths,
+                WorkDescription = workExperience.WorkDescription
+            };
+        }
+
         public static WorkExperience ToDomain(this AddWorkExperienceRequest request)
         {
             return new WorkExperience

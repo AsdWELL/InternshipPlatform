@@ -56,7 +56,7 @@ namespace InternshipPlatform.Application.Mappers
                 Skills = resume.Skills,
                 TotalWorkExperienceMonths = totalWorkExperienceMonths,
                 StudentProfile = resume.StudentProfile.ToResponse(),
-                WorkExperiences = resume.WorkExperiences.Select(we => we.ToItem()).ToList()
+                WorkExperiences = resume.WorkExperiences.Select(we => we.ToDetails()).ToList()
             };
         }
     }

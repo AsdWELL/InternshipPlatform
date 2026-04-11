@@ -21,7 +21,7 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public int TotalWorkExperienceMonths { get; set; }
 
-        public List<WorkExperienceItem> WorkExperiences { get; set; }
+        public List<WorkExperienceDetails> WorkExperiences { get; set; }
 
         public List<Skill> Skills { get; set; }
     }
