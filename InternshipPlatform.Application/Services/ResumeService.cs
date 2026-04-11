@@ -1,10 +1,12 @@
 ﻿using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Exceptions.Resume;
+using InternshipPlatform.Application.Exceptions.Specialization;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Services
@@ -90,12 +92,41 @@ namespace InternshipPlatform.Application.Services
         public async Task UpdateResume(UpdateResumeRequest request)
         {
             await ThrowIfStudentDoesNotOwnResume(request.StudentId, request.Id);
-
+            
             var skills = request.SkillIds is null
                 ? null
                 : await TryGetSkillListByIds(request.SkillIds);
 
-            await resumeRepository.UpdateResume(request.ToDomain(skills));
+            var resume = await resumeRepository.GetResumeForUpdate(request.Id)
+                ?? throw new ResumeNotFoundException();
+
+            if (request.SpecializationId.HasValue)
+            {
+                await ThrowIfSpecializationNotExists(request.SpecializationId.Value);
+
+                resume.SpecializationId = request.SpecializationId.Value;
+            }
+
+            if (request.IsActive.HasValue)
+                resume.IsActive = request.IsActive.Value;
+
+            if (request.DesiredSalary.HasValue)
+                resume.DesiredSalary = request.DesiredSalary.Value;
+
+            if (request.Region is not null)
+                resume.Region = StringNormalizer.NormalizeOptional(request.Region);
+
+            if (request.Description is not null)
+                resume.Description = StringNormalizer.NormalizeOptional(request.Description);
+
+            if (skills is not null)
+            {
+                resume.Skills.Clear();
+
+                skills.ForEach(resume.Skills.Add);
+            }
+
+            resume.LastUpdateDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
             await unitOfWork.SaveChangesAsync();
         }
@@ -116,11 +147,25 @@ namespace InternshipPlatform.Application.Services
         {
             await ThrowIfStudentDoesNotOwnResume(request.StudentId, request.ResumeId);
 
-            await ThrowIfWorkExperienceNotExists(request.Id);
-
             await ThrowIfWorkExperienceNotBelongsResume(request.ResumeId, request.Id);
 
-            await resumeRepository.UpdateWorkExperience(request.ToDomain());
+            var workExperience = await resumeRepository.GetWorkExperienceForUpdate(request.Id)
+                ?? throw new WorkExperienceNotFoundException();
+
+            if (request.CompanyName is not null)
+                workExperience.CompanyName = StringNormalizer.NormalizeOptional(request.CompanyName);
+
+            if (request.Profession is not null)
+                workExperience.Profession = StringNormalizer.NormalizeOptional(request.Profession);
+
+            if (request.StartDateWork.HasValue)
+                workExperience.StartDateWork = request.StartDateWork.Value;
+
+            if (request.EndDateWork.HasValue)
+                workExperience.EndDateWork = request.EndDateWork;
+
+            if (request.WorkDescription is not null)
+                workExperience.WorkDescription = StringNormalizer.NormalizeOptional(request.WorkDescription);
 
             await unitOfWork.SaveChangesAsync();
         }

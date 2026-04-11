@@ -23,24 +23,6 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static Resume ToDomain(
-            this UpdateResumeRequest request,
-            List<Skill>? skills)
-        {
-            return new Resume
-            {
-                Id = request.Id,
-                IsActive = request.IsActive ?? true,
-                DesiredSalary = request.DesiredSalary,
-                Region = request.Region,
-                LastUpdateDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                Description = StringNormalizer.NormalizeOptional(request.Description),
-                SpecializationId = request.SpecializationId ?? int.MinValue,
-                StudentId = request.StudentId,
-                Skills = skills
-            };
-        }
-
         public static ResumeItem ToItem(this Resume resume)
         {
             var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>

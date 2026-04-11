@@ -35,19 +35,5 @@ namespace InternshipPlatform.Application.Mappers
                 WorkDescription = StringNormalizer.NormalizeOptional(request.WorkDescription)
             };
         }
-
-        public static WorkExperience ToDomain(this UpdateWorkExperienceRequest request)
-        {
-            return new WorkExperience
-            {
-                Id = request.Id,
-                ResumeId = request.ResumeId,
-                CompanyName = StringNormalizer.NormalizeOptional(request.CompanyName),
-                Profession = StringNormalizer.NormalizeOptional(request.Profession),
-                StartDateWork = request.StartDateWork ?? DateOnly.MinValue,
-                EndDateWork = request.EndDateWork,
-                WorkDescription = StringNormalizer.NormalizeOptional(request.WorkDescription)
-            };
-        }
     }
 }

@@ -18,9 +18,9 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<Resume?> GetResumeById(int id);
 
-        Task<PagedResult<Resume>> SearchResumes(SearchResumeParameters parameters);
+        Task<Resume?> GetResumeForUpdate(int id);
 
-        Task UpdateResume(Resume resume);
+        Task<PagedResult<Resume>> SearchResumes(SearchResumeParameters parameters);
 
         Task CopyResume(int resumeId);
 
@@ -28,7 +28,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task AddWorkExperience(WorkExperience workExperience);
 
-        Task UpdateWorkExperience(WorkExperience workExperience);
+        Task<WorkExperience?> GetWorkExperienceForUpdate(int id);
 
         Task DeleteWorkExperience(int workExperienceId);
     }

@@ -96,6 +96,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        public async Task<Resume?> GetResumeForUpdate(int id)
+        {
+            return await context.Resumes
+                .Include(r => r.Skills)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
         public async Task<List<Resume>> GetStudentResumes(int studentId)
         {
             return await context.Resumes
@@ -125,8 +132,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     r.DesiredSalary != null &&
                     r.DesiredSalary <= parameters.SalaryTo.Value);
 
-            if (parameters.Region is not null)
-                query = query.Where(r => r.Region.Contains(parameters.Region));
+            if (!string.IsNullOrEmpty(parameters.Region))
+                query = query.Where(r => r.Region != null && r.Region.ToLower().Contains(parameters.Region.ToLower().Trim()));
 
             if (parameters.SpecializationId is not null)
                 query = query.Where(r => r.SpecializationId == parameters.SpecializationId.Value);
@@ -245,58 +252,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
             };
         }
 
-        public async Task UpdateResume(Resume resume)
+        public async Task<WorkExperience?> GetWorkExperienceForUpdate(int id)
         {
-            var existingResume = await context.Resumes
-                .Include(r => r.Skills)
-                .FirstOrDefaultAsync(r => r.Id == resume.Id);
-
-            if (existingResume is null)
-                return;
-
-            existingResume.IsActive = resume.IsActive;
-
-            if (resume.DesiredSalary is not null)
-                existingResume.DesiredSalary = resume.DesiredSalary;
-
-            if (resume.Region is not null)
-                existingResume.Region = resume.Region;
-
-            if (resume.Description is not null)
-                existingResume.Description = resume.Description;
-            
-            if (resume.SpecializationId != int.MinValue)
-                existingResume.SpecializationId = resume.SpecializationId;
-
-            if (resume.Skills is not null)
-            {
-                existingResume.Skills.Clear();
-
-                resume.Skills.ForEach(existingResume.Skills.Add);
-            }
-        }
-
-        public async Task UpdateWorkExperience(WorkExperience workExperience)
-        {
-            var existingWorkExperience = await context.WorkExperiences.FindAsync(workExperience.Id);
-
-            if (existingWorkExperience is null)
-                return;
-
-            if (workExperience.CompanyName is not null)
-                existingWorkExperience.CompanyName = workExperience.CompanyName;
-            
-            if (workExperience.Profession is not null)
-                existingWorkExperience.Profession = workExperience.Profession;
-            
-            if (workExperience.StartDateWork != DateOnly.MinValue)
-                existingWorkExperience.StartDateWork = workExperience.StartDateWork;
-            
-            if (workExperience.EndDateWork is not null)
-                existingWorkExperience.EndDateWork = workExperience.EndDateWork;
-            
-            if (workExperience.WorkDescription is not null)
-                existingWorkExperience.WorkDescription = workExperience.WorkDescription;
+            return await context.WorkExperiences.FindAsync(id);
         }
 
         public async Task DeleteWorkExperience(int workExperienceId)
