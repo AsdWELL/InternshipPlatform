@@ -39,12 +39,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(v => v.Company)
                 .Include(v => v.Specialization)
+                .Include(v => v.Skills)
                 .FirstOrDefaultAsync(v => v.Id == vacancyId);
         }
 
         public async Task<Vacancy?> GetVacancyForUpdate(int vacancyId)
         {
-            return await context.Vacancies.FindAsync(vacancyId);
+            return await context.Vacancies
+                .Include(v => v.Skills)
+                .FirstOrDefaultAsync(v => v.Id == vacancyId);
         }
 
         public async Task<bool> IsEmployerOwnsVacancy(int employerId, int vacancyId)

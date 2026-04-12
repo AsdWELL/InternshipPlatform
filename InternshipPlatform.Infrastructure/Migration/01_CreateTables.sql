@@ -102,6 +102,11 @@ CREATE TABLE "SkillsToResume" (
   "ResumeId" integer NOT NULL, 
   PRIMARY KEY ("SkillId", 
   "ResumeId"));
+CREATE TABLE "SkillsToVacancy" (
+  "SkillId"  integer NOT NULL, 
+  "VacancyId" integer NOT NULL, 
+  PRIMARY KEY ("SkillId", 
+  "VacancyId"));
 CREATE TABLE "Chats" (
   "ResponsesId" integer NOT NULL, 
   PRIMARY KEY ("ResponsesId"));
@@ -169,6 +174,8 @@ ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr684251" FOREIGN KEY (
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies430548" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "SkillsToResume" ADD CONSTRAINT "FKSkillsToRe373177" FOREIGN KEY ("SkillId") REFERENCES "Skills" ("Id");
 ALTER TABLE "SkillsToResume" ADD CONSTRAINT "FKSkillsToRe581449" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id");
+ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa373177" FOREIGN KEY ("SkillId") REFERENCES "Skills" ("Id");
+ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa581449" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
 ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes64954" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id");
 ALTER TABLE "Responses" ADD CONSTRAINT "FKResponses397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");

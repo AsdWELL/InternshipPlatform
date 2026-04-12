@@ -23,8 +23,8 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinResumesPerStudent = 2;
         private const int MaxResumesPerStudent = 5;
 
-        private const int MinSkillsPerResume = 3;
-        private const int MaxSkillsPerResume = 8;
+        private const int MinSkills = 3;
+        private const int MaxSkills = 8;
 
         private const int WorkExperienceChancePercent = 50;
         private const int MinWorkExperiencesPerResume = 1;
@@ -253,7 +253,7 @@ namespace InternshipPlatform.Infrastructure.Migration
                     var specialization = faker.PickRandom(specializations);
 
                     var skillsCount = Math.Min(
-                        faker.Random.Int(MinSkillsPerResume, MaxSkillsPerResume),
+                        faker.Random.Int(MinSkills, MaxSkills),
                         skills.Count);
 
                     var resumeSkills = faker.Random
@@ -324,9 +324,10 @@ namespace InternshipPlatform.Infrastructure.Migration
                 return;
 
             var companies = context.Companies.ToList();
+            var skills = context.Skills.ToList();
             var specializations = context.Specializations.ToList();
 
-            if (companies.Count == 0 || specializations.Count == 0)
+            if (companies.Count == 0 || specializations.Count == 0 || skills.Count == 0)
                 return;
 
             Randomizer.Seed = new Random(RandomizerSeed);
@@ -375,6 +376,15 @@ namespace InternshipPlatform.Infrastructure.Migration
                     bool salaryHidden = faker.Random.Bool(0.15f);
                     bool isRemote = faker.Random.Bool(0.35f);
 
+                    var skillsCount = Math.Min(
+                        faker.Random.Int(MinSkills, MaxSkills),
+                        skills.Count);
+
+                    var vacancySkills = faker.Random
+                        .Shuffle(skills)
+                        .Take(skillsCount)
+                        .ToList();
+
                     vacancies.Add(new Vacancy
                     {
                         Title = faker.PickRandom(vacancyTitles),
@@ -387,7 +397,8 @@ namespace InternshipPlatform.Infrastructure.Migration
                         ViewsCount = faker.Random.Int(0, 5000),
                         MinWorkExperienceYears = faker.Random.Int(0, 3),
                         SpecializationId = specialization.Id,
-                        CompanyId = company.Id
+                        CompanyId = company.Id,
+                        Skills = vacancySkills
                     });
                 }
             }

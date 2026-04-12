@@ -22,5 +22,7 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
         public int MinWorkExperienceYears { get; set; }
 
         public int SpecializationId { get; set; }
+
+        public List<int> SkillIds { get; set; }
     }
 }

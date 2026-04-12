@@ -9,6 +9,7 @@ using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
 using InternshipPlatform.Application.Utils;
+using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Services
 {
@@ -16,9 +17,22 @@ namespace InternshipPlatform.Application.Services
         IVacancyRepository vacancyRepository,
         IResumeRepository resumeRepository,
         ICompanyRepository companyRepository,
+        ISkillRepository skillRepository,
         ISpecializationRepository specializationRepository,
         IUnitOfWork unitOfWork) : IVacancyService
     {
+        private async Task<List<Skill>> TryGetSkillListByIds(List<int> skillIds)
+        {
+            skillIds = skillIds.Distinct().ToList();
+
+            var skills = await skillRepository.GetSkillsByIds(skillIds);
+
+            if (skillIds.Count != skills.Count)
+                throw new InvalidResumeSkillsException();
+
+            return skills;
+        }
+
         private async Task<int> TryGetCompanyIdByEmployerId(int employerId)
         {
             var company = await companyRepository.GetCompanyByEmployerId(employerId)
@@ -41,11 +55,13 @@ namespace InternshipPlatform.Application.Services
 
         public async Task<int> CreateVacancy(CreateVacancyRequest request)
         {
+            var skills = await TryGetSkillListByIds(request.SkillIds);
+
             await ThrowIfSpecializationNotExists(request.SpecializationId);
 
             var companyId = await TryGetCompanyIdByEmployerId(request.EmployerId);
             
-            var vacancy = request.ToDomain(companyId);
+            var vacancy = request.ToDomain(companyId, skills);
             await vacancyRepository.AddVacancy(vacancy);
 
             await unitOfWork.SaveChangesAsync();
@@ -100,6 +116,10 @@ namespace InternshipPlatform.Application.Services
         {
             await ThrowIfEmployerDoesNotOwnVacancy(request.EmployerId, request.Id);
 
+            var skills = request.SkillIds is null
+                ? null
+                : await TryGetSkillListByIds(request.SkillIds);
+
             var vacancy = await vacancyRepository.GetVacancyForUpdate(request.Id)
                 ?? throw new VacancyNotFoundException();
 
@@ -133,6 +153,13 @@ namespace InternshipPlatform.Application.Services
 
             if (request.MinWorkExperienceYears is not null)
                 vacancy.MinWorkExperienceYears = request.MinWorkExperienceYears.Value;
+
+            if (skills is not null)
+            {
+                vacancy.Skills.Clear();
+
+                skills.ForEach(vacancy.Skills.Add);
+            }
 
             await unitOfWork.SaveChangesAsync();
         }

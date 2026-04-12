@@ -8,7 +8,8 @@ namespace InternshipPlatform.Application.Mappers
     {
         public static Vacancy ToDomain(
             this CreateVacancyRequest request,
-            int companyId)
+            int companyId,
+            List<Skill> skills)
         {
             return new Vacancy
             {
@@ -18,10 +19,12 @@ namespace InternshipPlatform.Application.Mappers
                 SalaryFrom = request.SalaryFrom,
                 SalaryTo = request.SalaryTo,
                 IsRemote = request.IsRemote,
+                ViewsCount = 0,
                 IsActive = true,
                 Region = StringNormalizer.NormalizeOptional(request.Region),
                 MinWorkExperienceYears = request.MinWorkExperienceYears,
-                SpecializationId = request.SpecializationId
+                SpecializationId = request.SpecializationId,
+                Skills = skills
             };
         }
 
@@ -54,7 +57,8 @@ namespace InternshipPlatform.Application.Mappers
                 Region = vacancy.Region,
                 MinWorkExperienceYears = vacancy.MinWorkExperienceYears,
                 Specialization = vacancy.Specialization,
-                Company = vacancy.Company.ToResponse()
+                Company = vacancy.Company.ToResponse(),
+                Skills = vacancy.Skills
             };
         }
     }
