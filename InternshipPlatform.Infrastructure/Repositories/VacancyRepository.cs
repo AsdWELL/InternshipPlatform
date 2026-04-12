@@ -76,6 +76,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     r.SpecializationId,
                     r.Region,
                     r.DesiredSalary,
+                    SkillIds = r.Skills.Select(s => s.Id).ToList(),
                     TotalMonths = r.WorkExperiences.Sum(we =>
                         (((we.EndDateWork ?? today).Year - we.StartDateWork.Year) * 12) +
                         ((we.EndDateWork ?? today).Month - we.StartDateWork.Month) -
@@ -93,6 +94,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             var totalYears = resumeCriteria.TotalMonths / 12;
             var hasRegion = !string.IsNullOrWhiteSpace(resumeCriteria.Region);
             var region = resumeCriteria.Region;
+            var resumeSkillIds = resumeCriteria.SkillIds.Distinct().ToList();
 
             IQueryable<Vacancy> baseQuery = context.Vacancies
                 .AsNoTracking()
@@ -109,18 +111,30 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Select(v => new
                 {
                     VacancyId = v.Id,
-                    Score =
-                        hasRegion
-                            ? (v.Region == region ? 3 :
-                               v.IsRemote ? 2 : 1)
-                            : (v.IsRemote ? 3 : 1),
+                    SkillsMatchCount = resumeSkillIds.Count == 0
+                        ? 0
+                        : v.Skills.Count(s => resumeSkillIds.Contains(s.Id)),
+                    RegionScore = hasRegion
+                        ? (v.Region == region ? 3 :
+                           v.IsRemote ? 2 : 1)
+                        : (v.IsRemote ? 3 : 1),
                     v.Id
+                })
+                .Select(x => new
+                {
+                    x.VacancyId,
+                    x.SkillsMatchCount,
+                    x.RegionScore,
+                    TotalScore = x.SkillsMatchCount * 10 + x.RegionScore,
+                    x.Id
                 });
 
             var totalCount = await rankedQuery.CountAsync();
 
             var vacancyIds = await rankedQuery
-                .OrderByDescending(x => x.Score)
+                .OrderByDescending(x => x.TotalScore)
+                .ThenByDescending(x => x.SkillsMatchCount)
+                .ThenByDescending(x => x.RegionScore)
                 .ThenByDescending(x => x.Id)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
@@ -134,13 +148,23 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(v => v.Specialization)
                 .ToListAsync();
 
+            var scoreMap = await rankedQuery
+                .Where(x => vacancyIds.Contains(x.VacancyId))
+                .ToDictionaryAsync(
+                    x => x.VacancyId,
+                    x => new
+                    {
+                        x.TotalScore,
+                        x.SkillsMatchCount,
+                        x.RegionScore,
+                        x.Id
+                    });
+
             var orderedVacancies = vacancies
-                .OrderByDescending(v =>
-                    hasRegion
-                        ? (v.Region == region ? 3 :
-                           v.IsRemote ? 2 : 1)
-                        : (v.IsRemote ? 3 : 1))
-                .ThenByDescending(v => v.Id)
+                .OrderByDescending(v => scoreMap[v.Id].TotalScore)
+                .ThenByDescending(v => scoreMap[v.Id].SkillsMatchCount)
+                .ThenByDescending(v => scoreMap[v.Id].RegionScore)
+                .ThenByDescending(v => scoreMap[v.Id].Id)
                 .ToList();
 
             return new PagedResult<Vacancy>
@@ -178,7 +202,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            var resumesQuery = context.Resumes
+            var resumes = await context.Resumes
                 .AsNoTracking()
                 .Where(r => r.StudentId == studentId && r.IsActive)
                 .Select(r => new
@@ -187,70 +211,98 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     r.SpecializationId,
                     r.Region,
                     r.DesiredSalary,
+                    SkillIds = r.Skills.Select(s => s.Id).ToList(),
                     TotalMonths = r.WorkExperiences.Sum(we =>
                         (((we.EndDateWork ?? today).Year - we.StartDateWork.Year) * 12) +
                         ((we.EndDateWork ?? today).Month - we.StartDateWork.Month) -
                         (((we.EndDateWork ?? today).Day < we.StartDateWork.Day) ? 1 : 0))
-                });
-
-            if (!await resumesQuery.AnyAsync())
-                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
-
-            var baseVacancies = context.Vacancies
-                .AsNoTracking()
-                .Where(v => v.IsActive);
-
-            var candidateQuery =
-                from v in baseVacancies
-                from r in resumesQuery
-                where r.SpecializationId == v.SpecializationId
-                      && v.MinWorkExperienceYears <= (r.TotalMonths / 12)
-                      && (r.DesiredSalary == null
-                          || (v.SalaryFrom != null && v.SalaryFrom <= r.DesiredSalary)
-                          || (v.SalaryTo != null && v.SalaryTo >= r.DesiredSalary))
-                let score = r.Region != null
-                    ? (v.Region == r.Region ? 3 :
-                       v.IsRemote ? 2 : 1)
-                    : (v.IsRemote ? 3 : 1)
-                group score by v.Id into g
-                select new
-                {
-                    VacancyId = g.Key,
-                    BestScore = g.Max()
-                };
-
-            var totalCount = await candidateQuery.CountAsync();
-
-            if (totalCount == 0)
-                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
-
-            var vacancyIds = await candidateQuery
-                .OrderByDescending(x => x.BestScore)
-                .ThenByDescending(x => x.VacancyId)
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize)
-                .Select(x => x.VacancyId)
+                })
                 .ToListAsync();
 
-            var vacancies = await context.Vacancies
+            if (resumes.Count == 0)
+                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
+
+            var specializationIds = resumes
+                .Select(r => r.SpecializationId)
+                .Distinct()
+                .ToList();
+
+            var candidateVacancies = await context.Vacancies
                 .AsNoTracking()
-                .Where(v => vacancyIds.Contains(v.Id))
+                .Where(v => v.IsActive && specializationIds.Contains(v.SpecializationId))
                 .Include(v => v.Company)
                 .Include(v => v.Specialization)
+                .Include(v => v.Skills)
                 .ToListAsync();
 
-            var scoreMap = await candidateQuery
-                .Where(x => vacancyIds.Contains(x.VacancyId))
-                .ToDictionaryAsync(x => x.VacancyId, x => x.BestScore);
+            var rankedVacancies = candidateVacancies
+                .Select(v =>
+                {
+                    var bestMatch = resumes
+                        .Where(r =>
+                            r.SpecializationId == v.SpecializationId &&
+                            v.MinWorkExperienceYears <= (r.TotalMonths / 12) &&
+                            (!r.DesiredSalary.HasValue ||
+                             (v.SalaryFrom != null && v.SalaryFrom <= r.DesiredSalary.Value) ||
+                             (v.SalaryTo != null && v.SalaryTo >= r.DesiredSalary.Value)))
+                        .Select(r =>
+                        {
+                            var skillsMatchCount = r.SkillIds.Count == 0
+                                ? 0
+                                : v.Skills.Count(vs => r.SkillIds.Contains(vs.Id));
 
-            var orderedVacancies = vacancies
-                .OrderByDescending(v => scoreMap[v.Id])
-                .ThenByDescending(v => v.Id)
+                            var regionScore = !string.IsNullOrWhiteSpace(r.Region)
+                                ? (v.Region == r.Region ? 3 :
+                                   v.IsRemote ? 2 : 1)
+                                : (v.IsRemote ? 3 : 1);
+
+                            var totalScore = skillsMatchCount * 10 + regionScore;
+
+                            return new
+                            {
+                                Vacancy = v,
+                                TotalScore = totalScore,
+                                SkillsMatchCount = skillsMatchCount,
+                                RegionScore = regionScore
+                            };
+                        })
+                        .OrderByDescending(x => x.TotalScore)
+                        .ThenByDescending(x => x.SkillsMatchCount)
+                        .ThenByDescending(x => x.RegionScore)
+                        .ThenByDescending(x => x.Vacancy.Id)
+                        .FirstOrDefault();
+
+                    return bestMatch;
+                })
+                .Where(x => x is not null)
+                .Select(x => x!)
+                .GroupBy(x => x.Vacancy.Id)
+                .Select(g => g
+                    .OrderByDescending(x => x.TotalScore)
+                    .ThenByDescending(x => x.SkillsMatchCount)
+                    .ThenByDescending(x => x.RegionScore)
+                    .ThenByDescending(x => x.Vacancy.Id)
+                    .First())
+                .OrderByDescending(x => x.TotalScore)
+                .ThenByDescending(x => x.SkillsMatchCount)
+                .ThenByDescending(x => x.RegionScore)
+                .ThenByDescending(x => x.Vacancy.Id)
+                .ToList();
+
+            if (rankedVacancies.Count == 0)
+                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
+
+            var totalCount = rankedVacancies.Count;
+
+            var items = rankedVacancies
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .Select(x => x.Vacancy)
                 .ToList();
 
             return new PagedResult<Vacancy>
             {
-                Items = orderedVacancies,
+                Items = items,
                 TotalCount = totalCount
             };
         }
