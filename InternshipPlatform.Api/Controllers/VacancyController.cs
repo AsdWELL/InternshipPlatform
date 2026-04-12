@@ -1,4 +1,5 @@
-﻿using InternshipPlatform.Application.Dtos.Vacancy;
+﻿using InternshipPlatform.Application.Dtos.Pagination;
+using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,35 @@ namespace InternshipPlatform.Api.Controllers
         public async Task<IActionResult> GetVacancyDetails([FromRoute] int vacancyId)
         {
             return Ok(await vacancyService.GetVacancyDetails(vacancyId));
+        }
+
+        [Authorize(Roles = Roles.Student)]
+        [HttpGet("recommended")]
+        public async Task<IActionResult> GetRecommendedVacancies([FromQuery] PageRequestParameters pageParameters)
+        {
+            var request = new GetRecommendedVacanciesRequest
+            {
+                StudentId = UserId,
+                PageIndex = pageParameters.PageIndex,
+                PageSize = pageParameters.PageSize
+            };
+
+            return Ok(await vacancyService.GetRecommendedVacancies(request));
+        }
+
+        [Authorize(Roles = Roles.Student)]
+        [HttpGet("recommended/by-resume/{resumeId:int}")]
+        public async Task<IActionResult> GetRecommendedVacanciesForResume([FromRoute] int resumeId, [FromQuery] PageRequestParameters pageParameters)
+        {
+            var request = new GetRecommendedVacanciesForResumeRequest
+            {
+                StudentId = UserId,
+                ResumeId = resumeId,
+                PageIndex = pageParameters.PageIndex,
+                PageSize = pageParameters.PageSize
+            };
+
+            return Ok(await vacancyService.GetRecommendedVacanciesForResume(request));
         }
 
         [Authorize(Roles = Roles.Student)]

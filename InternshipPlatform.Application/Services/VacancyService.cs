@@ -1,6 +1,7 @@
 ﻿using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Exceptions.Company;
+using InternshipPlatform.Application.Exceptions.Resume;
 using InternshipPlatform.Application.Exceptions.Specialization;
 using InternshipPlatform.Application.Exceptions.Vacancy;
 using InternshipPlatform.Application.Interfaces;
@@ -13,6 +14,7 @@ namespace InternshipPlatform.Application.Services
 {
     public class VacancyService(
         IVacancyRepository vacancyRepository,
+        IResumeRepository resumeRepository,
         ICompanyRepository companyRepository,
         ISpecializationRepository specializationRepository,
         IUnitOfWork unitOfWork) : IVacancyService
@@ -66,6 +68,25 @@ namespace InternshipPlatform.Application.Services
                 ?? throw new VacancyNotFoundException();
 
             return vacancy.ToDetails();
+        }
+
+        public async Task<PagedResponse<VacancyItem>> GetRecommendedVacancies(GetRecommendedVacanciesRequest request)
+        {
+            var vacancies = await vacancyRepository.GetRecommendedVacancies(
+                request.StudentId, request.PageIndex, request.PageSize);
+
+            return vacancies.ToPagedResponse(request, vacancy => vacancy.ToItem());
+        }
+
+        public async Task<PagedResponse<VacancyItem>> GetRecommendedVacanciesForResume(GetRecommendedVacanciesForResumeRequest request)
+        {
+            if (!await resumeRepository.IsStudentOwnsResume(request.StudentId, request.ResumeId))
+                throw new ResumeNotFoundException();
+
+            var vacancies = await vacancyRepository.GetRecommendedVacanciesForResume(
+                request.ResumeId, request.PageIndex, request.PageSize);
+
+            return vacancies.ToPagedResponse(request, vacancy => vacancy.ToItem());
         }
 
         public async Task<PagedResponse<VacancyItem>> SearchVacancies(SearchVacancyParameters parameters)

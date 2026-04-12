@@ -11,6 +11,10 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<VacancyDetails> GetVacancyDetails(int vacancyId);
 
+        Task<PagedResponse<VacancyItem>> GetRecommendedVacancies(GetRecommendedVacanciesRequest request);
+
+        Task<PagedResponse<VacancyItem>> GetRecommendedVacanciesForResume(GetRecommendedVacanciesForResumeRequest request);
+
         Task<PagedResponse<VacancyItem>> SearchVacancies(SearchVacancyParameters parameters);
 
         Task UpdateVacancy(UpdateVacancyRequest request);
