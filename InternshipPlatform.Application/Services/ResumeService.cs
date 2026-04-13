@@ -1,7 +1,9 @@
 ﻿using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Dtos.Resume;
+using InternshipPlatform.Application.Exceptions.Company;
 using InternshipPlatform.Application.Exceptions.Resume;
 using InternshipPlatform.Application.Exceptions.Specialization;
+using InternshipPlatform.Application.Exceptions.Vacancy;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
@@ -15,6 +17,8 @@ namespace InternshipPlatform.Application.Services
         IResumeRepository resumeRepository,
         ISkillRepository skillRepository,
         ISpecializationRepository specializationRepository,
+        ICompanyRepository companyRepository,
+        IVacancyRepository vacancyRepository,
         IUnitOfWork unitOfWork) : IResumeService
     {
         private async Task<List<Skill>> TryGetSkillListByIds(List<int> skillIds)
@@ -80,6 +84,26 @@ namespace InternshipPlatform.Application.Services
                 ?? throw new ResumeNotFoundException();
 
             return resume.ToDetails();
+        }
+
+        public async Task<PagedResponse<ResumeItem>> GetRecommendedResumes(GetRecommendedResumesRequest request)
+        {
+            var company = await companyRepository.GetCompanyByEmployerId(request.EmployerId)
+                ?? throw new CompanyNotFoundException();
+
+            var resumes = await resumeRepository.GetRecommendedResumes(company.Id, request.PageIndex, request.PageSize);
+
+            return resumes.ToPagedResponse(request, resume => resume.ToItem());
+        }
+
+        public async Task<PagedResponse<ResumeItem>> GetRecommendedResumesForVacancy(GetRecommendedResumesForVacancyRequest request)
+        {
+            if (!await vacancyRepository.IsEmployerOwnsVacancy(request.EmployerId, request.VacancyId))
+                throw new VacancyNotFoundException();
+
+            var resumes = await resumeRepository.GetRecommendedResumesForVacancy(request.VacancyId, request.PageIndex, request.PageSize);
+
+            return resumes.ToPagedResponse(request, resume => resume.ToItem());
         }
 
         public async Task<PagedResponse<ResumeItem>> SearchResumes(SearchResumeParameters parameters)

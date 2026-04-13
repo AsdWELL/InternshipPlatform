@@ -11,6 +11,10 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<ResumeDetails> GetResumeDetails(int resumeId);
 
+        Task<PagedResponse<ResumeItem>> GetRecommendedResumes(GetRecommendedResumesRequest request);
+
+        Task<PagedResponse<ResumeItem>> GetRecommendedResumesForVacancy(GetRecommendedResumesForVacancyRequest request);
+
         Task<PagedResponse<ResumeItem>> SearchResumes(SearchResumeParameters parameters);
 
         Task UpdateResume(UpdateResumeRequest request);

@@ -114,6 +114,285 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<PagedResult<Resume>> GetRecommendedResumesForVacancy(int vacancyId, int pageIndex, int pageSize)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var vacancyCriteria = await context.Vacancies
+                .AsNoTracking()
+                .Where(v => v.Id == vacancyId && v.IsActive)
+                .Select(v => new
+                {
+                    v.Id,
+                    v.SpecializationId,
+                    v.Region,
+                    v.IsRemote,
+                    v.SalaryFrom,
+                    v.SalaryTo,
+                    v.MinWorkExperienceYears,
+                    SkillIds = v.Skills.Select(s => s.Id).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (vacancyCriteria is null)
+            {
+                return new PagedResult<Resume>
+                {
+                    Items = [],
+                    TotalCount = 0
+                };
+            }
+
+            var vacancySkillIds = vacancyCriteria.SkillIds.Distinct().ToList();
+
+            IQueryable<Resume> baseQuery = context.Resumes
+                .AsNoTracking()
+                .Where(r => r.IsActive)
+                .Where(r => r.SpecializationId == vacancyCriteria.SpecializationId)
+                .Select(r => new Resume
+                {
+                    Id = r.Id,
+                    LastUpdateDate = r.LastUpdateDate,
+                    Description = r.Description,
+                    IsActive = r.IsActive,
+                    DesiredSalary = r.DesiredSalary,
+                    Region = r.Region,
+                    SpecializationId = r.SpecializationId,
+                    StudentId = r.StudentId,
+                    StudentProfile = r.StudentProfile,
+                    Skills = r.Skills,
+                    WorkExperiences = r.WorkExperiences
+                });
+
+            var rankedQuery = context.Resumes
+                .AsNoTracking()
+                .Where(r => r.IsActive)
+                .Where(r => r.SpecializationId == vacancyCriteria.SpecializationId)
+                .Select(r => new
+                {
+                    ResumeId = r.Id,
+                    r.LastUpdateDate,
+                    r.Region,
+                    r.DesiredSalary,
+                    TotalMonths = r.WorkExperiences.Sum(we =>
+                        (((we.EndDateWork ?? today).Year - we.StartDateWork.Year) * 12) +
+                        ((we.EndDateWork ?? today).Month - we.StartDateWork.Month) -
+                        (((we.EndDateWork ?? today).Day < we.StartDateWork.Day) ? 1 : 0)),
+                    SkillsMatchCount = vacancySkillIds.Count == 0
+                        ? 0
+                        : r.Skills.Count(s => vacancySkillIds.Contains(s.Id))
+                })
+                .Where(x => (x.TotalMonths / 12) >= vacancyCriteria.MinWorkExperienceYears)
+                .Where(x =>
+                    !x.DesiredSalary.HasValue ||
+                    (vacancyCriteria.SalaryFrom != null && vacancyCriteria.SalaryFrom <= x.DesiredSalary) ||
+                    (vacancyCriteria.SalaryTo != null && vacancyCriteria.SalaryTo >= x.DesiredSalary))
+                .Select(x => new
+                {
+                    x.ResumeId,
+                    x.LastUpdateDate,
+                    x.SkillsMatchCount,
+                    RegionScore = vacancyCriteria.IsRemote
+                        ? 3
+                        : (x.Region == vacancyCriteria.Region ? 3 : 1),
+                    TotalScore = x.SkillsMatchCount * 10 +
+                                 (vacancyCriteria.IsRemote
+                                    ? 3
+                                    : (x.Region == vacancyCriteria.Region ? 3 : 1))
+                });
+
+            var totalCount = await rankedQuery.CountAsync();
+
+            var resumeIds = await rankedQuery
+                .OrderByDescending(x => x.TotalScore)
+                .ThenByDescending(x => x.SkillsMatchCount)
+                .ThenByDescending(x => x.RegionScore)
+                .ThenByDescending(x => x.LastUpdateDate)
+                .ThenByDescending(x => x.ResumeId)
+                .Skip(pageIndex* pageSize)
+                .Take(pageSize)
+                .Select(x => x.ResumeId)
+                .ToListAsync();
+
+            var resumes = await context.Resumes
+                .AsNoTracking()
+                .Where(r => resumeIds.Contains(r.Id))
+                .Include(r => r.StudentProfile)
+                    .ThenInclude(sp => sp.User)
+                .Include(r => r.Specialization)
+                .Include(r => r.Skills)
+                .Include(r => r.WorkExperiences)
+                .ToListAsync();
+
+            var scoreMap = await rankedQuery
+                .Where(x => resumeIds.Contains(x.ResumeId))
+                .ToDictionaryAsync(
+                    x => x.ResumeId,
+                    x => new
+                    {
+                        x.TotalScore,
+                        x.SkillsMatchCount,
+                        x.RegionScore,
+                        x.LastUpdateDate,
+                        x.ResumeId
+                    });
+
+            var orderedResumes = resumes
+                .OrderByDescending(r => scoreMap[r.Id].TotalScore)
+                .ThenByDescending(r => scoreMap[r.Id].SkillsMatchCount)
+                .ThenByDescending(r => scoreMap[r.Id].RegionScore)
+                .ThenByDescending(r => scoreMap[r.Id].LastUpdateDate)
+                .ThenByDescending(r => scoreMap[r.Id].ResumeId)
+                .ToList();
+
+            return new PagedResult<Resume>
+            {
+                Items = orderedResumes,
+                TotalCount = totalCount
+            };
+        }
+
+        private async Task<PagedResult<Resume>> BuildFeedIfRecommendationsIsEmpty(int pageIndex, int pageSize)
+        {
+            var query = context.Resumes
+                .AsNoTracking()
+                .Where(v => v.IsActive);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(r => r.LastUpdateDate)
+                .ThenByDescending(r => r.Id)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .Include(r => r.WorkExperiences)
+                .Include(r => r.Specialization)
+                .ToListAsync();
+
+            return new PagedResult<Resume>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+        }
+
+        public async Task<PagedResult<Resume>> GetRecommendedResumes(int companyId, int pageIndex, int pageSize)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var vacancies = await context.Vacancies
+                .AsNoTracking()
+                .Where(v => v.CompanyId == companyId && v.IsActive)
+                .Select(v => new
+                {
+                    v.Id,
+                    v.SpecializationId,
+                    v.Region,
+                    v.IsRemote,
+                    v.SalaryFrom,
+                    v.SalaryTo,
+                    v.MinWorkExperienceYears,
+                    SkillIds = v.Skills.Select(s => s.Id).ToList()
+                })
+                .ToListAsync();
+
+            if (vacancies.Count == 0)
+                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
+
+            var specializationIds = vacancies
+                .Select(v => v.SpecializationId)
+                .Distinct()
+                .ToList();
+
+            var candidateResumes = await context.Resumes
+                .AsNoTracking()
+                .Where(r => r.IsActive && specializationIds.Contains(r.SpecializationId))
+                .Include(r => r.StudentProfile)
+                    .ThenInclude(sp => sp.User)
+                .Include(r => r.Specialization)
+                .Include(r => r.Skills)
+                .Include(r => r.WorkExperiences)
+                .ToListAsync();
+
+            var rankedResumes = candidateResumes
+                .Select(r =>
+                {
+                    var totalMonths = r.WorkExperiences.Sum(we =>
+                        (((we.EndDateWork ?? today).Year - we.StartDateWork.Year) * 12) +
+                        ((we.EndDateWork ?? today).Month - we.StartDateWork.Month) -
+                        (((we.EndDateWork ?? today).Day < we.StartDateWork.Day) ? 1 : 0));
+
+                    var bestMatch = vacancies
+                        .Where(v =>
+                            v.SpecializationId == r.SpecializationId &&
+                            (totalMonths / 12) >= v.MinWorkExperienceYears &&
+                            (!r.DesiredSalary.HasValue ||
+                             (v.SalaryFrom != null && v.SalaryFrom <= r.DesiredSalary.Value) ||
+                             (v.SalaryTo != null && v.SalaryTo >= r.DesiredSalary.Value)))
+                        .Select(v =>
+                        {
+                            var skillsMatchCount = v.SkillIds.Count == 0
+                                ? 0
+                                : r.Skills.Count(rs => v.SkillIds.Contains(rs.Id));
+
+                            var regionScore = v.IsRemote
+                                ? 3
+                                : (!string.IsNullOrWhiteSpace(r.Region) && r.Region == v.Region ? 3 : 1);
+
+                            var totalScore = skillsMatchCount * 10 + regionScore;
+
+                            return new
+                            {
+                                Resume = r,
+                                TotalScore = totalScore,
+                                SkillsMatchCount = skillsMatchCount,
+                                RegionScore = regionScore
+                            };
+                        })
+                        .OrderByDescending(x => x.TotalScore)
+                        .ThenByDescending(x => x.SkillsMatchCount)
+                        .ThenByDescending(x => x.RegionScore)
+                        .ThenByDescending(x => x.Resume.LastUpdateDate)
+                        .ThenByDescending(x => x.Resume.Id)
+                        .FirstOrDefault();
+
+                    return bestMatch;
+                })
+                .Where(x => x is not null)
+                .Select(x => x!)
+                .GroupBy(x => x.Resume.Id)
+                .Select(g => g
+                    .OrderByDescending(x => x.TotalScore)
+                    .ThenByDescending(x => x.SkillsMatchCount)
+                    .ThenByDescending(x => x.RegionScore)
+                    .ThenByDescending(x => x.Resume.LastUpdateDate)
+                    .ThenByDescending(x => x.Resume.Id)
+                    .First())
+                .OrderByDescending(x => x.TotalScore)
+                .ThenByDescending(x => x.SkillsMatchCount)
+                .ThenByDescending(x => x.RegionScore)
+                .ThenByDescending(x => x.Resume.LastUpdateDate)
+                .ThenByDescending(x => x.Resume.Id)
+                .ToList();
+
+            if (rankedResumes.Count == 0)
+                return await BuildFeedIfRecommendationsIsEmpty(pageIndex, pageSize);
+
+            var totalCount = rankedResumes.Count;
+
+            var items = rankedResumes
+                .Skip(pageIndex* pageSize)
+                .Take(pageSize)
+                .Select(x => x.Resume)
+                .ToList();
+
+            return new PagedResult<Resume>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+        }
+
         public async Task<PagedResult<Resume>> SearchResumes(SearchResumeParameters parameters)
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
