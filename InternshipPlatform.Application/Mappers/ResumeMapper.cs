@@ -40,6 +40,24 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
+        public static ResumeOwnerItem ToOwnerItem(this Resume resume)
+        {
+            var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>
+                WorkExperienceUtils.CalculateExperienceMonths(x.StartDateWork, x.EndDateWork));
+
+            return new ResumeOwnerItem
+            {
+                Id = resume.Id,
+                LastUpdateDate = resume.LastUpdateDate,
+                IsActive = resume.IsActive,
+                DesiredSalary = resume.DesiredSalary,
+                Region = resume.Region,
+                SpecializationName = resume.Specialization.Name,
+                TotalWorkExperienceMonths = totalWorkExperienceMonths,
+                WorkExperiences = resume.WorkExperiences.Select(x => x.ToItem()).ToList(),
+            };
+        }
+
         public static ResumeDetails ToDetails(this Resume resume)
         {
             var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>
@@ -50,6 +68,7 @@ namespace InternshipPlatform.Application.Mappers
                 Id = resume.Id,
                 LastUpdateDate = resume.LastUpdateDate,
                 Description = resume.Description,
+                IsActive = resume.IsActive,
                 DesiredSalary = resume.DesiredSalary,
                 Region = resume.Region,
                 Specialization = resume.Specialization,

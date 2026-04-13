@@ -7,9 +7,9 @@ namespace InternshipPlatform.Application.Interfaces.Services
     {
         Task<int> CreateResume(CreateResumeRequest request);
 
-        Task<List<ResumeItem>> GetStudentResumes(int studentId);
+        Task<List<ResumeOwnerItem>> GetStudentResumes(int studentId);
 
-        Task<ResumeDetails> GetResumeDetails(int resumeId);
+        Task<ResumeDetails> GetResumeDetails(int userId, int resumeId);
 
         Task<PagedResponse<ResumeItem>> GetRecommendedResumes(GetRecommendedResumesRequest request);
 

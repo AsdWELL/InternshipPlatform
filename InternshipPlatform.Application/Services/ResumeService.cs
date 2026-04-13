@@ -71,17 +71,19 @@ namespace InternshipPlatform.Application.Services
             return resume.Id;
         }
 
-        public async Task<List<ResumeItem>> GetStudentResumes(int studentId)
+        public async Task<List<ResumeOwnerItem>> GetStudentResumes(int studentId)
         {
             var resumes = await resumeRepository.GetStudentResumes(studentId);
 
-            return resumes.Select(r => r.ToItem()).ToList();
+            return resumes.Select(r => r.ToOwnerItem()).ToList();
         }
 
-        public async Task<ResumeDetails> GetResumeDetails(int resumeId)
+        public async Task<ResumeDetails> GetResumeDetails(int userId, int resumeId)
         {
-            var resume = await resumeRepository.GetResumeById(resumeId)
-                ?? throw new ResumeNotFoundException();
+            var resume = await resumeRepository.GetResumeById(resumeId);
+
+            if (resume is null || (!resume.IsActive && resume.StudentId != userId))
+                throw new ResumeNotFoundException();
 
             return resume.ToDetails();
         }
