@@ -29,7 +29,7 @@ namespace InternshipPlatform.Api.Controllers
         [HttpGet("{vacancyId:int}")]
         public async Task<IActionResult> GetVacancyDetails([FromRoute] int vacancyId)
         {
-            return Ok(await vacancyService.GetVacancyDetails(vacancyId));
+            return Ok(await vacancyService.GetVacancyDetails(UserId, vacancyId));
         }
 
         [Authorize(Roles = Roles.Student)]

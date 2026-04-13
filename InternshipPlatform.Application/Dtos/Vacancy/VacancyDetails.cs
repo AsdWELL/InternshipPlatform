@@ -19,6 +19,8 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
 
         public string? Region { get; set; }
 
+        public bool IsActive { get; set; }
+
         public int MinWorkExperienceYears { get; set; }
 
         public Specialization Specialization { get; set; }

@@ -44,6 +44,23 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
+        public static VacancyOwnerItem ToOwnerItem(this Vacancy vacancy)
+        {
+            return new VacancyOwnerItem
+            {
+                Id = vacancy.Id,
+                Title = vacancy.Title,
+                SalaryFrom = vacancy.SalaryFrom,
+                SalaryTo = vacancy.SalaryTo,
+                IsRemote = vacancy.IsRemote,
+                MinWorkExperienceYears = vacancy.MinWorkExperienceYears,
+                CompanyName = vacancy.Company.Name,
+                CompanyLogoPath = vacancy.Company.LogoPath,
+                Region = vacancy.Region,
+                IsActive = vacancy.IsActive
+            };
+        }
+
         public static VacancyDetails ToDetails(this Vacancy vacancy)
         {
             return new VacancyDetails
@@ -55,6 +72,7 @@ namespace InternshipPlatform.Application.Mappers
                 SalaryTo = vacancy.SalaryTo,
                 IsRemote = vacancy.IsRemote,
                 Region = vacancy.Region,
+                IsActive = vacancy.IsActive,
                 MinWorkExperienceYears = vacancy.MinWorkExperienceYears,
                 Specialization = vacancy.Specialization,
                 Company = vacancy.Company.ToResponse(),

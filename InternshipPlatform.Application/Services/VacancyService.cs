@@ -69,19 +69,27 @@ namespace InternshipPlatform.Application.Services
             return vacancy.Id;
         }
 
-        public async Task<List<VacancyItem>> GetEmployerVacancies(int employerId)
+        public async Task<List<VacancyOwnerItem>> GetEmployerVacancies(int employerId)
         {
             var companyId = await TryGetCompanyIdByEmployerId(employerId);
             
             var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
 
-            return vacancies.Select(v => v.ToItem()).ToList();
+            return vacancies.Select(v => v.ToOwnerItem()).ToList();
         }
 
-        public async Task<VacancyDetails> GetVacancyDetails(int vacancyId)
+        public async Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId)
         {
             var vacancy = await vacancyRepository.GetVacancyById(vacancyId)
                 ?? throw new VacancyNotFoundException();
+
+            if (!vacancy.IsActive)
+            {
+                var company = await companyRepository.GetCompanyByEmployerId(userId);
+
+                if (company is null || vacancy.CompanyId != company.Id)
+                    throw new VacancyNotFoundException();
+            }
 
             return vacancy.ToDetails();
         }
