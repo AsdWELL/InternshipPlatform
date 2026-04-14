@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace InternshipPlatform.Api.Controllers
+namespace InternshipPlatform.Api.Controllers.Auth
 {
     [ApiController]
     [Authorize]

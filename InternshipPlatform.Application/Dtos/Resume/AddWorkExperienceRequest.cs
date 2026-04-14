@@ -6,7 +6,8 @@ namespace InternshipPlatform.Application.Dtos.Resume
     {
         [JsonIgnore]
         public int StudentId { get; set; }
-        
+
+        [JsonIgnore]
         public int ResumeId { get; set; }
 
         public string CompanyName { get; set; }

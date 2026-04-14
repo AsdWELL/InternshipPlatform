@@ -1,21 +1,22 @@
-﻿using InternshipPlatform.Application.Dtos.Company;
+﻿using InternshipPlatform.Api.Controllers.Auth;
+using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InternshipPlatform.Api.Controllers
+namespace InternshipPlatform.Api.Controllers.Companies
 {
-    [Route("api/[controller]")]
-    public class CompanyController(ICompanyService companyService) : AuthorizedUserController
+    [Authorize(Roles = Roles.Employer)]
+    [Route("api/employers/me/company")]
+    public class EmployerCompanyController(ICompanyService companyService) : AuthorizedUserController
     {
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetCompanyById([FromRoute] int id)
+        [HttpGet]
+        public async Task<IActionResult> GetEmployerCompany()
         {
-            return Ok(await companyService.GetCompanyById(id));
+            return Ok(await companyService.GetEmployerCompany(UserId));
         }
 
-        [Authorize(Roles = Roles.Employer)]
         [HttpPut]
         public async Task<IActionResult> UpdateCompany([FromBody] UpdateCompanyRequest request)
         {
@@ -26,8 +27,7 @@ namespace InternshipPlatform.Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.Employer)]
-        [HttpPost("logo")]
+        [HttpPut("logo")]
         public async Task<IActionResult> UpdateCompanyLogoByEmployerId(IFormFile logoFile)
         {
             await companyService.UpdateCompanyLogoByEmployerId(UserId, logoFile);
@@ -35,7 +35,6 @@ namespace InternshipPlatform.Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.Employer)]
         [HttpDelete("logo")]
         public async Task<IActionResult> DeleteCompanyLogoByEmployerId()
         {

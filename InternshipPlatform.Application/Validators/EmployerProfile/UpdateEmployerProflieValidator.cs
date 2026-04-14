@@ -3,7 +3,7 @@ using InternshipPlatform.Application.Dtos.EmployerProflie;
 
 namespace InternshipPlatform.Application.Validators.EmployerProfile
 {
-    public class UpdateEmployerProflieValidator : AbstractValidator<UpdateEmployerProflieRequest>
+    public class UpdateEmployerProflieValidator : AbstractValidator<UpdateEmployerProfileRequest>
     {
         public UpdateEmployerProflieValidator()
         {

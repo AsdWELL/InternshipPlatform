@@ -7,9 +7,6 @@ namespace InternshipPlatform.Application.Validators.Resume
     {
         public UpdateWorkExperienceValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Не выбран опыт работы для редактирования");
-
             RuleFor(x => x.CompanyName)
                 .NotEmpty().WithMessage("Название компании не может быть пустой строкой")
                 .When(x => x.CompanyName is not null);

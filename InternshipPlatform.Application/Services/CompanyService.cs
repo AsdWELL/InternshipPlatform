@@ -18,6 +18,21 @@ namespace InternshipPlatform.Application.Services
     {
         private const int MaxLogoSizeMb = 10;
         
+        private async Task<Company> GetCompanyByEmployerIdOrThrow(int employerId)
+        {
+            var company = await companyRepository.GetCompanyByEmployerId(employerId)
+                ?? throw new CompanyNotFoundException();
+
+            return company;
+        }
+        
+        public async Task<CompanyResponse> GetEmployerCompany(int employerId)
+        {
+            var company = await GetCompanyByEmployerIdOrThrow(employerId);
+
+            return company.ToResponse();
+        }
+
         public async Task<CompanyResponse> GetCompanyById(int id)
         {
             var company = await companyRepository.GetCompanyById(id)
@@ -45,8 +60,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateCompanyLogoByEmployerId(int employerId, IFormFile logoFile)
         {
-            var company = await companyRepository.GetCompanyByEmployerId(employerId)
-                ?? throw new CompanyNotFoundException();
+            var company = await GetCompanyByEmployerIdOrThrow(employerId);
 
             int maxLogoSizeBytes = MaxLogoSizeMb * 1024 * 1024;
 
@@ -78,8 +92,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task DeleteCompanyLogoByEmployerId(int employerId)
         {
-            var company = await companyRepository.GetCompanyByEmployerId(employerId)
-                ?? throw new CompanyNotFoundException();
+            var company = await GetCompanyByEmployerIdOrThrow(employerId);
 
             await companyRepository.UpdateCompanyLogo(company.Id, null);
 

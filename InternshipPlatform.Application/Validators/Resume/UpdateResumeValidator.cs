@@ -7,9 +7,6 @@ namespace InternshipPlatform.Application.Validators.Resume
     {
         public UpdateResumeValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Не выбрано резюме для редактирования");
-            
             RuleFor(x => x.DesiredSalary)
                 .Must(salary => salary > 0)
                 .WithMessage("Желаемая з/п должна быть больше 0")

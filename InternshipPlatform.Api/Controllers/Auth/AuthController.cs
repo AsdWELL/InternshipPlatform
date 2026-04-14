@@ -4,10 +4,10 @@ using InternshipPlatform.Application.Interfaces.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace InternshipPlatform.Api.Controllers
+namespace InternshipPlatform.Api.Controllers.Auth
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController(
         IAuthService authService,
         IOptions<TokenOptions> tokenOptions) : ControllerBase
@@ -20,7 +20,7 @@ namespace InternshipPlatform.Api.Controllers
             Response.Cookies.Append(TokenOptionsValue.CookieTitle, accessToken);
         }
 
-        [HttpPost("registerstudent")]
+        [HttpPost("register/student")]
         public async Task<IActionResult> RegisterStudent([FromBody] RegisterStudentRequest request)
         {
             var authResponse = await authService.RegisterStudent(request);
@@ -30,7 +30,7 @@ namespace InternshipPlatform.Api.Controllers
             return Ok(authResponse);
         }
 
-        [HttpPost("registeremployer")]
+        [HttpPost("register/employer")]
         public async Task<IActionResult> RegisterEmployer([FromBody] RegisterCompanyRequest request)
         {
             var authResponse = await authService.RegisterEmployer(request);
@@ -50,7 +50,7 @@ namespace InternshipPlatform.Api.Controllers
             return Ok(authResponse);
         }
 
-        [HttpPut("refresh-token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var authResponse = await authService.RefreshToken(refreshToken);

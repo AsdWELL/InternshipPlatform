@@ -4,11 +4,13 @@ namespace InternshipPlatform.Application.Dtos.Resume
 {
     public class UpdateWorkExperienceRequest
     {
+        [JsonIgnore]
         public int Id { get; set; }
 
         [JsonIgnore]
         public int StudentId { get; set; }
 
+        [JsonIgnore]
         public int ResumeId { get; set; }
 
         public string? CompanyName { get; set; }

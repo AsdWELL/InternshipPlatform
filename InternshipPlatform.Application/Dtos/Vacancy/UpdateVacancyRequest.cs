@@ -4,6 +4,7 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
 {
     public class UpdateVacancyRequest
     {
+        [JsonIgnore]
         public int Id { get; set; }
 
         [JsonIgnore]

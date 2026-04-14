@@ -2,11 +2,11 @@
 
 namespace InternshipPlatform.Application.Interfaces.Services
 {
-    public interface IEmployerProflieService
+    public interface IEmployerProfileService
     {
         Task<EmployerProflieResponse> GetEmployerProfileById(int employerId);
 
-        Task UpdateEmployerProfile(UpdateEmployerProflieRequest request);
+        Task UpdateEmployerProfile(UpdateEmployerProfileRequest request);
 
         Task Logout(int employerId);
 

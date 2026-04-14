@@ -5,6 +5,8 @@ namespace InternshipPlatform.Application.Interfaces.Services
 {
     public interface ICompanyService
     {
+        Task<CompanyResponse> GetEmployerCompany(int employerId);
+        
         Task<CompanyResponse> GetCompanyById(int id);
 
         Task UpdateCompany(UpdateCompanyRequest request);

@@ -4,6 +4,7 @@ namespace InternshipPlatform.Application.Dtos.Resume
 {
     public class UpdateResumeRequest
     {
+        [JsonIgnore]
         public int Id { get; set; }
 
         [JsonIgnore]

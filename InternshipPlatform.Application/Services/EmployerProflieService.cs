@@ -16,7 +16,7 @@ namespace InternshipPlatform.Application.Services
         IEmployerProfileRepository employerProfileRepository,
         ICompanyRepository companyRepository,
         IPasswordHasher passwordHasher, 
-        IUnitOfWork unitOfWork) : IEmployerProflieService
+        IUnitOfWork unitOfWork) : IEmployerProfileService
     {
         private async Task ThrowIfEmployerProfileNotExists(int employerId)
         {
@@ -24,7 +24,7 @@ namespace InternshipPlatform.Application.Services
                 throw new EmployerProflieNotFoundException();
         }
         
-        private async Task ThrowIfEmailAlreadyTaken(UpdateEmployerProflieRequest request)
+        private async Task ThrowIfEmailAlreadyTaken(UpdateEmployerProfileRequest request)
         {
             if (string.IsNullOrEmpty(request.Email))
                 return;
@@ -45,7 +45,7 @@ namespace InternshipPlatform.Application.Services
             return employerProfile.ToResponse();
         }
 
-        public async Task UpdateEmployerProfile(UpdateEmployerProflieRequest request)
+        public async Task UpdateEmployerProfile(UpdateEmployerProfileRequest request)
         {
             var employer = await employerProfileRepository.GetEmployerProfileForUpdate(request.UserId)
                 ?? throw new EmployerProflieNotFoundException();

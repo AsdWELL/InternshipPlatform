@@ -7,9 +7,6 @@ namespace InternshipPlatform.Application.Validators.Vacancy
     {
         public UpdateVacancyValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Не выбрана вакансия для редактирования");
-
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Заголовок вакансии не может быть пустой строкой")
                 .When(x => x.Title is not null);

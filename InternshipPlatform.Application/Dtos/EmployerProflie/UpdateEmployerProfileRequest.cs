@@ -2,7 +2,7 @@
 
 namespace InternshipPlatform.Application.Dtos.EmployerProflie
 {
-    public class UpdateEmployerProflieRequest
+    public class UpdateEmployerProfileRequest
     {
         [JsonIgnore]
         public int UserId { get; set; }

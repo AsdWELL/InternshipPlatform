@@ -7,9 +7,6 @@ namespace InternshipPlatform.Application.Validators.Resume
     {
         public AddWorkExperienceValidator()
         {
-            RuleFor(x => x.ResumeId)
-                 .NotEmpty().WithMessage("Не выбрано резюме для редактирования");
-
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
             RuleFor(x => x.StartDateWork)
