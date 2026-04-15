@@ -12,7 +12,7 @@ namespace InternshipPlatform.Application.Mappers
             return new PagedResponse<R>
             {
                 PageIndex = parameters.PageIndex,
-                PageSize = parameters.PageSize,
+                PageSize = Math.Min(parameters.PageSize, pagedResult.TotalCount),
                 TotalCount = pagedResult.TotalCount,
                 Items = pagedResult.Items.Select(x => mapItemToResponse(x)).ToList()
             };

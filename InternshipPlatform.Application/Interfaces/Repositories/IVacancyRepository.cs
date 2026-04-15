@@ -6,6 +6,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IVacancyRepository
     {
+        Task<bool> IsVacancyExistsAndActive(int vacancyId);
+        
         Task<bool> IsEmployerOwnsVacancy(int employerId, int vacancyId);
         
         Task AddVacancy(Vacancy vacancy);

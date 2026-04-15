@@ -15,6 +15,7 @@
     <EmbeddedResource Include="Migration\02_InsertRoles.sql" />
     <EmbeddedResource Include="Migration\03_InstertSkills.sql" />
     <EmbeddedResource Include="Migration\04_InsertSpecializations.sql" />
+    <EmbeddedResource Include="Migration\05_InsertApplicationStatuses.sql" />
   </ItemGroup>
 
   <ItemGroup>

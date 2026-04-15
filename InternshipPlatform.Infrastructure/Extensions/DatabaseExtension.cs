@@ -60,6 +60,7 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<ISpecializationRepository, SpecializationRepository>()
                 .AddScoped<IResumeRepository, ResumeRepository>()
                 .AddScoped<IVacancyRepository, VacancyRepository>()
+                .AddScoped<IJobApplicationRepository, JobApplicationRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

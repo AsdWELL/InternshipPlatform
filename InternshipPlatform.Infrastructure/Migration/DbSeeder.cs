@@ -33,6 +33,11 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinVacanciesPerCompany = 2;
         private const int MaxVacanciesPerCompany = 8;
 
+        private const int NoApplicationsChancePercent = 20;
+
+        private const int MinApplicationsPerVacancy = 5;
+        private const int MaxApplicationsPerVacancy = 10;
+
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
 
         private void GenerateStudents(List<User> users)
@@ -407,23 +412,78 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private void GenerateJobApplications()
+        {
+            if (context.Applications.Any())
+                return;
+
+            var vacancies = context.Vacancies.ToList();
+            var resumes = context.Resumes.ToList();
+            var applicationStatuses = context.ApplicationStatuses.ToList();
+
+            if (vacancies.Count == 0 || resumes.Count == 0 || applicationStatuses.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed);
+
+            var faker = new Faker("ru");
+            var jobApplications = new List<JobApplication>();
+
+            foreach (var vacancy in vacancies)
+            {
+                var shouldSkipApplications = faker.Random.Int(1, 100) <= NoApplicationsChancePercent;
+                if (shouldSkipApplications)
+                    continue;
+
+                var applicationsCount = faker.Random.Int(MinApplicationsPerVacancy, MaxApplicationsPerVacancy);
+
+                var selectedResumes = faker.Random
+                    .Shuffle(resumes)
+                    .Take(Math.Min(applicationsCount, resumes.Count))
+                    .ToList();
+
+                foreach (var resume in selectedResumes)
+                {
+                    var status = faker.PickRandom(applicationStatuses);
+
+                    jobApplications.Add(new JobApplication
+                    {
+                        VacancyId = vacancy.Id,
+                        ResumeId = resume.Id,
+                        LastStatusDate = DateOnly.FromDateTime(
+                            faker.Date.Between(
+                                DateTime.UtcNow.AddMonths(-6),
+                                DateTime.UtcNow)),
+                        ApplicationStatusId = status.Id
+                    });
+                }
+            }
+
+            context.Applications.AddRange(jobApplications);
+            context.SaveChanges();
+        }
+
         public void Seed()
         {
             int totalTime = Environment.TickCount;
 
             int startTime = Environment.TickCount;
             GenerateUsers();
-            logger.LogInformation($"Пользователи сгенерированы за {Environment.TickCount - startTime}мс");
+            logger.LogInformation($"Пользователи сгенерированы за {Environment.TickCount - startTime}мс\n");
 
             startTime = Environment.TickCount;
             GenerateResumes();
-            logger.LogInformation($"Резюме студентов сгенерированы за {Environment.TickCount - startTime}мс");
+            logger.LogInformation($"Резюме студентов сгенерированы за {Environment.TickCount - startTime}мс\n");
 
             startTime = Environment.TickCount;
             GenerateVacancies();
-            logger.LogInformation($"Вакансии комипаний сгенерированы за {Environment.TickCount - startTime}мс");
+            logger.LogInformation($"Вакансии комипаний сгенерированы за {Environment.TickCount - startTime}мс\n");
 
-            logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс");
+            startTime = Environment.TickCount;
+            GenerateJobApplications();
+            logger.LogInformation($"Отклики сгенерированы за {Environment.TickCount - startTime}мс\n");
+
+            logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс\n");
         }
     }
 }

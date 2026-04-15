@@ -6,6 +6,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IResumeRepository
     {
+        Task<bool> IsResumeExistsAndActive(int resumeId);
+        
         Task<bool> IsStudentOwnsResume(int studentId, int resumeId);
 
         Task<bool> IsWorkExperienceExists(int workExperienceId);

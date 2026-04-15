@@ -8,6 +8,14 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class VacancyRepository(InternshipPlatformContext context) : IVacancyRepository
     {
+        public async Task<bool> IsVacancyExistsAndActive(int vacancyId)
+        {
+            return await context.Vacancies
+                .AsNoTracking()
+                .AnyAsync(v => v.Id == vacancyId && v.IsActive);
+        }
+
+
         public async Task AddVacancy(Vacancy vacancy)
         {
             await context.Vacancies.AddAsync(vacancy);

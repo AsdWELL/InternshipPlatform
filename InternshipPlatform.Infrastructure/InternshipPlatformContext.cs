@@ -25,6 +25,10 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<Vacancy> Vacancies { get; set; }
 
+        public DbSet<JobApplicationStatus> ApplicationStatuses { get; set; }
+
+        public DbSet<JobApplication> Applications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

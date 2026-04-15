@@ -53,20 +53,16 @@ CREATE TABLE "Vacancies" (
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 
   PRIMARY KEY ("Id"));
-CREATE TABLE "Responses" (
+CREATE TABLE "Applications" (
   "Id"                  SERIAL NOT NULL, 
   "VacancyId"           integer NOT NULL, 
-  "ResumeId"            integer NOT NULL, 
-  "ResponseInitiatorId" integer NOT NULL, 
-  "ResponseStatusesId"  integer NOT NULL, 
+  "ResumeId"            integer NOT NULL,
+  "LastStatusDate"     date NOT NULL,
+  "ApplicationStatusId"  integer NOT NULL, 
   PRIMARY KEY ("Id"), 
   CONSTRAINT "unique_resumes" 
     UNIQUE ("VacancyId", "ResumeId"));
-CREATE TABLE "ResponseStatuses" (
-  "Id"   SERIAL NOT NULL, 
-  "Name" text NOT NULL UNIQUE, 
-  PRIMARY KEY ("Id"));
-CREATE TABLE "ResponseInitiators" (
+CREATE TABLE "ApplicationStatuses" (
   "Id"   SERIAL NOT NULL, 
   "Name" text NOT NULL UNIQUE, 
   PRIMARY KEY ("Id"));
@@ -108,8 +104,8 @@ CREATE TABLE "SkillsToVacancy" (
   PRIMARY KEY ("SkillId", 
   "VacancyId"));
 CREATE TABLE "Chats" (
-  "ResponsesId" integer NOT NULL, 
-  PRIMARY KEY ("ResponsesId"));
+  "ApplicationId" integer NOT NULL, 
+  PRIMARY KEY ("ApplicationId"));
 CREATE TABLE "Messages" (
   "Id"        SERIAL NOT NULL, 
   "Content"   text NOT NULL, 
@@ -153,10 +149,10 @@ CREATE INDEX "Vacancies3"
   ON "Vacancies" ("Title");
 CREATE INDEX "Vacancies4" 
   ON "Vacancies" ("Region");
-CREATE INDEX "Responses1" 
-  ON "Responses" ("ResumeId");
-CREATE INDEX "Responses2" 
-  ON "Responses" ("VacancyId");
+CREATE INDEX "Applications1" 
+  ON "Applications" ("ResumeId");
+CREATE INDEX "Applications2" 
+  ON "Applications" ("VacancyId");
 CREATE INDEX "Resumes1" 
   ON "Resumes" ("StudentId");
 CREATE INDEX "Resumes2" 
@@ -178,12 +174,11 @@ ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa373177" FOREIGN KEY ("
 ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa581449" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
 ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes64954" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id");
-ALTER TABLE "Responses" ADD CONSTRAINT "FKResponses397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
-ALTER TABLE "Responses" ADD CONSTRAINT "FKResponses15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON DELETE Cascade;
-ALTER TABLE "Responses" ADD CONSTRAINT "FKResponses956923" FOREIGN KEY ("ResponseInitiatorId") REFERENCES "ResponseInitiators" ("Id");
-ALTER TABLE "Responses" ADD CONSTRAINT "FKResponses321884" FOREIGN KEY ("ResponseStatusesId") REFERENCES "ResponseStatuses" ("Id");
-ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573641" FOREIGN KEY ("ResponsesId") REFERENCES "Responses" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages297040" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("ResponsesId") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
+ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON DELETE Cascade;
+ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321884" FOREIGN KEY ("ApplicationStatusId") REFERENCES "ApplicationStatuses" ("Id");
+ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573641" FOREIGN KEY ("ApplicationId") REFERENCES "Applications" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages297040" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("ApplicationId") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti215862" FOREIGN KEY ("PlanId") REFERENCES "SubscriptionPlans" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti256259" FOREIGN KEY ("StatusId") REFERENCES "SubscribtionStatuses" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti192955" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id");

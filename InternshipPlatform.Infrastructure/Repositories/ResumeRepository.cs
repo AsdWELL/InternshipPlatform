@@ -8,6 +8,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class ResumeRepository(InternshipPlatformContext context) : IResumeRepository
     {
+        public async Task<bool> IsResumeExistsAndActive(int resumeId)
+        {
+            return await context.Resumes
+                .AsNoTracking()
+                .AnyAsync(r => r.Id == resumeId && r.IsActive);
+        }
+
         public async Task<bool> IsWorkExperienceExists(int workExperienceId)
         {
             return await context.WorkExperiences

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
+using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
@@ -10,10 +11,12 @@ using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators.Auth;
 using InternshipPlatform.Application.Validators.EmployerProfile;
+using InternshipPlatform.Application.Validators.JobApplication;
 using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentProfile;
 using InternshipPlatform.Application.Validators.Vacancy;
 using InternshipPlatform.Infrastructure.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -47,28 +50,32 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<ISkillService, SkillService>()
                 .AddScoped<ISpecializationService, SpecializationService>()
                 .AddScoped<IResumeService, ResumeService>()
-                .AddScoped<IVacancyService, VacancyService>();
+                .AddScoped<IVacancyService, VacancyService>()
+                .AddScoped<IJobApplicationService, JobApplicationService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
             return services
-                .AddScoped<IValidator<LoginUserRequest>, LoginRequestValidator>()
-                .AddScoped<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
-                .AddScoped<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
-                .AddScoped<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
-                .AddScoped<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
-                .AddScoped<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProflieValidator>()
+                .AddTransient<IValidator<LoginUserRequest>, LoginRequestValidator>()
+                .AddTransient<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
+                .AddTransient<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
+                .AddTransient<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
+                .AddTransient<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
+                .AddTransient<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProflieValidator>()
                 
-                .AddScoped<IValidator<CreateResumeRequest>, CreateResumeValidator>()
-                .AddScoped<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()
-                .AddScoped<IValidator<AddWorkExperienceRequest>, AddWorkExperienceValidator>()
-                .AddScoped<IValidator<UpdateWorkExperienceRequest>, UpdateWorkExperienceValidator>()
-                .AddScoped<IValidator<SearchResumeParameters>, SearchResumeParametersValidator>()
+                .AddTransient<IValidator<CreateResumeRequest>, CreateResumeValidator>()
+                .AddTransient<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()
+                .AddTransient<IValidator<AddWorkExperienceRequest>, AddWorkExperienceValidator>()
+                .AddTransient<IValidator<UpdateWorkExperienceRequest>, UpdateWorkExperienceValidator>()
+                .AddTransient<IValidator<SearchResumeParameters>, SearchResumeParametersValidator>()
                 
-                .AddScoped<IValidator<CreateVacancyRequest>, CreateVacancyValidator>()
-                .AddScoped<IValidator<UpdateVacancyRequest>, UpdateVacancyValidator>()
-                .AddScoped<IValidator<SearchVacancyParameters>, SearchVacancyValidator>();
+                .AddTransient<IValidator<CreateVacancyRequest>, CreateVacancyValidator>()
+                .AddTransient<IValidator<UpdateVacancyRequest>, UpdateVacancyValidator>()
+                .AddTransient<IValidator<SearchVacancyParameters>, SearchVacancyValidator>()
+                
+                .AddTransient<IValidator<GetStudentApplicationsParameters>, GetStudentApplicationsValidator>()
+                .AddTransient<IValidator<GetEmployerApplicationsParameters>, GetEmployerApplicationsValidator>();
         }
     }
 }
