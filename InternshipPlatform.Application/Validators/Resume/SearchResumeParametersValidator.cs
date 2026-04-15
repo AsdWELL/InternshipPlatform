@@ -7,6 +7,11 @@ namespace InternshipPlatform.Application.Validators.Resume
     {
         public SearchResumeParametersValidator() : base()
         {
+            RuleFor(x => x.SpecializationId)
+                .GreaterThan(0)
+                .WithMessage("Укажите корректную специализацию резюме")
+                .When(x => x.SpecializationId.HasValue);
+
             RuleFor(x => x.SalaryFrom)
                 .GreaterThanOrEqualTo(0)
                 .When(x => x.SalaryFrom.HasValue)

@@ -8,13 +8,19 @@ namespace InternshipPlatform.Application.Validators.Resume
         public CreateResumeValidator()
         {
             RuleFor(x => x.SpecializationId)
-                .NotEmpty()
-                .WithMessage("Укажите специализацию резюме");
+                .GreaterThan(0)
+                .WithMessage("Укажите корректную специализацию резюме");
 
             RuleFor(x => x.DesiredSalary)
-                .Must(salary => salary > 0)
+                .GreaterThan(0)
                 .WithMessage("Желаемая з/п должна быть больше 0")
                 .When(x => x.DesiredSalary.HasValue);
+
+            RuleFor(x => x.SkillIds)
+                .ForEach(skill => 
+                    skill.GreaterThan(0)
+                    .WithMessage("Укажите корректный навык"))
+                .When(x => x.SkillIds?.Count > 0);
         }
     }
 }

@@ -29,6 +29,16 @@ namespace InternshipPlatform.Application.Validators.Vacancy
                 .GreaterThanOrEqualTo(0)
                 .When(x => x.MinWorkExperienceYears.HasValue)
                 .WithMessage("Не может быть меньше 0");
+
+            RuleFor(x => x.SpecializationId)
+                .GreaterThan(0)
+                .WithMessage("Укажите корректную специализацию вакансии");
+
+            RuleFor(x => x.SkillIds)
+                .ForEach(skill =>
+                    skill.GreaterThan(0)
+                    .WithMessage("Укажите корректный навык"))
+                .When(x => x.SkillIds?.Count > 0);
         }
     }
 }

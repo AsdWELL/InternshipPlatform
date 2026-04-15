@@ -7,6 +7,11 @@ namespace InternshipPlatform.Application.Validators.Vacancy
     {
         public SearchVacancyValidator()
         {
+            RuleFor(x => x.SpecializationId)
+                .GreaterThan(0)
+                .WithMessage("Укажите корректную специализацию резюме")
+                .When(x => x.SpecializationId.HasValue);
+
             RuleFor(x => x.SalaryFrom)
                 .GreaterThanOrEqualTo(0)
                 .When(x => x.SalaryFrom.HasValue)
@@ -18,9 +23,9 @@ namespace InternshipPlatform.Application.Validators.Vacancy
                 .WithMessage("Не может быть меньше 0");
 
             RuleFor(x => x.MinWorkExperienceYears)
-            .GreaterThanOrEqualTo(0)
-            .When(x => x.MinWorkExperienceYears.HasValue)
-            .WithMessage("Не может быть меньше 0");
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.MinWorkExperienceYears.HasValue)
+                .WithMessage("Не может быть меньше 0");
 
             RuleFor(x => x.MaxWorkExperienceYears)
                 .GreaterThanOrEqualTo(0)
