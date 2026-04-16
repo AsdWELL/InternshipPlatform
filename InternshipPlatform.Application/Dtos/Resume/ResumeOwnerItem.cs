@@ -17,5 +17,7 @@
         public List<WorkExperienceItem> WorkExperiences { get; set; }
 
         public int TotalWorkExperienceMonths { get; set; }
+
+        public int ApplicationsCount { get; set; }
     }
 }

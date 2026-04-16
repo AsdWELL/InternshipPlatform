@@ -72,6 +72,11 @@ namespace InternshipPlatform.Infrastructure
                 .WithOne()
                 .HasForeignKey(we => we.ResumeId);
 
+            modelBuilder.Entity<Resume>()
+                .HasMany(r => r.Applications)
+                .WithOne(a => a.Resume)
+                .HasForeignKey(a => a.ResumeId);
+
             modelBuilder.Entity<Vacancy>()
                 .HasOne(v => v.Company)
                 .WithMany()

@@ -25,5 +25,7 @@
         public List<Skill> Skills { get; set; } = [];
 
         public List<WorkExperience> WorkExperiences { get; set; } = [];
+
+        public List<JobApplication> Applications { get; set; } = [];
     }
 }

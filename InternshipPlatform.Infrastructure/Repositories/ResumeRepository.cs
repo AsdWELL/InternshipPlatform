@@ -117,6 +117,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(r => r.StudentId == studentId)
                 .Include(r => r.Specialization)
                 .Include(r => r.WorkExperiences)
+                .Include(r => r.Applications)
                 .OrderByDescending(r => r.Id)
                 .ToListAsync();
         }

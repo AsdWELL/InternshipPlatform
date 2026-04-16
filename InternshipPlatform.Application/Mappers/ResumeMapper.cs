@@ -55,6 +55,7 @@ namespace InternshipPlatform.Application.Mappers
                 SpecializationName = resume.Specialization.Name,
                 TotalWorkExperienceMonths = totalWorkExperienceMonths,
                 WorkExperiences = resume.WorkExperiences.Select(x => x.ToItem()).ToList(),
+                ApplicationsCount = resume.Applications.Count
             };
         }
 
