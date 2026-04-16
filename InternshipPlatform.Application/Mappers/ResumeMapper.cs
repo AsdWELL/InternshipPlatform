@@ -31,6 +31,10 @@ namespace InternshipPlatform.Application.Mappers
             return new ResumeItem
             {
                 Id = resume.Id,
+                StudentId = resume.StudentId,
+                StudentName = resume.StudentProfile.Name,
+                StudentSurname = resume.StudentProfile.Surname,
+                StudentPatronymic = resume.StudentProfile.Patronymic,
                 LastUpdateDate = resume.LastUpdateDate,
                 DesiredSalary = resume.DesiredSalary,
                 Region = resume.Region,

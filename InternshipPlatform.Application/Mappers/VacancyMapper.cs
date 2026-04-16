@@ -38,6 +38,7 @@ namespace InternshipPlatform.Application.Mappers
                 SalaryTo = vacancy.SalaryTo,
                 IsRemote = vacancy.IsRemote,
                 MinWorkExperienceYears = vacancy.MinWorkExperienceYears,
+                CompanyId = vacancy.CompanyId,
                 CompanyName = vacancy.Company.Name,
                 CompanyLogoPath = vacancy.Company.LogoPath,
                 Region = vacancy.Region

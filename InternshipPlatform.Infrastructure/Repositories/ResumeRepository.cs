@@ -226,9 +226,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(r => resumeIds.Contains(r.Id))
                 .Include(r => r.StudentProfile)
-                    .ThenInclude(sp => sp.User)
                 .Include(r => r.Specialization)
-                .Include(r => r.Skills)
                 .Include(r => r.WorkExperiences)
                 .ToListAsync();
 
@@ -273,8 +271,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .ThenByDescending(r => r.Id)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
-                .Include(r => r.WorkExperiences)
+                .Include(r => r.StudentProfile)
                 .Include(r => r.Specialization)
+                .Include(r => r.WorkExperiences)
                 .ToListAsync();
 
             return new PagedResult<Resume>
@@ -316,9 +315,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(r => r.IsActive && specializationIds.Contains(r.SpecializationId))
                 .Include(r => r.StudentProfile)
-                    .ThenInclude(sp => sp.User)
                 .Include(r => r.Specialization)
-                .Include(r => r.Skills)
                 .Include(r => r.WorkExperiences)
                 .ToListAsync();
 
@@ -525,6 +522,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             var resumes = await context.Resumes
                 .AsNoTracking()
                 .Where(r => pageResumeIds.Contains(r.Id))
+                .Include(r => r.StudentProfile)
                 .Include(r => r.Specialization)
                 .Include(r => r.WorkExperiences)
                 .OrderByDescending(r => r.LastUpdateDate)
