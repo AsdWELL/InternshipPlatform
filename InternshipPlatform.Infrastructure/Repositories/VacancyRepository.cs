@@ -367,6 +367,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
             if (parameters.SpecializationId is not null)
                 query = query.Where(v => v.SpecializationId == parameters.SpecializationId.Value);
 
+            if (parameters.SkillIds is { Count: > 0 })
+            {
+                var skillIds = parameters.SkillIds.Distinct().ToList();
+
+                query = query.Where(r => skillIds.All(id => r.Skills.Any(s => s.Id == id)));
+            }
+
             var totalCount = await query.CountAsync();
 
             var items = await query
