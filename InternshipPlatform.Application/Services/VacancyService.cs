@@ -78,6 +78,13 @@ namespace InternshipPlatform.Application.Services
             return vacancies.Select(v => v.ToOwnerItem()).ToList();
         }
 
+        public async Task<List<VacancyItem>> GetCompanyVacancies(int companyId)
+        {
+            var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
+
+            return vacancies.Select(v => v.ToItem()).ToList();
+        }
+
         public async Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId)
         {
             var vacancy = await vacancyRepository.GetVacancyById(vacancyId)

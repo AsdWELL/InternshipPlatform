@@ -7,20 +7,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Vacancies
 {
-    [Route("api/vacancies")]
     public class VacanciesController(IVacancyService vacancyService) : AuthorizedUserController
     {
-        [HttpGet("{vacancyId:int}")]
+        [HttpGet("api/vacancies/{vacancyId:int}")]
         public async Task<IActionResult> GetVacancyDetails([FromRoute] int vacancyId)
         {
             return Ok(await vacancyService.GetVacancyDetails(UserId, vacancyId));
         }
 
         [Authorize(Roles = Roles.Student)]
-        [HttpGet]
+        [HttpGet("api/vacancies")]
         public async Task<IActionResult> SearchVacancies([FromQuery] SearchVacancyParameters parameters)
         {
             return Ok(await vacancyService.SearchVacancies(parameters));
+        }
+
+        [Authorize(Roles = Roles.Student)]
+        [HttpGet("api/companies/{companyId:int}/vacancies")]
+        public async Task<IActionResult> GetCompanyVacancies([FromRoute] int companyId)
+        {
+            return Ok(await vacancyService.GetCompanyVacancies(companyId));
         }
     }
 }

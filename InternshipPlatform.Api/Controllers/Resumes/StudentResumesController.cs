@@ -20,7 +20,7 @@ namespace InternshipPlatform.Api.Controllers.Resumes
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStudentResumes()
+        public async Task<IActionResult> GetMyResumes()
         {
             return Ok(await resumeService.GetStudentResumes(UserId));
         }

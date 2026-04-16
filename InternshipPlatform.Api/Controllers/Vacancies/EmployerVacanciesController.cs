@@ -20,7 +20,7 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployerVacancies()
+        public async Task<IActionResult> GetMyVacancies()
         {
             return Ok(await vacancyService.GetEmployerVacancies(UserId));
         }
