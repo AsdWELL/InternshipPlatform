@@ -38,6 +38,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(v => v.CompanyId == companyId)
                 .Include(v => v.Company)
                 .Include(v => v.Specialization)
+                .Include(v => v.Applications)
                 .ToListAsync();
         }
 

@@ -31,5 +31,7 @@
         public Company Company { get; set; }
 
         public List<Skill> Skills { get; set; } = [];
+
+        public List<JobApplication> Applications { get; set; }
     }
 }

@@ -21,5 +21,7 @@
         public string? Region { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int ApplicationsCount { get; set; }
     }
 }

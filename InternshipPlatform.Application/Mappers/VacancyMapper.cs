@@ -58,7 +58,8 @@ namespace InternshipPlatform.Application.Mappers
                 CompanyName = vacancy.Company.Name,
                 CompanyLogoPath = vacancy.Company.LogoPath,
                 Region = vacancy.Region,
-                IsActive = vacancy.IsActive
+                IsActive = vacancy.IsActive,
+                ApplicationsCount = vacancy.Applications.Count
             };
         }
 
