@@ -24,6 +24,9 @@ namespace InternshipPlatform.Application.Services
 
             if (!await vacancyRepository.IsVacancyExistsAndActive(request.VacancyId))
                 throw new VacancyNotFoundException();
+
+            if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
+                throw new ActiveApplicationAlreadyExistsException();
             
             var application = request.ToDomain(Roles.Student);
             await applicationRepository.AddJobApplication(application);
@@ -40,6 +43,9 @@ namespace InternshipPlatform.Application.Services
 
             if (!await resumeRepository.IsResumeExistsAndActive(request.ResumeId))
                 throw new ResumeNotFoundException();
+
+            if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
+                throw new ActiveApplicationAlreadyExistsException();
 
             var application = request.ToDomain(Roles.Employer);
             await applicationRepository.AddJobApplication(application);

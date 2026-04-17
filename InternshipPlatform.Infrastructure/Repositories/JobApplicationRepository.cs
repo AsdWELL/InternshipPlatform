@@ -1,6 +1,7 @@
 ﻿using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Application.Values;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,19 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class JobApplicationRepository(InternshipPlatformContext context) : IJobApplicationRepository
     {
+        public async Task<bool> HasStudentActiveApplicationOnVacancy(int resumeId, int vacancyId)
+        {
+            return await context.Applications
+                .AsNoTracking()
+                .AnyAsync(a => a.VacancyId == vacancyId
+                            && a.Resume.StudentId == context.Resumes
+                                .Where(r => r.Id == resumeId)
+                                .Select(r => r.StudentId)
+                                .FirstOrDefault()
+                            && a.ApplicationStatusId != (int)JobApplicationStatuses.Rejected
+                            && a.ApplicationStatusId != (int)JobApplicationStatuses.Withdrawn);
+        }
+
         public async Task AddJobApplication(JobApplication application)
         {
             await context.Applications.AddAsync(application);
@@ -51,9 +65,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(a => a.ApplicationStatus)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Company)
+                .OrderByDescending(a => a.LastStatusDate)
                 .Skip(request.PageIndex * request.PageSize)
                 .Take(request.PageSize)
-                .OrderByDescending(a => a.LastStatusDate)
                 .ToListAsync();
 
             return new PagedResult<JobApplication>
@@ -87,9 +101,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     .ThenInclude(r => r.StudentProfile)
                 .Include(a => a.Resume)
                     .ThenInclude(r => r.Specialization)
+                .OrderByDescending(a => a.LastStatusDate)
                 .Skip(request.PageIndex * request.PageSize)
                 .Take(request.PageSize)
-                .OrderByDescending(a => a.LastStatusDate)
                 .ToListAsync();
 
             return new PagedResult<JobApplication>

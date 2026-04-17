@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Migration\04_InsertSpecializations.sql" />
+    <EmbeddedResource Include="Migration\02_CreateTriggers.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Migration\01_CreateTables.sql" />
-    <EmbeddedResource Include="Migration\02_InsertRoles.sql" />
-    <EmbeddedResource Include="Migration\03_InstertSkills.sql" />
-    <EmbeddedResource Include="Migration\04_InsertSpecializations.sql" />
-    <EmbeddedResource Include="Migration\05_InsertApplicationStatuses.sql" />
+    <EmbeddedResource Include="Migration\03_InsertRoles.sql" />
+    <EmbeddedResource Include="Migration\04_InstertSkills.sql" />
+    <EmbeddedResource Include="Migration\05_InsertSpecializations.sql" />
+    <EmbeddedResource Include="Migration\06_InsertApplicationStatuses.sql" />
   </ItemGroup>
 
   <ItemGroup>

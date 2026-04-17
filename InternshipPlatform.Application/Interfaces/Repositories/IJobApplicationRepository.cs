@@ -6,6 +6,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IJobApplicationRepository
     {
+        Task<bool> HasStudentActiveApplicationOnVacancy(int studentId, int vacancyId);
+        
         Task AddJobApplication(JobApplication application);
 
         Task<JobApplication?> GetStudentApplicationForUpdate(int studentId, int applicationId);
