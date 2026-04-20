@@ -12,6 +12,8 @@
 
         public bool IsRemote { get; set; }
 
+        public string Specialization { get; set; }
+
         public int MinWorkExperienceYears { get; set; }
 
         public string CompanyName { get; set; }
