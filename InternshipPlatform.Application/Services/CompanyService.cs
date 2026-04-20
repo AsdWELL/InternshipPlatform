@@ -43,7 +43,7 @@ namespace InternshipPlatform.Application.Services
 
         public async Task UpdateCompany(UpdateCompanyRequest request)
         {
-            var company = await companyRepository.GetCompanyForUpdate(request.EmployerId)
+            var company = await companyRepository.GetCompanyForUpdateByEmployerId(request.EmployerId)
                 ?? throw new CompanyNotFoundException();
 
             if (!string.IsNullOrWhiteSpace(request.Name))

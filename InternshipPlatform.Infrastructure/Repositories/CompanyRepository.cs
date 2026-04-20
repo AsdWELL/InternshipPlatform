@@ -18,9 +18,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Company?> GetCompanyForUpdate(int id)
+        public async Task<Company?> GetCompanyForUpdateByEmployerId(int employerId)
         {
-            return await context.Companies.FindAsync(id);
+            return await context.EmployerProfiles
+                .Where(ep => ep.UserId == employerId)
+                .Select(ep => ep.Company)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Company?> GetCompanyByEmployerId(int employerId)

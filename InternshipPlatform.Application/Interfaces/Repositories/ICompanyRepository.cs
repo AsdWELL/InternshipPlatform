@@ -8,7 +8,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<Company?> GetCompanyById(int id);
 
-        Task<Company?> GetCompanyForUpdate(int id);
+        Task<Company?> GetCompanyForUpdateByEmployerId(int employerId);
 
         Task<Company?> GetCompanyByEmployerId(int employerId);
 
