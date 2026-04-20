@@ -1,4 +1,5 @@
-﻿using InternshipPlatform.Application.Dtos.JobApplication;
+﻿using InternshipPlatform.Application.Dtos.Chat;
+using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Exceptions.JobApplication;
 using InternshipPlatform.Application.Exceptions.Resume;
@@ -13,6 +14,7 @@ namespace InternshipPlatform.Application.Services
 {
     public class JobApplicationService(
         IJobApplicationRepository applicationRepository,
+        IChatService chatService,
         IResumeRepository resumeRepository,
         IVacancyRepository vacancyRepository,
         IUnitOfWork unitOfWork) : IJobApplicationService
@@ -27,8 +29,15 @@ namespace InternshipPlatform.Application.Services
 
             if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
                 throw new ActiveApplicationAlreadyExistsException();
+
+            var chatId = await chatService.GetOrCreateStudentChat(new StartStudentChatRequest
+            {
+                StudentId = request.UserId,
+                VacancyId = request.VacancyId,
+                Message = request.WelcomeMessage
+            });
             
-            var application = request.ToDomain(Roles.Student);
+            var application = request.ToDomain(Roles.Student, chatId);
             await applicationRepository.AddJobApplication(application);
 
             await unitOfWork.SaveChangesAsync();
@@ -41,13 +50,21 @@ namespace InternshipPlatform.Application.Services
             if (!await vacancyRepository.IsEmployerOwnsVacancy(request.UserId, request.VacancyId))
                 throw new VacancyNotFoundException();
 
-            if (!await resumeRepository.IsResumeExistsAndActive(request.ResumeId))
-                throw new ResumeNotFoundException();
+            var resume = await resumeRepository.GetResumeById(request.ResumeId)
+                ?? throw new ResumeNotFoundException();
 
             if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
                 throw new ActiveApplicationAlreadyExistsException();
 
-            var application = request.ToDomain(Roles.Employer);
+            var chatId = await chatService.GetOrCreateEmployerChat(new StartEmployerChatRequest
+            {
+                EmployerId = request.UserId,
+                StudentId = resume.StudentId,
+                VacancyId = request.VacancyId,
+                Message = request.WelcomeMessage
+            });
+
+            var application = request.ToDomain(Roles.Employer, chatId);
             await applicationRepository.AddJobApplication(application);
 
             await unitOfWork.SaveChangesAsync();
@@ -120,11 +137,15 @@ namespace InternshipPlatform.Application.Services
 
             var currentStatus = (JobApplicationStatuses)application.ApplicationStatusId;
 
-            if (!IsValidStatusTransition(request.Role, currentStatus, request.ApplicationStatus))
+            if (!IsValidStatusTransition(request.Role!, currentStatus, request.ApplicationStatus))
                 throw new InvalidJobApplicationStatusException();
 
             application.ApplicationStatusId = (int)request.ApplicationStatus;
             application.LastStatusDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            if (request.ApplicationStatus == JobApplicationStatuses.Rejected ||
+                request.ApplicationStatus == JobApplicationStatuses.Withdrawn)
+                await chatService.CloseChatByApplicationId(request.UserId, request.Role!, request.ApplicationId);
 
             await unitOfWork.SaveChangesAsync();
         }

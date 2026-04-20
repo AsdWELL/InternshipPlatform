@@ -41,7 +41,22 @@ namespace InternshipPlatform.Api.Extensions
                     {
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies[tokenOptions.CookieTitle];
+                            var tokenFromCookie = context.Request.Cookies[tokenOptions.CookieTitle];
+
+                            if (!string.IsNullOrWhiteSpace(tokenFromCookie))
+                            {
+                                context.Token = tokenFromCookie;
+                                return Task.CompletedTask;
+                            }
+
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrWhiteSpace(accessToken) &&
+                                path.StartsWithSegments("/hubs/chat"))
+                            {
+                                context.Token = accessToken;
+                            }
 
                             return Task.CompletedTask;
                         },

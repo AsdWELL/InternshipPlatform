@@ -1,5 +1,6 @@
 using InternshipPlatform.Api.Extensions;
 using InternshipPlatform.Api.Filters;
+using InternshipPlatform.Api.Hubs;
 using InternshipPlatform.Infrastructure.Extensions;
 using InternshipPlatform.Infrastructure.Migration;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
@@ -22,6 +23,8 @@ builder.Services.AddJWTAuth(builder.Configuration);
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddControllers(options => options.Filters.Add<ExceptionFilter>());
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -65,5 +68,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

@@ -29,6 +29,10 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<JobApplication> Applications { get; set; }
 
+        public DbSet<Chat> Chats { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -99,6 +103,26 @@ namespace InternshipPlatform.Infrastructure
                           .WithMany()
                           .HasForeignKey("VacancyId"),
                     j => j.HasKey("SkillId", "VacancyId"));
+
+            modelBuilder.Entity<Chat>()
+                .HasOne(c => c.Company)
+                .WithMany()
+                .HasForeignKey(c => c.CompanyId);
+
+            modelBuilder.Entity<Chat>()
+                .HasOne(c => c.StudentProfile)
+                .WithMany()
+                .HasForeignKey(c => c.StudentId);
+
+            modelBuilder.Entity<Chat>()
+                .HasOne(c => c.Vacancy)
+                .WithMany()
+                .HasForeignKey(c => c.VacancyId);
+
+            modelBuilder.Entity<Chat>()
+                .HasMany(c => c.Messages)
+                .WithOne()
+                .HasForeignKey(msg => msg.ChatId);
         }
     }
 }

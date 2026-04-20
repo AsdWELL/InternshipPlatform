@@ -412,7 +412,7 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
-        private void GenerateJobApplications()
+        private void GenerateChatsAndJobApplications()
         {
             if (context.Applications.Any())
                 return;
@@ -428,6 +428,7 @@ namespace InternshipPlatform.Infrastructure.Migration
 
             var faker = new Faker("ru");
             var jobApplications = new List<JobApplication>();
+            var chats = new List<Chat>();
 
             foreach (var vacancy in vacancies)
             {
@@ -440,11 +441,23 @@ namespace InternshipPlatform.Infrastructure.Migration
                 var selectedResumes = faker.Random
                     .Shuffle(resumes)
                     .Take(Math.Min(applicationsCount, resumes.Count))
+                    .DistinctBy(r => r.StudentId)
                     .ToList();
 
                 foreach (var resume in selectedResumes)
                 {
                     var status = faker.PickRandom(applicationStatuses);
+
+                    var isChatClosed = status.Id == (int)JobApplicationStatuses.Rejected
+                            || status.Id == (int)JobApplicationStatuses.Withdrawn;
+
+                    chats.Add(new Chat
+                    {
+                        CompanyId = vacancy.CompanyId,
+                        VacancyId = vacancy.Id,
+                        StudentId = resume.StudentId,
+                        IsClosed = isChatClosed
+                    });
 
                     jobApplications.Add(new JobApplication
                     {
@@ -454,10 +467,14 @@ namespace InternshipPlatform.Infrastructure.Migration
                             faker.Date.Between(
                                 DateTime.UtcNow.AddMonths(-6),
                                 DateTime.UtcNow)),
-                        ApplicationStatusId = status.Id
+                        ApplicationStatusId = status.Id,
+                        ChatId = chats.Count
                     });
                 }
             }
+
+            context.Chats.AddRange(chats);
+            context.SaveChanges();
 
             context.Applications.AddRange(jobApplications);
             context.SaveChanges();
@@ -480,8 +497,8 @@ namespace InternshipPlatform.Infrastructure.Migration
             logger.LogInformation($"Вакансии комипаний сгенерированы за {Environment.TickCount - startTime}мс\n");
 
             startTime = Environment.TickCount;
-            GenerateJobApplications();
-            logger.LogInformation($"Отклики сгенерированы за {Environment.TickCount - startTime}мс\n");
+            GenerateChatsAndJobApplications();
+            logger.LogInformation($"Чаты и отклики сгенерированы за {Environment.TickCount - startTime}мс\n");
 
             logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс\n");
         }

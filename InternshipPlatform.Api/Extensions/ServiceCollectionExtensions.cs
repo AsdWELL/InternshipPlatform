@@ -16,7 +16,6 @@ using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentProfile;
 using InternshipPlatform.Application.Validators.Vacancy;
 using InternshipPlatform.Infrastructure.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -51,7 +50,9 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<ISpecializationService, SpecializationService>()
                 .AddScoped<IResumeService, ResumeService>()
                 .AddScoped<IVacancyService, VacancyService>()
-                .AddScoped<IJobApplicationService, JobApplicationService>();
+                .AddScoped<IJobApplicationService, JobApplicationService>()
+                .AddScoped<IChatService, ChatService>()
+                .AddScoped<IMessageService, MessageService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)

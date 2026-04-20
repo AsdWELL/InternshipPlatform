@@ -61,6 +61,8 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<IResumeRepository, ResumeRepository>()
                 .AddScoped<IVacancyRepository, VacancyRepository>()
                 .AddScoped<IJobApplicationRepository, JobApplicationRepository>()
+                .AddScoped<IChatRepository, ChatRepository>()
+                .AddScoped<IMessageRepository, MessageRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

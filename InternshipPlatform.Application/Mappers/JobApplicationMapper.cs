@@ -8,9 +8,10 @@ namespace InternshipPlatform.Application.Mappers
     {
         public static JobApplication ToDomain(
             this CreateJobApplicaionRequest request,
-            string role)
+            string role,
+            int chatId)
         {
-            var application = new JobApplication
+            return new JobApplication
             {
                 ResumeId = request.ResumeId,
                 VacancyId = request.VacancyId,
@@ -20,10 +21,9 @@ namespace InternshipPlatform.Application.Mappers
                     Roles.Student => (int)JobApplicationStatuses.Pending,
                     Roles.Employer => (int)JobApplicationStatuses.InterviewInvited,
                     _ => throw new InvalidOperationException("Указана неправильная роль для создания отклика")
-                }
+                },
+                ChatId = chatId
             };
-
-            return application;
         }
 
         public static StudentApplicationResponse ToStudentApplication(this JobApplication application)
@@ -37,7 +37,8 @@ namespace InternshipPlatform.Application.Mappers
                 ApplicationStatus = application.ApplicationStatus.Name,
                 CompanyId = application.Vacancy.CompanyId,
                 CompanyName = application.Vacancy.Company.Name,
-                CompanyLogoPath = application.Vacancy.Company.LogoPath
+                CompanyLogoPath = application.Vacancy.Company.LogoPath,
+                ChatId = application.ChatId
             };
         }
 
@@ -53,7 +54,8 @@ namespace InternshipPlatform.Application.Mappers
                 StudentId = application.Resume.StudentId,
                 StudentName = application.Resume.StudentProfile.Name,
                 StudentSurname = application.Resume.StudentProfile.Surname,
-                StudentPatronymic = application.Resume.StudentProfile.Patronymic
+                StudentPatronymic = application.Resume.StudentProfile.Patronymic,
+                ChatId = application.ChatId
             };
         }
     }

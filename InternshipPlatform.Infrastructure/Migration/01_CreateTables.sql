@@ -57,11 +57,10 @@ CREATE TABLE "Applications" (
   "Id"                  SERIAL NOT NULL, 
   "VacancyId"           integer NOT NULL, 
   "ResumeId"            integer NOT NULL,
-  "LastStatusDate"     date NOT NULL,
-  "ApplicationStatusId"  integer NOT NULL, 
-  PRIMARY KEY ("Id"), 
-  CONSTRAINT "unique_resumes" 
-    UNIQUE ("VacancyId", "ResumeId"));
+  "LastStatusDate"      date NOT NULL,
+  "ApplicationStatusId" integer NOT NULL,
+  "ChatId"              integer NOT NULL,
+  PRIMARY KEY ("Id"));
 CREATE TABLE "ApplicationStatuses" (
   "Id"   SERIAL NOT NULL, 
   "Name" text NOT NULL UNIQUE, 
@@ -104,14 +103,19 @@ CREATE TABLE "SkillsToVacancy" (
   PRIMARY KEY ("SkillId", 
   "VacancyId"));
 CREATE TABLE "Chats" (
-  "ApplicationId" integer NOT NULL, 
-  PRIMARY KEY ("ApplicationId"));
+  "Id"            SERIAL NOT NULL, 
+  "CompanyId"     integer NOT NULL,
+  "StudentId"     integer NOT NULL,
+  "VacancyId"     integer NOT NULL,
+  "IsClosed"      bool NOT NULL,
+  PRIMARY KEY ("Id"));
 CREATE TABLE "Messages" (
   "Id"        SERIAL NOT NULL, 
   "Content"   text NOT NULL, 
-  "CreatedAt" timestamp NOT NULL, 
+  "CreatedAt" timestamp NOT NULL,
+  "IsRead"    bool NOT NULL,
   "ChatId"    integer NOT NULL, 
-  "SenderId"  integer NOT NULL, 
+  "SenderUserId"  integer NOT NULL, 
   PRIMARY KEY ("Id"));
 CREATE TABLE "SubscriptionPlans" (
   "Id"                SERIAL NOT NULL, 
@@ -163,6 +167,10 @@ CREATE INDEX "Subscriptions1"
   ON "Subscriptions" ("UserId");
 CREATE INDEX "WorkExperiences1" 
   ON "WorkExperiences" ("ResumeId");
+CREATE INDEX "Chats1" 
+  ON "Chats" ("CompanyId");
+CREATE INDEX "Chats2" 
+  ON "Chats" ("StudentId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr861889" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
@@ -177,11 +185,14 @@ ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies845540" FOREIGN KEY ("Company
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON DELETE Cascade;
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321884" FOREIGN KEY ("ApplicationStatusId") REFERENCES "ApplicationStatuses" ("Id");
-ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573641" FOREIGN KEY ("ApplicationId") REFERENCES "Applications" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages297040" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("ApplicationId") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321885" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id");
+ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573641" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id");
+ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id");
+ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId");
+ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages297040" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti215862" FOREIGN KEY ("PlanId") REFERENCES "SubscriptionPlans" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti256259" FOREIGN KEY ("StatusId") REFERENCES "SubscribtionStatuses" ("Id");
 ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti192955" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id");
 ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes739148" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages187268" FOREIGN KEY ("SenderId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages187268" FOREIGN KEY ("SenderUserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "WorkExperiences" ADD CONSTRAINT "FKWorkExperiences12341" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;

@@ -17,5 +17,7 @@
         public int ApplicationStatusId { get; set; }
 
         public JobApplicationStatus ApplicationStatus { get; set; }
+
+        public int ChatId { get; set; }
     }
 }
