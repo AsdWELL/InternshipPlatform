@@ -6,7 +6,7 @@ namespace InternshipPlatform.Application.Dtos.Resume
     {
         public string? Description { get; set; }
 
-        public int? DesiredSalary { get; set; }
+        public int DesiredSalary { get; set; }
 
         public string? Region { get; set; }
 

@@ -152,10 +152,10 @@ namespace InternshipPlatform.Application.Services
                 vacancy.Description = StringNormalizer.NormalizeOptional(request.Description);
 
             if (request.SalaryFrom is not null)
-                vacancy.SalaryFrom = request.SalaryFrom;
+                vacancy.SalaryFrom = request.SalaryFrom.Value;
 
             if (request.SalaryTo is not null)
-                vacancy.SalaryTo = request.SalaryTo;
+                vacancy.SalaryTo = request.SalaryTo.Value;
 
             if (request.IsRemote is not null)
                 vacancy.IsRemote = request.IsRemote.Value;

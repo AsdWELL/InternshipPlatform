@@ -11,7 +11,7 @@ namespace InternshipPlatform.Application.Validators.EmployerProfile
                 return true;
 
             if (string.IsNullOrWhiteSpace(url))
-                return false;
+                return true;
 
             if (Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) &&
                     (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))

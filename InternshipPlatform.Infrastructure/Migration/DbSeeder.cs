@@ -279,7 +279,7 @@ namespace InternshipPlatform.Infrastructure.Migration
                         Region = faker.Address.City(),
                         DesiredSalary = faker.Random.Bool(0.85f)
                             ? faker.Random.Int(2000, 20000) * 10
-                            : null,
+                            : 0,
                         Skills = resumeSkills,
                         WorkExperiences = []
                     };
@@ -394,8 +394,8 @@ namespace InternshipPlatform.Infrastructure.Migration
                     {
                         Title = faker.PickRandom(vacancyTitles),
                         Description = faker.PickRandom(vacancyDescriptions),
-                        SalaryFrom = salaryHidden ? null : salaryFrom,
-                        SalaryTo = salaryHidden ? null : salaryTo,
+                        SalaryFrom = salaryHidden ? 0 : salaryFrom,
+                        SalaryTo = salaryHidden ? 0 : salaryTo,
                         IsRemote = isRemote,
                         Region = isRemote ? null : faker.Address.City(),
                         IsActive = faker.Random.Bool(0.85f),

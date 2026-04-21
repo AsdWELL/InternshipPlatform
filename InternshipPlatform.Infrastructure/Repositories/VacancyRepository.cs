@@ -111,10 +111,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(v => v.SpecializationId == resumeCriteria.SpecializationId)
                 .Where(v => v.MinWorkExperienceYears <= totalYears);
 
-            if (resumeCriteria.DesiredSalary.HasValue)
+            if (resumeCriteria.DesiredSalary > 0)
                 baseQuery = baseQuery.Where(v =>
-                    (v.SalaryFrom != null && v.SalaryFrom <= resumeCriteria.DesiredSalary)
-                    || (v.SalaryTo != null && v.SalaryTo >= resumeCriteria.DesiredSalary));
+                    v.SalaryTo == 0 || v.SalaryTo >= resumeCriteria.DesiredSalary);
 
             var rankedQuery = baseQuery
                 .Select(v => new
@@ -251,9 +250,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                         .Where(r =>
                             r.SpecializationId == v.SpecializationId &&
                             v.MinWorkExperienceYears <= (r.TotalMonths / 12) &&
-                            (!r.DesiredSalary.HasValue ||
-                             (v.SalaryFrom != null && v.SalaryFrom <= r.DesiredSalary.Value) ||
-                             (v.SalaryTo != null && v.SalaryTo >= r.DesiredSalary.Value)))
+                            (v.SalaryTo == 0 || v.SalaryTo >= r.DesiredSalary))
                         .Select(r =>
                         {
                             var skillsMatchCount = r.SkillIds.Count == 0
@@ -343,12 +340,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             if (parameters.SalaryFrom is not null)
                 query = query.Where(v =>
-                    v.SalaryTo != null &&
+                    v.SalaryTo != 0 &&
                     v.SalaryTo >= parameters.SalaryFrom.Value);
 
             if (parameters.SalaryTo is not null)
                 query = query.Where(v =>
-                    v.SalaryFrom != null &&
+                    v.SalaryFrom != 0 &&
                     v.SalaryFrom <= parameters.SalaryTo.Value);
 
             if (parameters.IsRemote is not null)

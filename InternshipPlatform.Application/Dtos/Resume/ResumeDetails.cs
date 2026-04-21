@@ -15,7 +15,7 @@ namespace InternshipPlatform.Application.Dtos.Resume
 
         public bool IsActive { get; set; }
 
-        public int? DesiredSalary { get; set; }
+        public int DesiredSalary { get; set; }
 
         public string? Region { get; set; }
 

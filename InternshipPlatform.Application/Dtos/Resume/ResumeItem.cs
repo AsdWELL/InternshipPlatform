@@ -14,7 +14,7 @@
 
         public DateOnly LastUpdateDate { get; set; }
 
-        public int? DesiredSalary { get; set; }
+        public int DesiredSalary { get; set; }
 
         public string? Region { get; set; }
 

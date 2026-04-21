@@ -192,9 +192,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 })
                 .Where(x => (x.TotalMonths / 12) >= vacancyCriteria.MinWorkExperienceYears)
                 .Where(x =>
-                    !x.DesiredSalary.HasValue ||
-                    (vacancyCriteria.SalaryFrom != null && vacancyCriteria.SalaryFrom <= x.DesiredSalary) ||
-                    (vacancyCriteria.SalaryTo != null && vacancyCriteria.SalaryTo >= x.DesiredSalary))
+                    x.DesiredSalary == 0 ||
+                    vacancyCriteria.SalaryTo == 0 ||
+                    x.DesiredSalary <= vacancyCriteria.SalaryTo)
                 .Select(x => new
                 {
                     x.ResumeId,
@@ -331,9 +331,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                         .Where(v =>
                             v.SpecializationId == r.SpecializationId &&
                             (totalMonths / 12) >= v.MinWorkExperienceYears &&
-                            (!r.DesiredSalary.HasValue ||
-                             (v.SalaryFrom != null && v.SalaryFrom <= r.DesiredSalary.Value) ||
-                             (v.SalaryTo != null && v.SalaryTo >= r.DesiredSalary.Value)))
+                            (r.DesiredSalary == 0 ||
+                                v.SalaryTo == 0 ||
+                                r.DesiredSalary <= v.SalaryTo))
                         .Select(v =>
                         {
                             var skillsMatchCount = v.SkillIds.Count == 0
@@ -408,12 +408,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             if (parameters.SalaryFrom is not null)
                 query = query.Where(r =>
-                    r.DesiredSalary != null &&
+                    r.DesiredSalary != 0 &&
                     r.DesiredSalary >= parameters.SalaryFrom.Value);
 
             if (parameters.SalaryTo is not null)
                 query = query.Where(r =>
-                    r.DesiredSalary != null &&
+                    r.DesiredSalary != 0 &&
                     r.DesiredSalary <= parameters.SalaryTo.Value);
 
             if (!string.IsNullOrWhiteSpace(parameters.Region))

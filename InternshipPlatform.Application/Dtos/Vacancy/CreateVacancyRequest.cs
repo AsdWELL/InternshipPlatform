@@ -11,9 +11,9 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
         
         public string? Description { get; set; }
 
-        public int? SalaryFrom { get; set; }
+        public int SalaryFrom { get; set; }
 
-        public int? SalaryTo { get; set; }
+        public int SalaryTo { get; set; }
 
         public bool IsRemote { get; set; }
 

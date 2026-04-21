@@ -12,9 +12,8 @@ namespace InternshipPlatform.Application.Validators.Resume
                 .WithMessage("Укажите корректную специализацию резюме");
 
             RuleFor(x => x.DesiredSalary)
-                .GreaterThan(0)
-                .WithMessage("Желаемая з/п должна быть больше 0")
-                .When(x => x.DesiredSalary.HasValue);
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Желаемая з/п должна быть больше или равна 0");
 
             RuleFor(x => x.SkillIds)
                 .ForEach(skill => 

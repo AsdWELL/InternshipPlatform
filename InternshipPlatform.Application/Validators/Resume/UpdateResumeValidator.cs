@@ -13,8 +13,8 @@ namespace InternshipPlatform.Application.Validators.Resume
                 .When(x => x.SpecializationId.HasValue);
 
             RuleFor(x => x.DesiredSalary)
-                .GreaterThan(0)
-                .WithMessage("Желаемая з/п должна быть больше 0")
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Желаемая з/п должна быть больше или равна 0")
                 .When(x => x.DesiredSalary.HasValue);
 
             RuleFor(x => x.SkillIds)

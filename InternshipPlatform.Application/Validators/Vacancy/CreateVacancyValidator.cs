@@ -9,17 +9,16 @@ namespace InternshipPlatform.Application.Validators.Vacancy
         {
             RuleFor(x => x.SalaryFrom)
                 .GreaterThanOrEqualTo(0)
-                .When(x => x.SalaryFrom.HasValue)
                 .WithMessage("Не может быть меньше 0");
 
             RuleFor(x => x.SalaryTo)
                 .GreaterThanOrEqualTo(0)
-                .When(x => x.SalaryTo.HasValue)
                 .WithMessage("Не может быть меньше 0");
 
             RuleFor(x => x)
-                .Must(x => !x.SalaryFrom.HasValue || !x.SalaryTo.HasValue || x.SalaryFrom.Value <= x.SalaryTo.Value)
-                .WithMessage("Левая граница з/п должна быть меньше правой");
+                .Must(x => x.SalaryFrom <= x.SalaryTo)
+                .WithMessage("Левая граница з/п должна быть меньше или равна правой")
+                .When(x => x.SalaryTo != 0 && x.SalaryFrom != 0);
 
             RuleFor(x => x.MinWorkExperienceYears)
                 .GreaterThanOrEqualTo(0)
