@@ -9,7 +9,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<List<VacancyOwnerItem>> GetEmployerVacancies(int employerId);
 
-        Task<List<VacancyItem>> GetCompanyVacancies(int companyId);
+        Task<List<VacancyItem>> GetCompanyVacancies(int userId, int companyId);
 
         Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId);
 

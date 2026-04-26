@@ -23,5 +23,7 @@
         public string? CompanyLogoPath { get; set; }
 
         public string? Region { get; set; }
+
+        public bool IsFavorite { get; set; }
     }
 }

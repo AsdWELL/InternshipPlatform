@@ -19,6 +19,7 @@ namespace InternshipPlatform.Application.Services
         ICompanyRepository companyRepository,
         ISkillRepository skillRepository,
         ISpecializationRepository specializationRepository,
+        IFavoriteVacancyService favoriteVacancyService,
         IUnitOfWork unitOfWork) : IVacancyService
     {
         private async Task<List<Skill>> TryGetSkillListByIds(List<int> skillIds)
@@ -78,11 +79,11 @@ namespace InternshipPlatform.Application.Services
             return vacancies.Select(v => v.ToOwnerItem()).ToList();
         }
 
-        public async Task<List<VacancyItem>> GetCompanyVacancies(int companyId)
+        public async Task<List<VacancyItem>> GetCompanyVacancies(int userId, int companyId)
         {
             var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
 
-            return vacancies.Select(v => v.ToItem()).ToList();
+            return await favoriteVacancyService.MapToItemAndMarkFavorites(userId, vacancies);
         }
 
         public async Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId)
@@ -106,7 +107,9 @@ namespace InternshipPlatform.Application.Services
             var vacancies = await vacancyRepository.GetRecommendedVacancies(
                 request.StudentId, request.PageIndex, request.PageSize);
 
-            return vacancies.ToPagedResponse(request, vacancy => vacancy.ToItem());
+            var items = await favoriteVacancyService.MapToItemAndMarkFavorites(request.StudentId, vacancies.Items);
+
+            return vacancies.ToPagedResponse(request, items);
         }
 
         public async Task<PagedResponse<VacancyItem>> GetRecommendedVacanciesForResume(GetRecommendedVacanciesForResumeRequest request)
@@ -117,14 +120,18 @@ namespace InternshipPlatform.Application.Services
             var vacancies = await vacancyRepository.GetRecommendedVacanciesForResume(
                 request.ResumeId, request.PageIndex, request.PageSize);
 
-            return vacancies.ToPagedResponse(request, vacancy => vacancy.ToItem());
+            var items = await favoriteVacancyService.MapToItemAndMarkFavorites(request.StudentId, vacancies.Items);
+
+            return vacancies.ToPagedResponse(request, items);
         }
 
         public async Task<PagedResponse<VacancyItem>> SearchVacancies(SearchVacancyParameters parameters)
         {
             var result = await vacancyRepository.SearchVacancies(parameters);
 
-            return result.ToPagedResponse(parameters, vacancy => vacancy.ToItem());
+            var items = await favoriteVacancyService.MapToItemAndMarkFavorites(parameters.StudentId, result.Items);
+
+            return result.ToPagedResponse(parameters, items);
         }
 
         public async Task UpdateVacancy(UpdateVacancyRequest request)

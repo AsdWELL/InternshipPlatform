@@ -63,6 +63,7 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<IJobApplicationRepository, JobApplicationRepository>()
                 .AddScoped<IChatRepository, ChatRepository>()
                 .AddScoped<IMessageRepository, MessageRepository>()
+                .AddScoped<IFavoriteVacancyRepository, FavoriteVacancyRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

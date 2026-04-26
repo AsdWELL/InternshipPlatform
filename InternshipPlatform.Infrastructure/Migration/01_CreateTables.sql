@@ -53,6 +53,13 @@ CREATE TABLE "Vacancies" (
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 
   PRIMARY KEY ("Id"));
+CREATE TABLE "FavoriteVacancies" (
+	"Id" SERIAL NOT NULL,
+	"StudentId" integer NOT NULL,
+	"VacancyId" integer NOT NULL,
+	CONSTRAINT "unique_favorites" 
+	  UNIQUE ("StudentId", "VacancyId"),
+	PRIMARY KEY ("Id"));
 CREATE TABLE "Applications" (
   "Id"                  SERIAL NOT NULL, 
   "VacancyId"           integer NOT NULL, 
@@ -171,6 +178,8 @@ CREATE INDEX "Chats1"
   ON "Chats" ("CompanyId");
 CREATE INDEX "Chats2" 
   ON "Chats" ("StudentId");
+CREATE INDEX "FavoriteVacancies1"
+  ON "FavoriteVacancies" ("StudentId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr861889" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
@@ -196,3 +205,5 @@ ALTER TABLE "Subscriptions" ADD CONSTRAINT "FKSubscripti192955" FOREIGN KEY ("Us
 ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes739148" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages187268" FOREIGN KEY ("SenderUserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "WorkExperiences" ADD CONSTRAINT "FKWorkExperiences12341" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "FavoriteVacancies" ADD CONSTRAINT "FKFavoriteVacancies573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "FavoriteVacancies" ADD CONSTRAINT "FKFavoriteVacancies573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;

@@ -28,7 +28,9 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static VacancyItem ToItem(this Vacancy vacancy)
+        public static VacancyItem ToItem(
+            this Vacancy vacancy,
+            bool markAsFavorite = false)
         {
             return new VacancyItem
             {
@@ -42,7 +44,8 @@ namespace InternshipPlatform.Application.Mappers
                 CompanyId = vacancy.CompanyId,
                 CompanyName = vacancy.Company.Name,
                 CompanyLogoPath = vacancy.Company.LogoPath,
-                Region = vacancy.Region
+                Region = vacancy.Region,
+                IsFavorite = markAsFavorite
             };
         }
 

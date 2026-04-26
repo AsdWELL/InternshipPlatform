@@ -17,5 +17,19 @@ namespace InternshipPlatform.Application.Mappers
                 Items = pagedResult.Items.Select(x => mapItemToResponse(x)).ToList()
             };
         }
+
+        public static PagedResponse<R> ToPagedResponse<T, R>(
+            this PagedResult<T> pagedResult,
+            PageRequestParameters parameters,
+            IEnumerable<R> items)
+        {
+            return new PagedResponse<R>
+            {
+                PageIndex = parameters.PageIndex,
+                PageSize = Math.Min(parameters.PageSize, pagedResult.TotalCount),
+                TotalCount = pagedResult.TotalCount,
+                Items = items.ToList()
+            };
+        }
     }
 }

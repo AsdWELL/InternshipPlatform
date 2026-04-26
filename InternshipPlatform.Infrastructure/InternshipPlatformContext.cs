@@ -33,6 +33,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<FavoriteVacancy> FavoriteVacancies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

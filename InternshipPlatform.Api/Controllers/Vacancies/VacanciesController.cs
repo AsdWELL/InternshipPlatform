@@ -19,6 +19,8 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
         [HttpGet("api/vacancies")]
         public async Task<IActionResult> SearchVacancies([FromQuery] SearchVacancyParameters parameters)
         {
+            parameters.StudentId = UserId;
+            
             return Ok(await vacancyService.SearchVacancies(parameters));
         }
 
@@ -26,7 +28,7 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
         [HttpGet("api/companies/{companyId:int}/vacancies")]
         public async Task<IActionResult> GetCompanyVacancies([FromRoute] int companyId)
         {
-            return Ok(await vacancyService.GetCompanyVacancies(companyId));
+            return Ok(await vacancyService.GetCompanyVacancies(UserId, companyId));
         }
     }
 }
