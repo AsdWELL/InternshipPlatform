@@ -18,8 +18,6 @@
 
         public bool IsActive { get; set; }
 
-        public int ViewsCount { get; set; }
-
         public int MinWorkExperienceYears { get; set; }
 
         public int SpecializationId { get; set; }

@@ -399,7 +399,6 @@ namespace InternshipPlatform.Infrastructure.Migration
                         IsRemote = isRemote,
                         Region = isRemote ? null : faker.Address.City(),
                         IsActive = faker.Random.Bool(0.85f),
-                        ViewsCount = faker.Random.Int(0, 5000),
                         MinWorkExperienceYears = faker.Random.Int(0, 3),
                         SpecializationId = specialization.Id,
                         CompanyId = company.Id,

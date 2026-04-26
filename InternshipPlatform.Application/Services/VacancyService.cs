@@ -86,20 +86,27 @@ namespace InternshipPlatform.Application.Services
             return await favoriteVacancyService.MapToItemAndMarkFavorites(userId, vacancies);
         }
 
-        public async Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId)
+        public async Task<VacancyDetails> GetVacancyDetailsForStudent(int studentId, int vacancyId)
         {
             var vacancy = await vacancyRepository.GetVacancyById(vacancyId)
                 ?? throw new VacancyNotFoundException();
 
             if (!vacancy.IsActive)
-            {
-                var company = await companyRepository.GetCompanyByEmployerId(userId);
+                throw new VacancyNotFoundException();
 
-                if (company is null || vacancy.CompanyId != company.Id)
-                    throw new VacancyNotFoundException();
-            }
+            var isFavorite = await favoriteVacancyService.IsVacancyInFavorites(studentId, vacancyId);
 
-            return vacancy.ToDetails();
+            return vacancy.ToDetails(isFavorite);
+        }
+
+        public async Task<VacancyOwnerDetails> GetVacancyDetailsForOwner(int employerId, int vacancyId)
+        {
+            await ThrowIfEmployerDoesNotOwnVacancy(employerId, vacancyId);
+
+            var vacancy = await vacancyRepository.GetVacancyById(vacancyId)
+                ?? throw new VacancyNotFoundException();
+
+            return vacancy.ToOwnerDetails();
         }
 
         public async Task<PagedResponse<VacancyItem>> GetRecommendedVacancies(GetRecommendedVacanciesRequest request)

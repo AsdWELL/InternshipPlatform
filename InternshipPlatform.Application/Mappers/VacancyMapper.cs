@@ -19,7 +19,6 @@ namespace InternshipPlatform.Application.Mappers
                 SalaryFrom = request.SalaryFrom,
                 SalaryTo = request.SalaryTo,
                 IsRemote = request.IsRemote,
-                ViewsCount = 0,
                 IsActive = true,
                 Region = StringNormalizer.NormalizeOptional(request.Region),
                 MinWorkExperienceYears = request.MinWorkExperienceYears,
@@ -68,9 +67,30 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static VacancyDetails ToDetails(this Vacancy vacancy)
+        public static VacancyDetails ToDetails(
+            this Vacancy vacancy,
+            bool isFavorite)
         {
             return new VacancyDetails
+            {
+                Id = vacancy.Id,
+                Title = vacancy.Title,
+                Description = vacancy.Description,
+                SalaryFrom = vacancy.SalaryFrom,
+                SalaryTo = vacancy.SalaryTo,
+                IsRemote = vacancy.IsRemote,
+                Region = vacancy.Region,
+                MinWorkExperienceYears = vacancy.MinWorkExperienceYears,
+                Specialization = vacancy.Specialization,
+                Company = vacancy.Company.ToResponse(),
+                Skills = vacancy.Skills,
+                IsFavorite = isFavorite
+            };
+        }
+
+        public static VacancyOwnerDetails ToOwnerDetails(this Vacancy vacancy)
+        {
+            return new VacancyOwnerDetails
             {
                 Id = vacancy.Id,
                 Title = vacancy.Title,

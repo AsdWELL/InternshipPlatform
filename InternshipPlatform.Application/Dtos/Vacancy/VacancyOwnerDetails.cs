@@ -3,7 +3,7 @@ using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Dtos.Vacancy
 {
-    public class VacancyDetails
+    public class VacancyOwnerDetails
     {
         public int Id { get; set; }
 
@@ -19,14 +19,14 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
 
         public string? Region { get; set; }
 
-        public int MinWorkExperienceYears { get; set; }
+        public bool IsActive { get; set; }
 
-        public bool IsFavorite { get; set; }
+        public int MinWorkExperienceYears { get; set; }
 
         public Specialization Specialization { get; set; }
 
         public CompanyResponse Company { get; set; }
 
-        public List<Skill> Skills { get; set; }
+        public List<Skill> Skills { get; set; } 
     }
 }

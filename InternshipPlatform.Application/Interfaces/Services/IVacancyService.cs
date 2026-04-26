@@ -11,7 +11,9 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<List<VacancyItem>> GetCompanyVacancies(int userId, int companyId);
 
-        Task<VacancyDetails> GetVacancyDetails(int userId, int vacancyId);
+        Task<VacancyDetails> GetVacancyDetailsForStudent(int studentId, int vacancyId);
+
+        Task<VacancyOwnerDetails> GetVacancyDetailsForOwner(int employerId, int vacancyId);
 
         Task<PagedResponse<VacancyItem>> GetRecommendedVacancies(GetRecommendedVacanciesRequest request);
 

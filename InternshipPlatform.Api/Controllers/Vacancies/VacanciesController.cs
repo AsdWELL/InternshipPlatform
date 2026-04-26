@@ -12,7 +12,12 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
         [HttpGet("api/vacancies/{vacancyId:int}")]
         public async Task<IActionResult> GetVacancyDetails([FromRoute] int vacancyId)
         {
-            return Ok(await vacancyService.GetVacancyDetails(UserId, vacancyId));
+            return Role switch
+            {
+                Roles.Student => Ok(await vacancyService.GetVacancyDetailsForStudent(UserId, vacancyId)),
+                Roles.Employer => Ok(await vacancyService.GetVacancyDetailsForOwner(UserId, vacancyId)),
+                _ => Forbid()
+            };
         }
 
         [Authorize(Roles = Roles.Student)]

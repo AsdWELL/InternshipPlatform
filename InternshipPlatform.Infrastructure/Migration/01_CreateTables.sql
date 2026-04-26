@@ -48,7 +48,6 @@ CREATE TABLE "Vacancies" (
   "IsRemote"         bool NOT NULL, 
   "Region"           text, 
   "IsActive"         bool NOT NULL, 
-  "ViewsCount"       integer NOT NULL,
   "MinWorkExperienceYears" integer NOT NULL,
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 

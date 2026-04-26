@@ -13,6 +13,11 @@ namespace InternshipPlatform.Application.Services
         IVacancyRepository vacancyRepository,
         IUnitOfWork unitOfWork) : IFavoriteVacancyService
     {
+        public Task<bool> IsVacancyInFavorites(int studentId, int vacancyId)
+        {
+            return favoriteVacanciesRepository.IsVacancyInStudentFavorites(studentId, vacancyId);
+        }
+
         public async Task AddToFavorites(int studentId, int vacancyId)
         {
             if (!await vacancyRepository.IsVacancyExistsAndActive(vacancyId))
