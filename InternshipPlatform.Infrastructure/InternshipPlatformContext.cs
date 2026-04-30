@@ -37,6 +37,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<ResumeView> ResumeViews { get; set; }
 
+        public DbSet<VacancyView> VacancyViews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -127,6 +129,11 @@ namespace InternshipPlatform.Infrastructure
                 .HasMany(c => c.Messages)
                 .WithOne()
                 .HasForeignKey(msg => msg.ChatId);
+
+            modelBuilder.Entity<VacancyView>()
+                .HasOne(r => r.StudentProfile)
+                .WithMany()
+                .HasForeignKey(r => r.StudentId);
         }
     }
 }

@@ -129,6 +129,12 @@ CREATE TABLE "ResumeViews" (
   "CompanyId" integer NOT NULL,
   "ViewDate" timestamp NOT NULL,
   PRIMARY KEY ("Id"));
+CREATE TABLE "VacancyViews" (
+  "Id" SERIAL NOT NULL,
+  "VacancyId" integer NOT NULL,
+  "StudentId" integer NOT NULL,
+  "ViewDate" timestamp NOT NULL,
+  PRIMARY KEY ("Id"));
 CREATE TABLE "SubscriptionPlans" (
   "Id"                SERIAL NOT NULL, 
   "Name"              text NOT NULL, 
@@ -189,6 +195,10 @@ CREATE INDEX "ResumeViews1"
   ON "ResumeViews" ("ResumeId");
 CREATE INDEX "ResumeViews2"
   ON "ResumeViews" ("CompanyId");
+CREATE INDEX "VacancyViews1"
+  ON "VacancyViews" ("VacancyId");
+CREATE INDEX "VacancyViews2"
+  ON "VacancyViews" ("StudentId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr861889" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
@@ -216,5 +226,7 @@ ALTER TABLE "Messages" ADD CONSTRAINT "FKMessages187268" FOREIGN KEY ("SenderUse
 ALTER TABLE "WorkExperiences" ADD CONSTRAINT "FKWorkExperiences12341" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "FavoriteVacancies" ADD CONSTRAINT "FKFavoriteVacancies573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "FavoriteVacancies" ADD CONSTRAINT "FKFavoriteVacancies573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews573641" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id");
-ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON DELETE Cascade;
+ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews573641" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;

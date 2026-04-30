@@ -25,5 +25,7 @@
         public bool IsActive { get; set; }
 
         public int ApplicationsCount { get; set; }
+
+        public int ViewsCount { get; set; }
     }
 }

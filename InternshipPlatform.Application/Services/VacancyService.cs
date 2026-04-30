@@ -20,6 +20,7 @@ namespace InternshipPlatform.Application.Services
         ISkillRepository skillRepository,
         ISpecializationRepository specializationRepository,
         IFavoriteVacancyService favoriteVacancyService,
+        IVacancyViewRepository vacancyViewRepository,
         IUnitOfWork unitOfWork) : IVacancyService
     {
         private async Task<List<Skill>> TryGetSkillListByIds(List<int> skillIds)
@@ -76,7 +77,9 @@ namespace InternshipPlatform.Application.Services
             
             var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
 
-            return vacancies.Select(v => v.ToOwnerItem()).ToList();
+            var viewsCount = await vacancyViewRepository.GetVacanciesViewsCount(companyId);
+
+            return vacancies.Select(v => v.ToOwnerItem(viewsCount.GetValueOrDefault(v.Id))).ToList();
         }
 
         public async Task<List<VacancyItem>> GetCompanyVacancies(int userId, int companyId)
@@ -93,6 +96,9 @@ namespace InternshipPlatform.Application.Services
 
             if (!vacancy.IsActive)
                 throw new VacancyNotFoundException();
+
+            await vacancyViewRepository.AddVacancyView(studentId, vacancyId);
+            await unitOfWork.SaveChangesAsync();
 
             var isFavorite = await favoriteVacancyService.IsVacancyInFavorites(studentId, vacancyId);
 

@@ -4,7 +4,7 @@ using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InternshipPlatform.Api.Controllers
+namespace InternshipPlatform.Api.Controllers.Views
 {
     public class ResumeViewsController(IResumeViewService resumeViewService) : AuthorizedUserController
     {
@@ -17,7 +17,7 @@ namespace InternshipPlatform.Api.Controllers
 
         [Authorize(Roles = Roles.Employer)]
         [HttpGet("api/employers/me/views-history")]
-        public async Task<IActionResult> GetViewsHistory()
+        public async Task<IActionResult> GetEmployerResumeViewsHistory()
         {
             return Ok(await resumeViewService.GetEmployerResumeViewsHistory(UserId));
         }

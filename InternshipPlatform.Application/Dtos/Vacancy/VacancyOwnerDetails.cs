@@ -27,6 +27,6 @@ namespace InternshipPlatform.Application.Dtos.Vacancy
 
         public CompanyResponse Company { get; set; }
 
-        public List<Skill> Skills { get; set; } 
+        public List<Skill> Skills { get; set; }
     }
 }
