@@ -19,6 +19,7 @@ namespace InternshipPlatform.Application.Services
         ISpecializationRepository specializationRepository,
         ICompanyRepository companyRepository,
         IVacancyRepository vacancyRepository,
+        IResumeViewRepository resumeViewRepository,
         IUnitOfWork unitOfWork) : IResumeService
     {
         private async Task<List<Skill>> TryGetSkillListByIds(List<int> skillIds)
@@ -57,6 +58,14 @@ namespace InternshipPlatform.Application.Services
                 throw new WorkExperienceNotFoundException();
         }
 
+        private async Task<int> GetCompanyIdByEmployerIdOrThrow(int employerId)
+        {
+            var company = await companyRepository.GetCompanyByEmployerId(employerId)
+                ?? throw new CompanyNotFoundException();
+
+            return company.Id;
+        }
+
         public async Task<int> CreateResume(CreateResumeRequest request)
         {
             var skills = await TryGetSkillListByIds(request.SkillIds);            
@@ -75,7 +84,9 @@ namespace InternshipPlatform.Application.Services
         {
             var resumes = await resumeRepository.GetStudentResumes(studentId);
 
-            return resumes.Select(r => r.ToOwnerItem()).ToList();
+            var viewsCount = await resumeViewRepository.GetResumesViewsCount(studentId);
+
+            return resumes.Select(r => r.ToOwnerItem(viewsCount.GetValueOrDefault(r.Id))).ToList();
         }
 
         public async Task<ResumeDetails> GetResumeDetails(int userId, int resumeId)
@@ -85,15 +96,23 @@ namespace InternshipPlatform.Application.Services
             if (resume is null || (!resume.IsActive && resume.StudentId != userId))
                 throw new ResumeNotFoundException();
 
+            if (resume.StudentId != userId)
+            {
+                var companyId = await GetCompanyIdByEmployerIdOrThrow(userId);
+
+                await resumeViewRepository.AddResumeView(companyId, resumeId);
+
+                await unitOfWork.SaveChangesAsync();
+            }
+
             return resume.ToDetails();
         }
 
         public async Task<PagedResponse<ResumeItem>> GetRecommendedResumes(GetRecommendedResumesRequest request)
         {
-            var company = await companyRepository.GetCompanyByEmployerId(request.EmployerId)
-                ?? throw new CompanyNotFoundException();
+            var companyId = await GetCompanyIdByEmployerIdOrThrow(request.EmployerId);
 
-            var resumes = await resumeRepository.GetRecommendedResumes(company.Id, request.PageIndex, request.PageSize);
+            var resumes = await resumeRepository.GetRecommendedResumes(companyId, request.PageIndex, request.PageSize);
 
             return resumes.ToPagedResponse(request, resume => resume.ToItem());
         }

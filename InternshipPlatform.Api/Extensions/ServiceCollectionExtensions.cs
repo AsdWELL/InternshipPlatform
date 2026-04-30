@@ -53,7 +53,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IJobApplicationService, JobApplicationService>()
                 .AddScoped<IChatService, ChatService>()
                 .AddScoped<IMessageService, MessageService>()
-                .AddScoped<IFavoriteVacancyService, FavoriteVacancyService>();
+                .AddScoped<IFavoriteVacancyService, FavoriteVacancyService>()
+                .AddScoped<IResumeViewService, ResumeViewService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)

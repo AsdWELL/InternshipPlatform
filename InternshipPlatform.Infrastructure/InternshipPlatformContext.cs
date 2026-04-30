@@ -35,6 +35,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<FavoriteVacancy> FavoriteVacancies { get; set; }
 
+        public DbSet<ResumeView> ResumeViews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

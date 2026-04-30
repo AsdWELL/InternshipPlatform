@@ -19,5 +19,7 @@
         public int TotalWorkExperienceMonths { get; set; }
 
         public int ApplicationsCount { get; set; }
+
+        public int ViewsCount { get; set; }
     }
 }
