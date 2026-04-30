@@ -187,6 +187,8 @@ CREATE INDEX "FavoriteVacancies1"
   ON "FavoriteVacancies" ("StudentId");
 CREATE INDEX "ResumeViews1"
   ON "ResumeViews" ("ResumeId");
+CREATE INDEX "ResumeViews2"
+  ON "ResumeViews" ("CompanyId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "EmployerProfiles" ADD CONSTRAINT "FKEmployerPr861889" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;

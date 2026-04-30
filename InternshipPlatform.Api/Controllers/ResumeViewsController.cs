@@ -6,13 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers
 {
-    [Authorize(Roles = Roles.Student)]
     public class ResumeViewsController(IResumeViewService resumeViewService) : AuthorizedUserController
     {
+        [Authorize(Roles = Roles.Student)]
         [HttpGet("api/students/me/resumes/{resumeId:int}/views")]
         public async Task<IActionResult> GetResumeViews([FromRoute] int resumeId)
         {
-            return Ok(await resumeViewService.GetResumeViews(UserId, resumeId));
+            return Ok(await resumeViewService.GetStudentResumeViews(UserId, resumeId));
+        }
+
+        [Authorize(Roles = Roles.Employer)]
+        [HttpGet("api/employers/me/views-history")]
+        public async Task<IActionResult> GetViewsHistory()
+        {
+            return Ok(await resumeViewService.GetEmployerResumeViewsHistory(UserId));
         }
     }
 }

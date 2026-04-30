@@ -9,5 +9,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         Task<List<ResumeView>> GetResumeViews(int resumeId);
 
         Task<Dictionary<int, int>> GetResumesViewsCount(int studentId);
+
+        Task<List<ResumeView>> GetEmployerResumeViewsHistory(int employerId);
     }
 }

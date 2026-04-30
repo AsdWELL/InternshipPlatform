@@ -1,8 +1,10 @@
 ﻿namespace InternshipPlatform.Application.Dtos.ResumeView
 {
-    public class ResumeViewResponse
+    public class StudentResumeViewResponse
     {
         public int Id { get; set; }
+
+        public int CompanyId { get; set; }
 
         public string CompanyName { get; set; }
 

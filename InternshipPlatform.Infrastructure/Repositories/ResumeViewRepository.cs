@@ -52,5 +52,23 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .OrderByDescending(v => v.ViewDate)
                 .ToListAsync();
         }
+
+        public async Task<List<ResumeView>> GetEmployerResumeViewsHistory(int employerId)
+        {
+            return await context.ResumeViews
+                .AsNoTracking()
+                .Where(v => v.CompanyId == 
+                    context.EmployerProfiles
+                        .AsNoTracking()
+                        .Where(ep => ep.UserId == employerId)
+                        .Select(ep => ep.CompanyId)
+                        .FirstOrDefault())
+                .Include(v => v.Resume)
+                    .ThenInclude(r => r.Specialization)
+                .Include(v => v.Resume)
+                    .ThenInclude(r => r.StudentProfile)
+                .OrderByDescending(v => v.ViewDate)
+                .ToListAsync();
+        }
     }
 }

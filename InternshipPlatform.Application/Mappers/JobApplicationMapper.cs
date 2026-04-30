@@ -55,6 +55,7 @@ namespace InternshipPlatform.Application.Mappers
                 StudentName = application.Resume.StudentProfile.Name,
                 StudentSurname = application.Resume.StudentProfile.Surname,
                 StudentPatronymic = application.Resume.StudentProfile.Patronymic,
+                StudentAvatarPath = application.Resume.StudentProfile.AvatarPath,
                 ChatId = application.ChatId
             };
         }

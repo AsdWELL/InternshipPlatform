@@ -16,6 +16,8 @@
 
         public string? StudentPatronymic { get; set; }
 
+        public string? StudentAvatarPath { get; set; }
+
         public DateOnly LastStatusDate { get; set; }
 
         public string ApplicationStatus { get; set; }
