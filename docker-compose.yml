@@ -9,10 +9,28 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - Kafka__BootstrapServers=kafka:9092
       - ConnectionStrings__InternshipPlatformDB=Host=postgres_internship_platform;Port=5432;Database=InternshipPlatform;Username=postgres;Password=admin;
     depends_on:
       postgres_internship_platform:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  notificationservice:
+    image: ${DOCKER_REGISTRY-}notificationservice
+    build:
+      context: .
+      dockerfile: NotificationService/Dockerfile
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Kafka__BootstrapServers=kafka:9092
+    depends_on:
+      internshipplatform.api:
+        condition: service_started
 
   postgres_internship_platform:
     image: postgres:15-alpine
@@ -31,5 +49,55 @@ services:
       retries: 5
       start_period: 30s
 
+  zookeeper:
+    image: bitnamilegacy/zookeeper:3.9.3-debian-12-r22
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: bitnamilegacy/kafka:3.7.1-debian-12-r9
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    healthcheck:
+        test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server kafka:9092 --list"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+        start_period: 10s
+    volumes:
+      - kafka-data:/tmp/kafka-logs
+
+  kafka-init:
+    image: bitnami/kafka:3.7.1-debian-12-r9
+    depends_on:
+        kafka:
+            condition: service_healthy
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic PlatformNotifications --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics.sh --bootstrap-server kafka:9092 --list
+      "
+
 volumes:
   pgdata_internship_platform:
+  kafka-data:  

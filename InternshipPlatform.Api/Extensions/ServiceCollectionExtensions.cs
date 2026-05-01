@@ -2,6 +2,7 @@
 using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.JobApplication;
+using InternshipPlatform.Application.Dtos.Kafka;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
@@ -36,6 +37,14 @@ namespace InternshipPlatform.Api.Extensions
                                 });
                                 options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
                             });
+        }
+
+        public static IServiceCollection AddKafka(this IServiceCollection services, IConfiguration configuration)
+        {
+            var kafkaSection = configuration.GetRequiredSection("Kafka");
+            services.Configure<KafkaSettings>(kafkaSection);
+
+            return services.AddSingleton<NotificationProducer>();
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)

@@ -16,7 +16,8 @@ builder.Services.AddSwagger();
 builder.Services.AddDatabase(builder.Configuration)
                 .AddRepositories()
                 .AddServices()
-                .AddValidators();
+                .AddValidators()
+                .AddKafka(builder.Configuration);
 
 builder.Services.AddJWTAuth(builder.Configuration);
 
