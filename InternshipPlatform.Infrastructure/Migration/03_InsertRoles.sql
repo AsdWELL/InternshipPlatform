@@ -1,5 +1,6 @@
 INSERT INTO "Roles" ("Name")
 VALUES 
     ('Student'),
-    ('Employer')
+    ('Employer'),
+    ('Curator')
 ON CONFLICT ("Name") DO NOTHING;

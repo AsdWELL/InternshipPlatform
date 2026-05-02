@@ -5,5 +5,7 @@
         public const string Student = "Student";
 
         public const string Employer = "Employer";
+
+        public const string Curator = "Curator";
     }
 }

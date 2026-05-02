@@ -1,18 +1,20 @@
 ﻿namespace InternshipPlatform.Domain.Entities
 {
-    public class StudentProfile
+    public class Curator
     {
         public int UserId { get; set; }
-        
+
         public User User { get; set; }
+
+        public int UniversityId { get; set; }
+
+        public University University { get; set; }
 
         public string Name { get; set; }
 
         public string Surname { get; set; }
 
         public string? Patronymic { get; set; }
-
-        public DateOnly? BirthdayDate { get; set; }
 
         public string? Phone { get; set; }
 
@@ -21,13 +23,5 @@
         public string? TgLink { get; set; }
 
         public string? MaxLink { get; set; }
-
-        public string? GithubLink { get; set; }
-
-        public string? AvatarPath { get; set; }
-
-        public int? GroupId { get; set; }
-
-        public StudentGroup? Group { get; set; }
     }
 }

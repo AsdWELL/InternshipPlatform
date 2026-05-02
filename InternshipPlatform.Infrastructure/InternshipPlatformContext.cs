@@ -39,6 +39,14 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<VacancyView> VacancyViews { get; set; }
 
+        public DbSet<University> Universities { get; set; }
+
+        public DbSet<Curator> Curators { get; set; }
+
+        public DbSet<StudentGroup> StudentGroups { get; set; }
+
+        public DbSet<StudentGroupRequest> StudentGroupRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -57,6 +65,14 @@ namespace InternshipPlatform.Infrastructure
                 entity.HasOne(ep => ep.User)
                     .WithOne()
                     .HasForeignKey<EmployerProfile>(ep => ep.UserId);
+            });
+
+            modelBuilder.Entity<Curator>(entity =>
+            {
+                entity.HasKey(c => c.UserId);
+                entity.HasOne(c => c.User)
+                    .WithOne()
+                    .HasForeignKey<Curator>(c => c.UserId);
             });
 
             modelBuilder.Entity<Resume>()
@@ -134,6 +150,21 @@ namespace InternshipPlatform.Infrastructure
                 .HasOne(r => r.StudentProfile)
                 .WithMany()
                 .HasForeignKey(r => r.StudentId);
+
+            modelBuilder.Entity<StudentGroup>()
+                .HasMany(g => g.StudentProfiles)
+                .WithOne(sp => sp.Group)
+                .HasForeignKey(sp => sp.GroupId);
+
+            modelBuilder.Entity<StudentGroupRequest>()
+                .HasOne(r => r.StudentProfile)
+                .WithOne()
+                .HasForeignKey<StudentGroupRequest>(r => r.StudentId);
+
+            modelBuilder.Entity<StudentGroupRequest>()
+                .HasOne(r => r.Group)
+                .WithMany()
+                .HasForeignKey(r => r.GroupId);
         }
     }
 }

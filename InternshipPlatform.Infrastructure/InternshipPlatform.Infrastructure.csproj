@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Migration\04_InstertSkills.sql" />
     <EmbeddedResource Include="Migration\05_InsertSpecializations.sql" />
     <EmbeddedResource Include="Migration\06_InsertApplicationStatuses.sql" />
+    <EmbeddedResource Include="Migration\07_InsertUniversities.sql" />
   </ItemGroup>
 
   <ItemGroup>

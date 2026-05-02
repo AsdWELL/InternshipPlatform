@@ -120,10 +120,6 @@ namespace InternshipPlatform.Application.Validators.StudentProfile
                 .Must(x => ValidOptionalUrl(x, "max.ru", "www.max.ru", "web.max.ru"))
                 .WithMessage("Укажите корректную ссылку на профиль MAX")
                 .When(x => x.MaxLink is not null);
-
-            RuleFor(x => x.GraduationYear)
-                .Must(year => ValidGraduationYear(year!.Value)).WithMessage($"Год выпуска должен быть в диапазоне от текущего до +{MaxStudyDurationYears} лет")
-                .When(x => x.GraduationYear is not null);
         }
     }
 }

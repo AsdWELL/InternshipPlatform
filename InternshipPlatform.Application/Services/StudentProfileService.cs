@@ -105,15 +105,6 @@ namespace InternshipPlatform.Application.Services
             if (request.GithubLink is not null)
                 student.GithubLink = StringNormalizer.NormalizeToLower(request.GithubLink);
 
-            if (request.University is not null)
-                student.University = StringNormalizer.NormalizeOptional(request.University);
-
-            if (request.Specialization is not null)
-                student.Specialization = StringNormalizer.NormalizeOptional(request.Specialization);
-
-            if (request.GraduationYear is not null)
-                student.GraduationYear = request.GraduationYear;
-
             await unitOfWork.SaveChangesAsync();
         }
 

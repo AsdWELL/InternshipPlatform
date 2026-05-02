@@ -30,11 +30,5 @@ namespace InternshipPlatform.Application.Dtos.StudentProfile
         public string? MaxLink { get; set; }
 
         public string? GithubLink { get; set; }
-
-        public string? University { get; set; }
-
-        public string? Specialization { get; set; }
-
-        public int? GraduationYear { get; set; }
     }
 }

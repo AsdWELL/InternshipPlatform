@@ -38,29 +38,21 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinApplicationsPerVacancy = 5;
         private const int MaxApplicationsPerVacancy = 10;
 
+        private const int MinGroupsPerCurator = 1;
+        private const int MaxGroupsPerCurator = 3;
+
+        private const int MinStudentsPerGroup = 10;
+        private const int MaxStudentsPerGroup = 30;
+
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
 
         private void GenerateStudents(List<User> users)
         {
-            var universities = new[]
-            {
-                "ПГУ", "ПГУАС", "ПензГТУ", "ПГАУ", "БГУ", "БНТУ", "БГУИР", "БГЭУ", "МГЛУ", "БГМУ", "ГрГУ им. Янки Купалы"
-            };
-
-            var specializations = new[]
-            {
-                "Программная инженерия",
-                "Информатика и технологии программирования",
-                "Информационные системы и технологии",
-                "Прикладная информатика",
-                "Искусственный интеллект",
-                "Кибербезопасность",
-                "Бизнес-аналитика"
-            };
-
             var students = users
                 .Where(u => u.Role.Name == Roles.Student)
                 .ToList();
+
+            var groups = context.StudentGroups.ToList();
 
             var studentProfileFaker = new Faker<StudentProfile>("ru")
                 .RuleFor(p => p.Name, f => f.Name.FirstName())
@@ -79,9 +71,6 @@ namespace InternshipPlatform.Infrastructure.Migration
                 .RuleFor(p => p.TgLink, f => f.Random.Bool(0.7f) ? $"https://t.me/{f.Internet.UserName()}" : null)
                 .RuleFor(p => p.MaxLink, f => f.Random.Bool(0.2f) ? $"https://max.ru/{f.Internet.UserName()}" : null)
                 .RuleFor(p => p.GithubLink, f => f.Random.Bool(0.6f) ? $"https://github.com/{f.Internet.UserName()}" : null)
-                .RuleFor(p => p.University, f => f.PickRandom(universities))
-                .RuleFor(p => p.Specialization, f => f.PickRandom(specializations))
-                .RuleFor(p => p.GraduationYear, f => f.Date.Future(5).Year)
                 .RuleFor(p => p.AvatarPath, _ => null);
 
             var studentProfiles = students
@@ -152,7 +141,38 @@ namespace InternshipPlatform.Infrastructure.Migration
 
             context.EmployerProfiles.AddRange(employerProfiles);
             context.SaveChanges();
-        } 
+        }
+
+        private void GenerateCurators(List<User> users)
+        {
+            var curators = users
+                .Where(u => u.Role.Name == Roles.Curator)
+                .ToList();
+
+            var universities = context.Universities.ToList();
+
+            var curatorFaker = new Faker<Curator>("ru")
+                .RuleFor(p => p.Name, f => f.Name.FirstName())
+                .RuleFor(p => p.UniversityId, f => f.PickRandom(universities).Id)
+                .RuleFor(p => p.Surname, f => f.Name.LastName())
+                .RuleFor(p => p.Patronymic, f => f.Random.Bool(0.7f) ? f.Name.FirstName() + "ович" : null)
+                .RuleFor(p => p.Phone, f => f.Phone.PhoneNumber("+79#########"))
+                .RuleFor(p => p.VkLink, f => f.Random.Bool(0.5f) ? $"https://vk.com/{f.Internet.UserName()}" : null)
+                .RuleFor(p => p.TgLink, f => f.Random.Bool(0.7f) ? $"https://t.me/{f.Internet.UserName()}" : null)
+                .RuleFor(p => p.MaxLink, f => f.Random.Bool(0.2f) ? $"https://max.ru/{f.Internet.UserName()}" : null);
+
+            var curatorProfiles = curators
+                .Select(user =>
+                {
+                    var profile = curatorFaker.Generate();
+                    profile.UserId = user.Id;
+                    return profile;
+                })
+                .ToList();
+
+            context.Curators.AddRange(curatorProfiles);
+            context.SaveChanges();
+        }
 
         private void GenerateUsers()
         {
@@ -179,6 +199,8 @@ namespace InternshipPlatform.Infrastructure.Migration
 
             context.Users.AddRange(users);
             context.SaveChanges();
+
+            GenerateCurators(users);
 
             GenerateStudents(users);
 
@@ -479,6 +501,125 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private void GenerateStudentGroups()
+        {
+            if (context.StudentGroups.Any())
+                return;
+
+            var curators = context.Curators.ToList();
+            if (curators.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed);
+
+            var faker = new Faker("ru");
+            var studentGroups = new List<StudentGroup>();
+
+            var specializationCodes = new Dictionary<string, string>
+            {
+                ["Программная инженерия"] = "ПИ",
+                ["Информатика и технологии программирования"] = "ИП",
+                ["Информационные системы и технологии"] = "ИС",
+                ["Прикладная информатика"] = "ПС",
+                ["Искусственный интеллект"] = "ИИ",
+                ["Кибербезопасность"] = "КБ",
+                ["Бизнес-аналитика"] = "БА",
+                ["Программная инженерия цифровых решений"] = "ПЦ",
+                ["Разработка информационных систем"] = "РИ",
+                ["Системный анализ и управление"] = "СА",
+                ["Компьютерная безопасность"] = "КС",
+                ["Математическое обеспечение и администрирование информационных систем"] = "МА",
+                ["Анализ данных и машинное обучение"] = "АД"
+            };
+
+            var codesCounter = specializationCodes.Values.ToDictionary(s => s, _ => 0);
+
+            int inviteCodeCounter = 1;
+
+            foreach (var curator in curators)
+            {
+                int groupsCount = faker.Random.Int(MinGroupsPerCurator, MaxGroupsPerCurator);
+
+                var usedGroupNamesForCurator = new HashSet<string>();
+
+                for (int i = 0; i < groupsCount; i++)
+                {
+                    var specialization = faker.PickRandom(specializationCodes.Keys.ToList());
+                    var specializationCode = specializationCodes[specialization];
+
+                    var enrollmentYear = faker.Random.Int(DateTime.UtcNow.Year - 6, DateTime.UtcNow.Year - 1);
+                    var graduationYear = enrollmentYear + faker.Random.Int(4, 5);
+
+                    var shortYear = (enrollmentYear % 100).ToString("D2");
+
+                    string groupName;
+                    int safetyCounter = 0;
+
+                    do
+                    {
+                        groupName = $"{shortYear}{specializationCode}{codesCounter[specializationCode]++}";
+                        safetyCounter++;
+                    }
+                    while (!usedGroupNamesForCurator.Add(groupName) && safetyCounter < 20);
+
+                    studentGroups.Add(new StudentGroup
+                    {
+                        Name = groupName,
+                        UniversityId = curator.UniversityId,
+                        Specialization = specialization,
+                        EnrollmentYear = enrollmentYear,
+                        GraduationYear = graduationYear,
+                        InviteCode = $"TEST-{inviteCodeCounter:D4}",
+                        CuratorId = curator.UserId
+                    });
+
+                    inviteCodeCounter++;
+                }
+            }
+
+            context.StudentGroups.AddRange(studentGroups);
+            context.SaveChanges();
+        }
+
+        private void AssignStudentsToGroups()
+        {
+            var groups = context.StudentGroups.ToList();
+            
+            if (groups.Count == 0)
+                return;
+
+            var studentsWithoutGroup = context.StudentProfiles
+                .Where(s => s.GroupId == null)
+                .ToList();
+
+            if (studentsWithoutGroup.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed);
+
+            var faker = new Faker("ru");
+
+            foreach (var group in groups)
+            {
+                if (studentsWithoutGroup.Count == 0)
+                    break;
+
+                var studentsCount = faker.Random.Int(MinStudentsPerGroup, MaxStudentsPerGroup);
+                var actualCount = Math.Min(studentsCount, studentsWithoutGroup.Count);
+
+                var selectedStudents = faker.Random
+                    .Shuffle(studentsWithoutGroup)
+                    .Take(actualCount)
+                    .ToList();
+
+                selectedStudents.ForEach(s => s.GroupId = group.Id);
+
+                studentsWithoutGroup.RemoveAll(s => selectedStudents.Any(ss => ss.UserId == s.UserId));
+            }
+
+            context.SaveChanges();
+        }
+
         public void Seed()
         {
             int totalTime = Environment.TickCount;
@@ -498,6 +639,14 @@ namespace InternshipPlatform.Infrastructure.Migration
             startTime = Environment.TickCount;
             GenerateChatsAndJobApplications();
             logger.LogInformation($"Чаты и отклики сгенерированы за {Environment.TickCount - startTime}мс\n");
+
+            startTime = Environment.TickCount;
+            GenerateStudentGroups();
+            logger.LogInformation($"Учебные группы сгенерированы за {Environment.TickCount - startTime}мс");
+
+            startTime = Environment.TickCount;
+            AssignStudentsToGroups();
+            logger.LogInformation($"Студенты распределены по группам за {Environment.TickCount - startTime}мс");
 
             logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс\n");
         }

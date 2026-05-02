@@ -18,12 +18,12 @@ namespace InternshipPlatform.Application.Mappers
                 Patronymic = studentProfile.Patronymic,
                 BirthdayDate = studentProfile.BirthdayDate,
                 GithubLink = studentProfile.GithubLink,
-                GraduationYear = studentProfile.GraduationYear,
+                GraduationYear = studentProfile?.Group?.GraduationYear,
                 MaxLink = studentProfile.MaxLink,
                 Phone = studentProfile.Phone,
-                Specialization = studentProfile.Specialization,
+                Specialization = studentProfile?.Group?.Specialization,
                 TgLink = studentProfile.TgLink,
-                University = studentProfile.University,
+                University = studentProfile?.Group?.University.Name,
                 VkLink = studentProfile.VkLink,
                 AvatarPath = studentProfile.AvatarPath
             };
