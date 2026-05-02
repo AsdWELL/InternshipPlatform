@@ -169,6 +169,7 @@ CREATE TABLE "Curators" (
   "VkLink"         text, 
   "MaxLink"         text, 
   "TgLink"         text,
+  "AvatarPath"       text,
   PRIMARY KEY ("UserId"));
 CREATE TABLE "StudentGroups" (
   "Id" SERIAL NOT NULL,

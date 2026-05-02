@@ -40,6 +40,23 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
+        public static User ToUser(
+            this RegisterCuratorRequest request,
+            string passwordHash,
+            Role role,
+            string refreshToken,
+            DateTime refreshTokenExpiredAt)
+        {
+            return new User
+            {
+                Email = StringNormalizer.NormalizeToLower(request.Email)!,
+                PasswordHash = passwordHash,
+                Role = role,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiredAt = refreshTokenExpiredAt
+            };
+        }
+
         public static StudentProfile ToStudentProfile(
             this RegisterStudentRequest request,
             User user)
@@ -49,6 +66,19 @@ namespace InternshipPlatform.Application.Mappers
                 User = user,
                 Name = StringNormalizer.NormalizeName(request.Name)!,
                 Surname = StringNormalizer.NormalizeName(request.Surname)!
+            };
+        }
+
+        public static Curator ToCurator(
+            this RegisterCuratorRequest request,
+            User user)
+        {
+            return new Curator
+            {
+                User = user,
+                Name = StringNormalizer.NormalizeName(request.Name)!,
+                Surname = StringNormalizer.NormalizeName(request.Surname)!,
+                UniversityId = request.UniversityId
             };
         }
     }

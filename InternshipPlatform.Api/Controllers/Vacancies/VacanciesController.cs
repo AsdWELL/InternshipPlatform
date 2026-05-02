@@ -2,7 +2,6 @@
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Values;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Vacancies
@@ -20,7 +19,6 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
             };
         }
 
-        [Authorize(Roles = Roles.Student)]
         [HttpGet("api/vacancies")]
         public async Task<IActionResult> SearchVacancies([FromQuery] SearchVacancyParameters parameters)
         {
@@ -29,7 +27,6 @@ namespace InternshipPlatform.Api.Controllers.Vacancies
             return Ok(await vacancyService.SearchVacancies(parameters));
         }
 
-        [Authorize(Roles = Roles.Student)]
         [HttpGet("api/companies/{companyId:int}/vacancies")]
         public async Task<IActionResult> GetCompanyVacancies([FromRoute] int companyId)
         {

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using InternshipPlatform.Application.Dtos.Company;
+using InternshipPlatform.Application.Dtos.Curator;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Kafka;
@@ -11,6 +12,7 @@ using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators.Auth;
+using InternshipPlatform.Application.Validators.Curator;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
 using InternshipPlatform.Application.Validators.Resume;
@@ -54,6 +56,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IStudentProfileService, StudentProfileService>()
                 .AddScoped<ICompanyService, CompanyService>()
+                .AddScoped<ICuratorService, CuratorService>()
                 .AddScoped<IEmployerProfileService, EmployerProflieService>()
                 .AddScoped<ISkillService, SkillService>()
                 .AddScoped<ISpecializationService, SpecializationService>()
@@ -74,9 +77,11 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<LoginUserRequest>, LoginRequestValidator>()
                 .AddTransient<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
                 .AddTransient<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
+                .AddTransient<IValidator<RegisterCuratorRequest>, RegisterCuratorValidator>()
                 .AddTransient<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
                 .AddTransient<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
                 .AddTransient<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProflieValidator>()
+                .AddTransient<IValidator<UpdateCuratorRequest>, UpdateCuratorValidator>()
                 
                 .AddTransient<IValidator<CreateResumeRequest>, CreateResumeValidator>()
                 .AddTransient<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()

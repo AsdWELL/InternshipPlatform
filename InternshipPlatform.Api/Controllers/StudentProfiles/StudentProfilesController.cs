@@ -1,12 +1,9 @@
 ﻿using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Interfaces.Services;
-using InternshipPlatform.Application.Values;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.StudentProfiles
 {
-    [Authorize(Roles = Roles.Employer)]
     [Route("api/students")]
     public class StudentProfilesController(IStudentProfileService studentProfileService) : AuthorizedUserController
     {

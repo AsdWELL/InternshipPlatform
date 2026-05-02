@@ -1,14 +1,14 @@
-﻿namespace InternshipPlatform.Domain.Entities
+﻿namespace InternshipPlatform.Application.Dtos.Curator
 {
-    public class Curator
+    public class CuratorResponse
     {
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public string Email { get; set; }
 
-        public int UniversityId { get; set; }
+        public bool IsVerified { get; set; }
 
-        public University University { get; set; }
+        public string University { get; set; }
 
         public string Name { get; set; }
 

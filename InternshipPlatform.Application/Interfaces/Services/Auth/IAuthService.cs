@@ -9,6 +9,8 @@ namespace InternshipPlatform.Application.Interfaces.Services.Auth
 
         Task<AuthResponse> RegisterEmployer(RegisterCompanyRequest request);
 
+        Task<AuthResponse> RegisterCurator(RegisterCuratorRequest request);
+
         Task<AuthResponse> Login(LoginUserRequest request);
 
         Task<AuthResponse> RefreshToken(string refreshToken);

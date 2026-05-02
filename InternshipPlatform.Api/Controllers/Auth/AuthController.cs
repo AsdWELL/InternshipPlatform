@@ -40,6 +40,16 @@ namespace InternshipPlatform.Api.Controllers.Auth
             return Ok(authResponse);
         }
 
+        [HttpPost("register/curator")]
+        public async Task<IActionResult> RegisterCurator([FromBody] RegisterCuratorRequest request)
+        {
+            var authResponse = await authService.RegisterCurator(request);
+
+            SetTokenInCookie(authResponse.AccessToken);
+
+            return Ok(authResponse);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
         {

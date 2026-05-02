@@ -9,6 +9,7 @@ namespace InternshipPlatform.Infrastructure.Services
         private const string UploadsFolder = "uploads";
         private const string CompanyLogoFolder = "company-logos";
         private const string StudentProfileAvatarsFolder = "student-avatars";
+        private const string CuratorAvatarsFolder = "curator-avatars";
 
         private static readonly HashSet<string> AllowedExtensions =
         [
@@ -42,6 +43,11 @@ namespace InternshipPlatform.Infrastructure.Services
         public Task<string> SaveStudentProfileAvatar(Stream stream, string extension)
         {
             return SaveImage(stream, extension, StudentProfileAvatarsFolder);
+        }
+
+        public Task<string> SaveCuratorProfileAvatar(Stream stream, string extension)
+        {
+            return SaveImage(stream, extension, CuratorAvatarsFolder);
         }
 
         public Task DeleteIfExists(string? relativePath)

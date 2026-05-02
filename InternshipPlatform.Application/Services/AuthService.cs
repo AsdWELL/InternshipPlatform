@@ -1,6 +1,7 @@
 ﻿using InternshipPlatform.Application.Dtos.Auth;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Exceptions.Company;
+using InternshipPlatform.Application.Exceptions.University;
 using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
@@ -20,6 +21,8 @@ namespace InternshipPlatform.Application.Services
         IUserRepository userRepository,
         IStudentProfileRepository studentProfileRepository,
         ICompanyRepository companyRepository,
+        ICuratorRepository curatorRepository,
+        IUniversityRepository universityRepository,
         IEmployerProfileRepository employerRepository,
         IUnitOfWork unitOfWork) : IAuthService
     {
@@ -99,6 +102,40 @@ namespace InternshipPlatform.Application.Services
                     User = user,
                     Company = company
                 });
+
+            await unitOfWork.SaveChangesAsync();
+
+            string accessToken = tokenService.GenerateAccessToken(user);
+
+            return new AuthResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+
+        public async Task<AuthResponse> RegisterCurator(RegisterCuratorRequest request)
+        {
+            var roleName = Roles.Curator;
+
+            await ThrowIfEmailAlreadyTaken(request.Email);
+
+            if (!await universityRepository.IsUniversityExists(request.UniversityId))
+                throw new InvalidUniversityException();
+
+            var hashPassword = passwordHasher.Generate(request.Password);
+
+            var refreshToken = tokenService.GenerateRefreshToken();
+
+            var role = await userRepository.GetRoleByName(roleName);
+
+            var user = request.ToUser(hashPassword, role,
+                refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
+
+            await userRepository.AddUser(user);
+
+            await curatorRepository.AddCurator(
+                request.ToCurator(user));
 
             await unitOfWork.SaveChangesAsync();
 

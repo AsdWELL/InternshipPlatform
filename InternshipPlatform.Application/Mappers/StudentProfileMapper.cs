@@ -1,5 +1,4 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentProfile;
-using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Mappers

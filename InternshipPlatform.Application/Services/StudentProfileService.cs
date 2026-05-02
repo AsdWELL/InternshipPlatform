@@ -105,6 +105,9 @@ namespace InternshipPlatform.Application.Services
             if (request.GithubLink is not null)
                 student.GithubLink = StringNormalizer.NormalizeToLower(request.GithubLink);
 
+            if (request.MaxLink is not null)
+                student.MaxLink = StringNormalizer.NormalizeToLower(request.MaxLink);
+
             await unitOfWork.SaveChangesAsync();
         }
 
@@ -153,6 +156,8 @@ namespace InternshipPlatform.Application.Services
         public async Task Logout(int id)
         {
             await userRepository.UpdateRefreshToken(id, null, DateTime.UtcNow);
+
+            await unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteStudentProfile(int id)

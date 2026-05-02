@@ -30,6 +30,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return await context.StudentProfiles
                 .AsNoTracking()
                 .Include(sp => sp.User)
+                .Include(sp => sp.Group)
+                    .ThenInclude(g => g.University)
                 .FirstOrDefaultAsync(st => st.UserId == userId);
         }
 
