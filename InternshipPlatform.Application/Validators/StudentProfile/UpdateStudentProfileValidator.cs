@@ -4,18 +4,9 @@ using InternshipPlatform.Application.Dtos.StudentProfile;
 namespace InternshipPlatform.Application.Validators.StudentProfile
 {
     public class UpdateStudentProfileValidator : AbstractValidator<UpdateStudentProfileRequest>
-    {
-        private const int MaxStudyDurationYears = 10;
-        
+    {        
         private const int MinUserAge = 14;
         private const int MaxUserAge = 80;
-        
-        private bool ValidGraduationYear(int year)
-        {
-            var currentYear = DateTime.Now.Year;
-            
-            return year >= currentYear && year <= currentYear + MaxStudyDurationYears;
-        }
 
         private static bool RealisticStudentBirthdayDate(DateOnly? date)
         {

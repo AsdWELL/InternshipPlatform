@@ -27,5 +27,18 @@ namespace InternshipPlatform.Application.Mappers
                 AvatarPath = studentProfile.AvatarPath
             };
         }
+
+        public static StudentProfileItem ToItem(this StudentProfile studentProfile)
+        {
+            return new StudentProfileItem
+            {
+                Id = studentProfile.UserId,
+                Name = studentProfile.Name,
+                Surname = studentProfile.Surname,
+                Patronymic = studentProfile.Patronymic,
+                AvatarPath = studentProfile.AvatarPath
+            };
+        }
     }
+
 }

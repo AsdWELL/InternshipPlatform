@@ -5,6 +5,7 @@ using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Kafka;
 using InternshipPlatform.Application.Dtos.Resume;
+using InternshipPlatform.Application.Dtos.StudentGroup;
 using InternshipPlatform.Application.Dtos.StudentProfile;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Dtos.Vacancy;
@@ -16,6 +17,7 @@ using InternshipPlatform.Application.Validators.Curator;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
 using InternshipPlatform.Application.Validators.Resume;
+using InternshipPlatform.Application.Validators.StudentGroup;
 using InternshipPlatform.Application.Validators.StudentProfile;
 using InternshipPlatform.Application.Validators.Vacancy;
 using InternshipPlatform.Infrastructure.Services;
@@ -68,7 +70,9 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IFavoriteVacancyService, FavoriteVacancyService>()
                 .AddScoped<IResumeViewService, ResumeViewService>()
                 .AddScoped<IVacancyViewService, VacancyViewService>()
-                .AddScoped<IUniversityService, UniversityService>();
+                .AddScoped<IUniversityService, UniversityService>()
+                .AddScoped<IInviteCodeGenerator, InviteCodeGenerator>()
+                .AddScoped<IStudentGroupService, StudentGroupService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -94,7 +98,9 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<SearchVacancyParameters>, SearchVacancyValidator>()
                 
                 .AddTransient<IValidator<GetStudentApplicationsParameters>, GetStudentApplicationsValidator>()
-                .AddTransient<IValidator<GetEmployerApplicationsParameters>, GetEmployerApplicationsValidator>();
+                .AddTransient<IValidator<GetEmployerApplicationsParameters>, GetEmployerApplicationsValidator>()
+                
+                .AddTransient<IValidator<CreateStudentGroupRequest>, CreateStudentGroupValidator>();
         }
     }
 }

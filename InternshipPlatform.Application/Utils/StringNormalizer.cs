@@ -23,6 +23,14 @@
             return value.Trim().ToLowerInvariant();
         }
 
+        public static string? NormalizeToUpper(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            return value.Trim().ToUpperInvariant();
+        }
+
         public static string? NormalizeName(string? name)
         {
             if (string.IsNullOrWhiteSpace(name))
