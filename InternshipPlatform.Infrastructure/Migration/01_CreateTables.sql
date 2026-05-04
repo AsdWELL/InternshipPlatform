@@ -183,7 +183,7 @@ CREATE TABLE "StudentGroups" (
   CONSTRAINT "unique_university_group" 
 	  UNIQUE ("Name", "UniversityId"),
   PRIMARY KEY ("Id"));
-CREATE TABLE "StudentGroupRequests" (
+CREATE TABLE "StudentGroupApplications" (
   "Id" SERIAL NOT NULL,
   "GroupId" integer NOT NULL,
   "StudentId" integer NOT NULL UNIQUE,
@@ -236,7 +236,7 @@ CREATE INDEX "VacancyViews2"
 CREATE INDEX "StudentGroups1"
   ON "StudentGroups" ("CuratorId");
 CREATE INDEX "StudentGroupRequests1"
-  ON "StudentGroupRequests" ("GroupId");
+  ON "StudentGroupApplications" ("GroupId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711692" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
@@ -273,5 +273,5 @@ ALTER TABLE "Curators" ADD CONSTRAINT "FKCuratorsPr711691" FOREIGN KEY ("UserId"
 ALTER TABLE "Curators" ADD CONSTRAINT "FKCuratorsPr711692" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711691" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711692" FOREIGN KEY ("CuratorId") REFERENCES "Curators" ("UserId");
-ALTER TABLE "StudentGroupRequests" ADD CONSTRAINT "FKStudentGroupRequestsPr711691" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
-ALTER TABLE "StudentGroupRequests" ADD CONSTRAINT "FKStudentGroupRequestsPr711692" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId");
+ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711691" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
+ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711692" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId");

@@ -55,10 +55,12 @@ namespace InternshipPlatform.Application.Services
             return group.ToDetails();
         }
 
-        public async Task<StudentGroupDetails> GetGroupDetailsForStudent(int studentId)
+        public async Task<StudentGroupDetails?> GetGroupDetailsForStudent(int studentId)
         {
-            var group = await studentGroupRepository.GetGroupDetailsForStudent(studentId)
-                ?? throw new StudentGroupNotFoundException();
+            var group = await studentGroupRepository.GetGroupDetailsForStudent(studentId);
+
+            if (group is null)
+                return null;
 
             return group.ToDetails();
         }

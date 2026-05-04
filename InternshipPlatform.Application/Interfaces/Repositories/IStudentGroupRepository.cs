@@ -17,6 +17,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<StudentGroup?> GetGroupDetailsForStudent(int studentId);
 
+        Task<int?> GetGroupIdByInviteCode(string inviteCode);
+
         Task<bool> IsInviteCodeExists(string inviteCode);
 
         Task UpdateInviteCode(int groupId, string inviteCode);

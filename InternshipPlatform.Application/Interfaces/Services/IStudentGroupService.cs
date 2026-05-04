@@ -10,7 +10,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<StudentGroupDetails> GetGroupDetailsForCurator(int curatorId, int groupId);
 
-        Task<StudentGroupDetails> GetGroupDetailsForStudent(int studentId);
+        Task<StudentGroupDetails?> GetGroupDetailsForStudent(int studentId);
 
         Task<StudentGroupInviteCodeResponse> RefreshInviteCode(int curatorId, int groupId);
     }

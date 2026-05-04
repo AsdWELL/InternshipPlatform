@@ -12,6 +12,6 @@
 
         public string PasswordConfirm { get; set; }
 
-        public string? GroupInviteCode { get; set; }
+        public string? InviteCode { get; set; }
     }
 }

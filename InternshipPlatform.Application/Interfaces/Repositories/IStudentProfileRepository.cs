@@ -5,7 +5,9 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
     public interface IStudentProfileRepository
     {
         Task<bool> IsStudentExists(int userId);
-        
+
+        Task<bool> IsStudentHasGroup(int studentId);
+
         Task AddStudentProfile(StudentProfile studentProfile);
 
         Task<StudentProfile?> GetStudentById(int userId);

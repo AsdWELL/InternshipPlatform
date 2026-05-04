@@ -45,7 +45,7 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<StudentGroup> StudentGroups { get; set; }
 
-        public DbSet<StudentGroupRequest> StudentGroupRequests { get; set; }
+        public DbSet<StudentGroupApplication> StudentGroupApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -156,12 +156,12 @@ namespace InternshipPlatform.Infrastructure
                 .WithOne(sp => sp.Group)
                 .HasForeignKey(sp => sp.GroupId);
 
-            modelBuilder.Entity<StudentGroupRequest>()
+            modelBuilder.Entity<StudentGroupApplication>()
                 .HasOne(r => r.StudentProfile)
                 .WithOne()
-                .HasForeignKey<StudentGroupRequest>(r => r.StudentId);
+                .HasForeignKey<StudentGroupApplication>(r => r.StudentId);
 
-            modelBuilder.Entity<StudentGroupRequest>()
+            modelBuilder.Entity<StudentGroupApplication>()
                 .HasOne(r => r.Group)
                 .WithMany()
                 .HasForeignKey(r => r.GroupId);

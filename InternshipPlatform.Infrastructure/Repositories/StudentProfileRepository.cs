@@ -12,6 +12,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AnyAsync(st => st.UserId == userId);
         }
 
+        public Task<bool> IsStudentHasGroup(int studentId)
+        {
+            return context.StudentProfiles
+                .AsNoTracking()
+                .AnyAsync(sp => sp.UserId == studentId && sp.GroupId != null);
+        }
+
         public async Task AddStudentProfile(StudentProfile studentProfile)
         {
             await context.StudentProfiles.AddAsync(studentProfile);

@@ -26,6 +26,11 @@ namespace InternshipPlatform.Application.Validators.Auth
             RuleFor(x => x.PasswordConfirm)
                 .NotEmpty().WithMessage("Повторите пароль")
                 .Equal(x => x.Password).WithMessage("Пароли не совпадают");
+
+            RuleFor(x => x.InviteCode)
+                .Matches(@"^[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}$")
+                .WithMessage("Код приглашения должен быть в формате XXXX-XXXX и содержать только английские буквы и цифры")
+                .When(x => x.InviteCode is not null);
         }
     }
 }

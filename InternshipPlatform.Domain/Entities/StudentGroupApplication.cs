@@ -1,6 +1,6 @@
 ﻿namespace InternshipPlatform.Domain.Entities
 {
-    public class StudentGroupRequest
+    public class StudentGroupApplication
     {
         public int Id { get; set; }
 

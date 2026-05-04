@@ -1,6 +1,7 @@
 ﻿using InternshipPlatform.Application.Dtos.Auth;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Exceptions.Company;
+using InternshipPlatform.Application.Exceptions.StudentGroup;
 using InternshipPlatform.Application.Exceptions.University;
 using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
@@ -20,6 +21,8 @@ namespace InternshipPlatform.Application.Services
         ITokenService tokenService,
         IUserRepository userRepository,
         IStudentProfileRepository studentProfileRepository,
+        IStudentGroupRepository studentGroupRepository,
+        IStudentGroupApplicationRepository studentGroupApplicationRepository,
         ICompanyRepository companyRepository,
         ICuratorRepository curatorRepository,
         IUniversityRepository universityRepository,
@@ -57,10 +60,24 @@ namespace InternshipPlatform.Application.Services
             var user = request.ToUser(hashPassword, role,
                 refreshToken, DateTime.UtcNow.AddHours(TokenOptionsValue.ExpiresAfterHours));
 
+            var studentProfile = request.ToStudentProfile(user);
+
             await userRepository.AddUser(user);
 
-            await studentProfileRepository.AddStudentProfile(
-                request.ToStudentProfile(user));
+            await studentProfileRepository.AddStudentProfile(studentProfile);
+
+            if (!string.IsNullOrWhiteSpace(request.InviteCode))
+            {
+                var groupId = await studentGroupRepository.GetGroupIdByInviteCode(request.InviteCode)
+                    ?? throw new InviteCodeNotFoundException();
+
+                await studentGroupApplicationRepository.AddStudentGroupApplication(new StudentGroupApplication
+                {
+                    GroupId = groupId,
+                    StudentProfile = studentProfile,
+                    CreatedAt = DateTime.UtcNow,
+                });
+            }
 
             await unitOfWork.SaveChangesAsync();
 

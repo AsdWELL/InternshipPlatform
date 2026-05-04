@@ -1,5 +1,6 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentGroup;
 using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -70,6 +71,17 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(sp => sp.Group!)
                     .ThenInclude(g => g.StudentProfiles)
                 .Select(sp => sp.Group!)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<int?> GetGroupIdByInviteCode(string inviteCode)
+        {
+            var normalizedCode = StringNormalizer.NormalizeToUpper(inviteCode)!;
+            
+            return context.StudentGroups
+                .AsNoTracking()
+                .Where(g => g.InviteCode == normalizedCode)
+                .Select(g => (int?)g.Id)
                 .FirstOrDefaultAsync();
         }
 
