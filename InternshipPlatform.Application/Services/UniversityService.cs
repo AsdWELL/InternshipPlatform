@@ -1,4 +1,4 @@
-﻿using InternshipPlatform.Application.Interfaces;
+﻿using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Domain.Entities;
 

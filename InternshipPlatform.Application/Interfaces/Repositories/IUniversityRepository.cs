@@ -1,6 +1,6 @@
 ﻿using InternshipPlatform.Domain.Entities;
 
-namespace InternshipPlatform.Application.Interfaces
+namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IUniversityRepository
     {

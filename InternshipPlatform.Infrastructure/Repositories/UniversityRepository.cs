@@ -1,4 +1,4 @@
-﻿using InternshipPlatform.Application.Interfaces;
+﻿using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
