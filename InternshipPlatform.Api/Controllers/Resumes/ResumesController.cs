@@ -1,10 +1,13 @@
-﻿using InternshipPlatform.Api.Controllers.Auth;
+﻿using InternshipPlatform.Api.Authorization;
+using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Resumes
 {
+    [Authorize(Policy = Policies.ApprovedUser)]
     public class ResumesController(IResumeService resumeService) : AuthorizedUserController
     {
         [HttpGet("api/resumes/{resumeId:int}")]

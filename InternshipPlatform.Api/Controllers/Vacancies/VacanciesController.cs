@@ -1,11 +1,14 @@
-﻿using InternshipPlatform.Api.Controllers.Auth;
+﻿using InternshipPlatform.Api.Authorization;
+using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Values;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Vacancies
 {
+    [Authorize(Policy = Policies.ApprovedUser)]
     public class VacanciesController(IVacancyService vacancyService) : AuthorizedUserController
     {
         [HttpGet("api/vacancies/{vacancyId:int}")]

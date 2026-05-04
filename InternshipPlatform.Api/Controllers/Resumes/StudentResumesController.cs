@@ -1,13 +1,13 @@
-﻿using InternshipPlatform.Api.Controllers.Auth;
+﻿using InternshipPlatform.Api.Authorization;
+using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Interfaces.Services;
-using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Resumes
 {
-    [Authorize(Roles = Roles.Student)]
+    [Authorize(Policy = Policies.StudentMustHaveGroup)]
     [Route("api/students/me/resumes")]
     public class StudentResumesController(IResumeService resumeService) : AuthorizedUserController
     {
@@ -44,7 +44,6 @@ namespace InternshipPlatform.Api.Controllers.Resumes
             return Ok();
         }
 
-        [Authorize(Roles = Roles.Student)]
         [HttpPost("{resumeId:int}/copy")]
         public async Task<IActionResult> CopyResume([FromRoute] int resumeId)
         {

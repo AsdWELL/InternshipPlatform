@@ -19,7 +19,9 @@ builder.Services.AddDatabase(builder.Configuration)
                 .AddValidators()
                 .AddKafka(builder.Configuration);
 
-builder.Services.AddJWTAuth(builder.Configuration);
+builder.Services
+    .AddJWTAuth(builder.Configuration)
+    .AddPolicies();
 
 builder.Services
     .AddFluentValidationAutoValidation()

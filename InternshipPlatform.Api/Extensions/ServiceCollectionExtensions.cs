@@ -1,4 +1,7 @@
 ﻿using FluentValidation;
+using InternshipPlatform.Api.Authorization;
+using InternshipPlatform.Api.Authorization.Handlers;
+using InternshipPlatform.Api.Authorization.Requirements;
 using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Dtos.Curator;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
@@ -22,7 +25,9 @@ using InternshipPlatform.Application.Validators.StudentGroup;
 using InternshipPlatform.Application.Validators.StudentGroupApplication;
 using InternshipPlatform.Application.Validators.StudentProfile;
 using InternshipPlatform.Application.Validators.Vacancy;
+using InternshipPlatform.Application.Values;
 using InternshipPlatform.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -106,6 +111,30 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<CreateStudentGroupRequest>, CreateStudentGroupValidator>()
                 
                 .AddTransient<IValidator<CreateStudentGroupApplicationRequest>, CreateStudentGroupApplicationValidator>();
+        }
+
+        public static IServiceCollection AddPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorizationBuilder()
+                .AddPolicy(Policies.StudentMustHaveGroup, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(Roles.Student);
+                    policy.AddRequirements(new StudentMustHaveGroupRequirement());
+                });
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy(Policies.ApprovedUser, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.AddRequirements(new ApprovedUserRequirement());
+                });
+
+            services
+                .AddScoped<IAuthorizationHandler, StudentMustHaveGroupHandler>()
+                .AddScoped<IAuthorizationHandler, ApprovedUserHandler>();
+
+            return services;
         }
     }
 }

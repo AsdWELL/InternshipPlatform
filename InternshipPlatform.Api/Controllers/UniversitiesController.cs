@@ -1,11 +1,10 @@
-﻿using InternshipPlatform.Api.Controllers.Auth;
-using InternshipPlatform.Application.Interfaces.Services;
+﻿using InternshipPlatform.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers
 {
     [Route("api/universities")]
-    public class UniversitiesController(IUniversityService universityService) : AuthorizedUserController
+    public class UniversitiesController(IUniversityService universityService) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> SearchUniversities([FromQuery] string? universityName)

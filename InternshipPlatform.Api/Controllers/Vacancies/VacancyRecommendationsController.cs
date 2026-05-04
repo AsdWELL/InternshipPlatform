@@ -1,14 +1,14 @@
-﻿using InternshipPlatform.Api.Controllers.Auth;
+﻿using InternshipPlatform.Api.Authorization;
+using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Dtos.Pagination;
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
-using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.Vacancies
 {
-    [Authorize(Roles = Roles.Student)]
+    [Authorize(Policy = Policies.StudentMustHaveGroup)]
     [Route("api/students/me")]
     public class VacancyRecommendationsController(IVacancyService vacancyService) : AuthorizedUserController
     {
