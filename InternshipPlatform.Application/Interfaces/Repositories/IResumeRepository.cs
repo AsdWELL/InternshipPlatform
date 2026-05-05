@@ -16,7 +16,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task AddResume(Resume resume);
 
-        Task<List<Resume>> GetStudentResumes(int studentId);
+        Task<List<ResumeResult>> GetStudentResumes(int studentId);
 
         Task<Resume?> GetResumeById(int id);
 

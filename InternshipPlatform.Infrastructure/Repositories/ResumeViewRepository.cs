@@ -29,20 +29,6 @@ namespace InternshipPlatform.Infrastructure.Repositories
             });
         }
 
-        public async Task<Dictionary<int, int>> GetResumesViewsCount(int studentId)
-        {
-            return await context.ResumeViews
-                .AsNoTracking()
-                .Where(v => v.Resume.StudentId == studentId)
-                .GroupBy(v => v.ResumeId)
-                .Select(g => new
-                {
-                    ResumeId = g.Key,
-                    Count = g.Count()
-                })
-                .ToDictionaryAsync(r => r.ResumeId, r => r.Count);
-        }
-
         public async Task<List<ResumeView>> GetResumeViews(int resumeId)
         {
             return await context.ResumeViews

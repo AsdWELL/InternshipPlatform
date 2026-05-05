@@ -44,10 +44,10 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static ResumeOwnerItem ToOwnerItem(
-            this Resume resume,
-            int viewsCount)
+        public static ResumeOwnerItem ToOwnerItem(this ResumeResult result)
         {
+            var resume = result.Resume;
+            
             var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>
                 WorkExperienceUtils.CalculateExperienceMonths(x.StartDateWork, x.EndDateWork));
 
@@ -61,8 +61,8 @@ namespace InternshipPlatform.Application.Mappers
                 SpecializationName = resume.Specialization.Name,
                 TotalWorkExperienceMonths = totalWorkExperienceMonths,
                 WorkExperiences = resume.WorkExperiences.Select(x => x.ToItem()).ToList(),
-                ApplicationsCount = resume.Applications.Count,
-                ViewsCount = viewsCount
+                ApplicationsCount = result.ApplicationsCount,
+                ViewsCount = result.ViewsCount
             };
         }
 

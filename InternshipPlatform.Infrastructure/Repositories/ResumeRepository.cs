@@ -110,15 +110,20 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<List<Resume>> GetStudentResumes(int studentId)
+        public async Task<List<ResumeResult>> GetStudentResumes(int studentId)
         {
             return await context.Resumes
                 .AsNoTracking()
                 .Where(r => r.StudentId == studentId)
                 .Include(r => r.Specialization)
                 .Include(r => r.WorkExperiences)
-                .Include(r => r.Applications)
-                .OrderByDescending(r => r.Id)
+                .Select(r => new ResumeResult
+                {
+                    Resume = r,
+                    ApplicationsCount = r.Applications.Count(),
+                    ViewsCount = r.Views.Count()
+                })
+                .OrderByDescending(r => r.Resume.Id)
                 .ToListAsync();
         }
 

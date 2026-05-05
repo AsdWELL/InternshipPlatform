@@ -27,5 +27,7 @@
         public List<WorkExperience> WorkExperiences { get; set; } = [];
 
         public List<JobApplication> Applications { get; set; } = [];
+
+        public List<ResumeView> Views { get; set; } = [];
     }
 }

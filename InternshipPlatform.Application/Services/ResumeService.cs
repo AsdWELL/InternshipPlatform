@@ -82,11 +82,9 @@ namespace InternshipPlatform.Application.Services
 
         public async Task<List<ResumeOwnerItem>> GetStudentResumes(int studentId)
         {
-            var resumes = await resumeRepository.GetStudentResumes(studentId);
+            var result = await resumeRepository.GetStudentResumes(studentId);
 
-            var viewsCount = await resumeViewRepository.GetResumesViewsCount(studentId);
-
-            return resumes.Select(r => r.ToOwnerItem(viewsCount.GetValueOrDefault(r.Id))).ToList();
+            return result.Select(r => r.ToOwnerItem()).ToList();
         }
 
         public async Task<ResumeDetails> GetResumeDetails(int userId, int resumeId)
