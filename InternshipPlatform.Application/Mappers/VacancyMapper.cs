@@ -48,10 +48,10 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static VacancyOwnerItem ToOwnerItem(
-            this Vacancy vacancy,
-            int viewsCount)
+        public static VacancyOwnerItem ToOwnerItem(this VacancyResult result)
         {
+            var vacancy = result.Vacancy;
+            
             return new VacancyOwnerItem
             {
                 Id = vacancy.Id,
@@ -65,8 +65,8 @@ namespace InternshipPlatform.Application.Mappers
                 CompanyLogoPath = vacancy.Company.LogoPath,
                 Region = vacancy.Region,
                 IsActive = vacancy.IsActive,
-                ApplicationsCount = vacancy.Applications.Count,
-                ViewsCount = viewsCount
+                ApplicationsCount = result.ApplicationsCount,
+                ViewsCount = result.ViewsCount
             };
         }
 

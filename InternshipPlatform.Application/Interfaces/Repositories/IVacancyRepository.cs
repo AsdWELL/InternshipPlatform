@@ -12,7 +12,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         
         Task AddVacancy(Vacancy vacancy);
 
-        Task<List<Vacancy>> GetCompanyVacancies(int companyId);
+        Task<List<VacancyResult>> GetCompanyVacancies(int companyId);
 
         Task<Vacancy?> GetVacancyById(int vacancyId);
 

@@ -31,5 +31,7 @@
         public List<Skill> Skills { get; set; } = [];
 
         public List<JobApplication> Applications { get; set; }
+
+        public List<VacancyView> Views { get; set; }
     }
 }

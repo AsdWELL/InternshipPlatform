@@ -131,6 +131,11 @@ namespace InternshipPlatform.Infrastructure
                           .HasForeignKey("VacancyId"),
                     j => j.HasKey("SkillId", "VacancyId"));
 
+            modelBuilder.Entity<Vacancy>()
+                .HasMany(vacancy => vacancy.Views)
+                .WithOne(view => view.Vacancy)
+                .HasForeignKey(view => view.VacancyId);
+
             modelBuilder.Entity<Chat>()
                 .HasOne(c => c.Company)
                 .WithMany()

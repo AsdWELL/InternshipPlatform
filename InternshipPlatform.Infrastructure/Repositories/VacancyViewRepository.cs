@@ -40,20 +40,6 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Dictionary<int, int>> GetVacanciesViewsCount(int companyId)
-        {
-            return await context.VacancyViews
-                .AsNoTracking()
-                .Where(v => v.Vacancy.CompanyId == companyId)
-                .GroupBy(v => v.VacancyId)
-                .Select(g => new
-                {
-                    VacancyId = g.Key,
-                    Count = g.Count()
-                })
-                .ToDictionaryAsync(r => r.VacancyId, r => r.Count);
-        }
-
         public async Task<List<VacancyView>> GetVacancyViews(int vacancyId)
         {
             return await context.VacancyViews

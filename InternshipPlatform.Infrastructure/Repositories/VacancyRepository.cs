@@ -31,14 +31,20 @@ namespace InternshipPlatform.Infrastructure.Repositories
             context.Vacancies.Remove(vacancy);
         }
 
-        public async Task<List<Vacancy>> GetCompanyVacancies(int companyId)
+        public async Task<List<VacancyResult>> GetCompanyVacancies(int companyId)
         {
             return await context.Vacancies
                 .AsNoTracking()
                 .Where(v => v.CompanyId == companyId)
                 .Include(v => v.Company)
                 .Include(v => v.Specialization)
-                .Include(v => v.Applications)
+                .Select(v => new VacancyResult
+                {
+                    Vacancy = v,
+                    ApplicationsCount = v.Applications.Count(),
+                    ViewsCount = v.Views.Count()
+                })
+                .OrderByDescending(r => r.Vacancy.Id)
                 .ToListAsync();
         }
 

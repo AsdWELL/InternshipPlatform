@@ -75,18 +75,16 @@ namespace InternshipPlatform.Application.Services
         {
             var companyId = await TryGetCompanyIdByEmployerId(employerId);
             
-            var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
+            var result = await vacancyRepository.GetCompanyVacancies(companyId);
 
-            var viewsCount = await vacancyViewRepository.GetVacanciesViewsCount(companyId);
-
-            return vacancies.Select(v => v.ToOwnerItem(viewsCount.GetValueOrDefault(v.Id))).ToList();
+            return result.Select(v => v.ToOwnerItem()).ToList();
         }
 
         public async Task<List<VacancyItem>> GetCompanyVacancies(int userId, int companyId)
         {
-            var vacancies = await vacancyRepository.GetCompanyVacancies(companyId);
+            var result = await vacancyRepository.GetCompanyVacancies(companyId);
 
-            return await favoriteVacancyService.MapToItemAndMarkFavorites(userId, vacancies);
+            return await favoriteVacancyService.MapToItemAndMarkFavorites(userId, result.Select(r => r.Vacancy));
         }
 
         public async Task<VacancyDetails> GetVacancyDetailsForStudent(int studentId, int vacancyId)
