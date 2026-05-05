@@ -25,7 +25,7 @@ namespace InternshipPlatform.Api.Controllers.StudentGroups
             return Ok(await studentGroupService.GetCuratorGroups(UserId));
         }
 
-        [HttpGet("{groupId:int}")]
+        [HttpGet("{groupId:int}/students")]
         public async Task<IActionResult> GetGroupDetails([FromRoute] int groupId)
         {
             return Ok(await studentGroupService.GetGroupDetailsForCurator(UserId, groupId));

@@ -39,6 +39,29 @@ namespace InternshipPlatform.Application.Mappers
                 AvatarPath = studentProfile.AvatarPath
             };
         }
+
+        public static CuratorStudentProfileDetails ToDetails(this StudentStatisticsResult result)
+        {
+            var studentProfile = result.StudentProfile;
+
+            return new CuratorStudentProfileDetails
+            {
+                UserId = studentProfile.UserId,
+                Email = studentProfile.User.Email,
+                Name = studentProfile.Name,
+                Surname = studentProfile.Surname,
+                Patronymic = studentProfile.Patronymic,
+                BirthdayDate = studentProfile.BirthdayDate,
+                GithubLink = studentProfile.GithubLink,
+                MaxLink = studentProfile.MaxLink,
+                Phone = studentProfile.Phone,
+                TgLink = studentProfile.TgLink,
+                VkLink = studentProfile.VkLink,
+                AvatarPath = studentProfile.AvatarPath,
+                ResumesCount = result.ResumesCount,
+                ApplicationsCount = result.ApplicationsCount
+            };
+        }
     }
 
 }

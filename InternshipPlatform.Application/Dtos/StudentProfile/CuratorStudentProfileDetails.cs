@@ -1,0 +1,33 @@
+﻿namespace InternshipPlatform.Application.Dtos.StudentProfile
+{
+    public class CuratorStudentProfileDetails
+    {
+        public int UserId { get; set; }
+
+        public string Email { get; set; }
+
+        public string Name { get; set; }
+
+        public string Surname { get; set; }
+
+        public string? Patronymic { get; set; }
+
+        public DateOnly? BirthdayDate { get; set; }
+
+        public string? Phone { get; set; }
+
+        public string? VkLink { get; set; }
+
+        public string? TgLink { get; set; }
+
+        public string? MaxLink { get; set; }
+
+        public string? GithubLink { get; set; }
+
+        public string? AvatarPath { get; set; }
+
+        public int ResumesCount { get; set; }
+
+        public int ApplicationsCount { get; set; }
+    }
+}

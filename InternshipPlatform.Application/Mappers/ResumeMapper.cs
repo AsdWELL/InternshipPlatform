@@ -66,6 +66,26 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
+        public static ResumeCuratorItem ToCuratorItem(this ResumeResult result)
+        {
+            var resume = result.Resume;
+
+            var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>
+                WorkExperienceUtils.CalculateExperienceMonths(x.StartDateWork, x.EndDateWork));
+
+            return new ResumeCuratorItem
+            {
+                Id = resume.Id,
+                LastUpdateDate = resume.LastUpdateDate,
+                DesiredSalary = resume.DesiredSalary,
+                Region = resume.Region,
+                SpecializationName = resume.Specialization.Name,
+                TotalWorkExperienceMonths = totalWorkExperienceMonths,
+                WorkExperiences = resume.WorkExperiences.Select(x => x.ToItem()).ToList(),
+                ApplicationsCount = result.ApplicationsCount
+            };
+        }
+
         public static ResumeDetails ToDetails(this Resume resume)
         {
             var totalWorkExperienceMonths = resume.WorkExperiences.Sum(x =>
