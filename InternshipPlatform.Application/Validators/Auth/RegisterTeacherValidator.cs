@@ -3,9 +3,9 @@ using InternshipPlatform.Application.Dtos.User;
 
 namespace InternshipPlatform.Application.Validators.Auth
 {
-    public class RegisterCuratorValidator : AbstractValidator<RegisterCuratorRequest>
+    public class RegisterTeacherValidator : AbstractValidator<RegisterTeacherRequest>
     {
-        public RegisterCuratorValidator()
+        public RegisterTeacherValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Поле Имя является обязательным")

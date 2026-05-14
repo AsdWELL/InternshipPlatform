@@ -20,7 +20,7 @@
 
         public int CuratorId { get; set; }
 
-        public Curator Curator { get; set; }
+        public Teacher Curator { get; set; }
 
         public List<StudentProfile> StudentProfiles { get; set; } = [];
     }

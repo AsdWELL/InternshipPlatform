@@ -6,6 +6,6 @@
 
         public const string Employer = "Employer";
 
-        public const string Curator = "Curator";
+        public const string Teacher = "Teacher";
     }
 }

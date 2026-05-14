@@ -41,7 +41,7 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<University> Universities { get; set; }
 
-        public DbSet<Curator> Curators { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
 
         public DbSet<StudentGroup> StudentGroups { get; set; }
 
@@ -67,12 +67,12 @@ namespace InternshipPlatform.Infrastructure
                     .HasForeignKey<EmployerProfile>(ep => ep.UserId);
             });
 
-            modelBuilder.Entity<Curator>(entity =>
+            modelBuilder.Entity<Teacher>(entity =>
             {
                 entity.HasKey(c => c.UserId);
                 entity.HasOne(c => c.User)
                     .WithOne()
-                    .HasForeignKey<Curator>(c => c.UserId);
+                    .HasForeignKey<Teacher>(c => c.UserId);
             });
 
             modelBuilder.Entity<Resume>()

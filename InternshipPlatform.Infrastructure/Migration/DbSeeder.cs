@@ -143,15 +143,15 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
-        private void GenerateCurators(List<User> users)
+        private void GenerateTeachers(List<User> users)
         {
             var curators = users
-                .Where(u => u.Role.Name == Roles.Curator)
+                .Where(u => u.Role.Name == Roles.Teacher)
                 .ToList();
 
             var universities = context.Universities.ToList();
 
-            var curatorFaker = new Faker<Curator>("ru")
+            var curatorFaker = new Faker<Teacher>("ru")
                 .RuleFor(p => p.Name, f => f.Name.FirstName())
                 .RuleFor(p => p.UniversityId, f => f.PickRandom(universities).Id)
                 .RuleFor(p => p.Surname, f => f.Name.LastName())
@@ -170,7 +170,7 @@ namespace InternshipPlatform.Infrastructure.Migration
                 })
                 .ToList();
 
-            context.Curators.AddRange(curatorProfiles);
+            context.Teachers.AddRange(curatorProfiles);
             context.SaveChanges();
         }
 
@@ -200,7 +200,7 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.Users.AddRange(users);
             context.SaveChanges();
 
-            GenerateCurators(users);
+            GenerateTeachers(users);
 
             GenerateStudents(users);
 
@@ -506,7 +506,7 @@ namespace InternshipPlatform.Infrastructure.Migration
             if (context.StudentGroups.Any())
                 return;
 
-            var curators = context.Curators.ToList();
+            var curators = context.Teachers.ToList();
             if (curators.Count == 0)
                 return;
 

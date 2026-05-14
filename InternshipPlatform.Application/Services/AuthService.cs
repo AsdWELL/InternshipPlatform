@@ -24,7 +24,7 @@ namespace InternshipPlatform.Application.Services
         IStudentGroupRepository studentGroupRepository,
         IStudentGroupApplicationRepository studentGroupApplicationRepository,
         ICompanyRepository companyRepository,
-        ICuratorRepository curatorRepository,
+        ITeacherRepository curatorRepository,
         IUniversityRepository universityRepository,
         IEmployerProfileRepository employerRepository,
         IUnitOfWork unitOfWork) : IAuthService
@@ -131,9 +131,9 @@ namespace InternshipPlatform.Application.Services
             };
         }
 
-        public async Task<AuthResponse> RegisterCurator(RegisterCuratorRequest request)
+        public async Task<AuthResponse> RegisterTeacher(RegisterTeacherRequest request)
         {
-            var roleName = Roles.Curator;
+            var roleName = Roles.Teacher;
 
             await ThrowIfEmailAlreadyTaken(request.Email);
 
@@ -151,8 +151,8 @@ namespace InternshipPlatform.Application.Services
 
             await userRepository.AddUser(user);
 
-            await curatorRepository.AddCurator(
-                request.ToCurator(user));
+            await curatorRepository.AddTeacher(
+                request.ToTeacher(user));
 
             await unitOfWork.SaveChangesAsync();
 

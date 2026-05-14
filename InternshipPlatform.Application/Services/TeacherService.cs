@@ -1,6 +1,6 @@
-﻿using InternshipPlatform.Application.Dtos.Curator;
-using InternshipPlatform.Application.Exceptions.Curator;
+﻿using InternshipPlatform.Application.Dtos.Teacher;
 using InternshipPlatform.Application.Exceptions.Image;
+using InternshipPlatform.Application.Exceptions.Teacher;
 using InternshipPlatform.Application.Exceptions.User;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
@@ -13,22 +13,22 @@ using Microsoft.AspNetCore.Http;
 
 namespace InternshipPlatform.Application.Services
 {
-    public class CuratorService(
-        ICuratorRepository curatorRepository,
+    public class TeacherService(
+        ITeacherRepository teacherRepository,
         IUserRepository userRepository,
         IImageService imageService,
         IPasswordHasher passwordHasher,
-        IUnitOfWork unitOfWork) : ICuratorService
+        IUnitOfWork unitOfWork) : ITeacherService
     {
         private const int MaxAvatarSizeMb = 10;
 
         private async Task ThrowIfCuratorNotExists(int id)
         {
-            if (!await curatorRepository.IsCuratorExists(id))
-                throw new CuratorNotFoundException();
+            if (!await teacherRepository.IsTeacherExists(id))
+                throw new TeacherNotFoundException();
         }
 
-        private async Task ThrowIfEmailAlreadyTaken(UpdateCuratorRequest request)
+        private async Task ThrowIfEmailAlreadyTaken(UpdateTeacherRequest request)
         {
             if (string.IsNullOrEmpty(request.Email))
                 return;
@@ -41,25 +41,25 @@ namespace InternshipPlatform.Application.Services
                 throw new EmailAlreadyTakenException(request.Email);
         }
 
-        private async Task<Curator> GetCuratorByIdOrThrow(int id)
+        private async Task<Teacher> GetCuratorByIdOrThrow(int id)
         {
-            var curator = await curatorRepository.GetCuratorById(id)
-                ?? throw new CuratorNotFoundException();
+            var curator = await teacherRepository.GetTeacherById(id)
+                ?? throw new TeacherNotFoundException();
 
             return curator;
         }
 
-        public async Task<CuratorResponse> GetCuratorById(int id)
+        public async Task<TeacherResponse> GetTeacherById(int id)
         {
             var curator = await GetCuratorByIdOrThrow(id);
 
             return curator.ToResponse();
         }
 
-        public async Task UpdateCuratorProfile(UpdateCuratorRequest request)
+        public async Task UpdateTeacherProfile(UpdateTeacherRequest request)
         {
-            var curator = await curatorRepository.GetCuratorForUpdate(request.UserId)
-                ?? throw new CuratorNotFoundException();
+            var curator = await teacherRepository.GetTeacherForUpdate(request.UserId)
+                ?? throw new TeacherNotFoundException();
 
             if (!string.IsNullOrWhiteSpace(request.Email))
             {
@@ -95,7 +95,7 @@ namespace InternshipPlatform.Application.Services
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateCuratorAvatar(int id, IFormFile avatarFile)
+        public async Task UpdateTeacherAvatar(int id, IFormFile avatarFile)
         {
             var curator = await GetCuratorByIdOrThrow(id);
 
@@ -112,7 +112,7 @@ namespace InternshipPlatform.Application.Services
             await using var fstream = avatarFile.OpenReadStream();
 
             var newAvatarPath = await imageService.SaveCuratorProfileAvatar(fstream, Path.GetExtension(avatarFile.FileName));
-            await curatorRepository.UpdateAvatar(id, newAvatarPath);
+            await teacherRepository.UpdateAvatar(id, newAvatarPath);
 
             try
             {
@@ -131,7 +131,7 @@ namespace InternshipPlatform.Application.Services
         {
             var student = await GetCuratorByIdOrThrow(id);
 
-            await curatorRepository.UpdateAvatar(id, null);
+            await teacherRepository.UpdateAvatar(id, null);
             await imageService.DeleteIfExists(student.AvatarPath);
 
             await unitOfWork.SaveChangesAsync();
@@ -144,7 +144,7 @@ namespace InternshipPlatform.Application.Services
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task DeleteCurator(int id)
+        public async Task DeleteTeacher(int id)
         {
             await ThrowIfCuratorNotExists(id);
 

@@ -1,13 +1,13 @@
-﻿using InternshipPlatform.Application.Dtos.Curator;
+﻿using InternshipPlatform.Application.Dtos.Teacher;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Mappers
 {
-    public static class CuratorMapper
+    public static class TeacherMapper
     {
-        public static CuratorResponse ToResponse(this Curator curator)
+        public static TeacherResponse ToResponse(this Teacher curator)
         {
-            return new CuratorResponse
+            return new TeacherResponse
             {
                 UserId = curator.UserId,
                 Email = curator.User.Email,

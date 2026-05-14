@@ -41,7 +41,7 @@ namespace InternshipPlatform.Application.Mappers
         }
 
         public static User ToUser(
-            this RegisterCuratorRequest request,
+            this RegisterTeacherRequest request,
             string passwordHash,
             Role role,
             string refreshToken,
@@ -69,11 +69,11 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static Curator ToCurator(
-            this RegisterCuratorRequest request,
+        public static Teacher ToTeacher(
+            this RegisterTeacherRequest request,
             User user)
         {
-            return new Curator
+            return new Teacher
             {
                 User = user,
                 Name = StringNormalizer.NormalizeName(request.Name)!,

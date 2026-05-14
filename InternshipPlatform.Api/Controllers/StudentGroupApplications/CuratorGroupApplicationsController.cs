@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InternshipPlatform.Api.Controllers.StudentGroupApplications
 {
-    [Authorize(Roles = Roles.Curator)]
+    [Authorize(Roles = Roles.Teacher)]
     [Route("api/curators/me/group-applications")]
     public class CuratorGroupApplicationsController(
         IStudentGroupApplicationService studentGroupApplicationService)

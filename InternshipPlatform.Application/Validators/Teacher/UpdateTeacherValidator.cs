@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using InternshipPlatform.Application.Dtos.Curator;
+using InternshipPlatform.Application.Dtos.Teacher;
 
-namespace InternshipPlatform.Application.Validators.Curator
+namespace InternshipPlatform.Application.Validators.Teacher
 {
-    public class UpdateCuratorValidator : AbstractValidator<UpdateCuratorRequest>
+    public class UpdateTeacherValidator : AbstractValidator<UpdateTeacherRequest>
     {
         private bool ValidOptionalUrl(string? value, params string[] allowedHosts)
         {
@@ -27,7 +27,7 @@ namespace InternshipPlatform.Application.Validators.Curator
             return !string.IsNullOrWhiteSpace(path);
         }
 
-        public UpdateCuratorValidator()
+        public UpdateTeacherValidator()
         {
             RuleFor(x => x.Name)
                 .Cascade(CascadeMode.Stop)

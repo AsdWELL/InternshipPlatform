@@ -1,6 +1,6 @@
-﻿namespace InternshipPlatform.Application.Dtos.Curator
+﻿namespace InternshipPlatform.Application.Dtos.Teacher
 {
-    public class CuratorResponse
+    public class TeacherResponse
     {
         public int UserId { get; set; }
 

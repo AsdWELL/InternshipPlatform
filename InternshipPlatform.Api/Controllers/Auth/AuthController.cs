@@ -41,9 +41,9 @@ namespace InternshipPlatform.Api.Controllers.Auth
         }
 
         [HttpPost("register/curator")]
-        public async Task<IActionResult> RegisterCurator([FromBody] RegisterCuratorRequest request)
+        public async Task<IActionResult> RegisterCurator([FromBody] RegisterTeacherRequest request)
         {
-            var authResponse = await authService.RegisterCurator(request);
+            var authResponse = await authService.RegisterTeacher(request);
 
             SetTokenInCookie(authResponse.AccessToken);
 

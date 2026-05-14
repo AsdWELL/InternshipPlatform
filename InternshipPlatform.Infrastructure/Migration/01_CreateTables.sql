@@ -159,7 +159,7 @@ CREATE TABLE "Universities" (
   "Id"   SERIAL NOT NULL,
   "Name" text NOT NULL UNIQUE,
   PRIMARY KEY ("Id"));
-CREATE TABLE "Curators" (
+CREATE TABLE "Teachers" (
   "UserId"         integer NOT NULL,
   "UniversityId" integer NOT NULL,
   "Name"           text NOT NULL, 
@@ -269,9 +269,9 @@ ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews573641" FOREIGN KEY ("Com
 ALTER TABLE "ResumeViews" ADD CONSTRAINT "FKResumeViews15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Curators" ADD CONSTRAINT "FKCuratorsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Curators" ADD CONSTRAINT "FKCuratorsPr711692" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
+ALTER TABLE "Teachers" ADD CONSTRAINT "FKTeachersPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "Teachers" ADD CONSTRAINT "FKTeachersPr711692" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711691" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
-ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711692" FOREIGN KEY ("CuratorId") REFERENCES "Curators" ("UserId");
+ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711692" FOREIGN KEY ("CuratorId") REFERENCES "Teachers" ("UserId");
 ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711691" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
 ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711692" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId");

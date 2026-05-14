@@ -1,40 +1,40 @@
 ﻿using InternshipPlatform.Api.Controllers.Auth;
 using InternshipPlatform.Application.Dtos.Auth;
-using InternshipPlatform.Application.Dtos.Curator;
+using InternshipPlatform.Application.Dtos.Teacher;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Values;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace InternshipPlatform.Api.Controllers.Curators
+namespace InternshipPlatform.Api.Controllers.Teachers
 {
-    [Authorize(Roles = Roles.Curator)]
-    [Route("api/curators/me")]
-    public class CurrentCuratorController(
-        ICuratorService curatorService,
+    [Authorize(Roles = Roles.Teacher)]
+    [Route("api/teachers/me")]
+    public class CurrentTeacherController(
+        ITeacherService teacherService,
         IOptions<TokenOptions> tokenOptions) : AuthorizedUserController
     {
         [HttpGet]
-        public async Task<IActionResult> GetCurrentCurator()
+        public async Task<IActionResult> GetCurrentTeacher()
         {
-            return Ok(await curatorService.GetCuratorById(UserId));
+            return Ok(await teacherService.GetTeacherById(UserId));
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCuratorProfile([FromBody] UpdateCuratorRequest request)
+        public async Task<IActionResult> UpdateTeacherProfile([FromBody] UpdateTeacherRequest request)
         {
             request.UserId = UserId;
             
-            await curatorService.UpdateCuratorProfile(request);
+            await teacherService.UpdateTeacherProfile(request);
 
             return Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCurator()
+        public async Task<IActionResult> DeleteTeacher()
         {
-            await curatorService.DeleteCurator(UserId);
+            await teacherService.DeleteTeacher(UserId);
 
             ClearToken(tokenOptions.Value.CookieTitle);
 
@@ -42,9 +42,9 @@ namespace InternshipPlatform.Api.Controllers.Curators
         }
 
         [HttpPut("avatar")]
-        public async Task<IActionResult> UpdateCuratorAvatar(IFormFile avatarFile)
+        public async Task<IActionResult> UpdateTeacherAvatar(IFormFile avatarFile)
         {
-            await curatorService.UpdateCuratorAvatar(UserId, avatarFile);
+            await teacherService.UpdateTeacherAvatar(UserId, avatarFile);
 
             return Ok();
         }
@@ -52,7 +52,7 @@ namespace InternshipPlatform.Api.Controllers.Curators
         [HttpDelete("avatar")]
         public async Task<IActionResult> DeleteAvatar()
         {
-            await curatorService.DeleteAvatar(UserId);
+            await teacherService.DeleteAvatar(UserId);
 
             return Ok();
         }
@@ -60,7 +60,7 @@ namespace InternshipPlatform.Api.Controllers.Curators
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await curatorService.Logout(UserId);
+            await teacherService.Logout(UserId);
 
             ClearToken(tokenOptions.Value.CookieTitle);
 

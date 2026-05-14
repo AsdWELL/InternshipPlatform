@@ -3,7 +3,6 @@ using InternshipPlatform.Api.Authorization;
 using InternshipPlatform.Api.Authorization.Handlers;
 using InternshipPlatform.Api.Authorization.Requirements;
 using InternshipPlatform.Application.Dtos.Company;
-using InternshipPlatform.Application.Dtos.Curator;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Kafka;
@@ -11,19 +10,20 @@ using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentGroup;
 using InternshipPlatform.Application.Dtos.StudentGroupApplication;
 using InternshipPlatform.Application.Dtos.StudentProfile;
+using InternshipPlatform.Application.Dtos.Teacher;
 using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators.Auth;
-using InternshipPlatform.Application.Validators.Curator;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
 using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentGroup;
 using InternshipPlatform.Application.Validators.StudentGroupApplication;
 using InternshipPlatform.Application.Validators.StudentProfile;
+using InternshipPlatform.Application.Validators.Teacher;
 using InternshipPlatform.Application.Validators.Vacancy;
 using InternshipPlatform.Application.Values;
 using InternshipPlatform.Infrastructure.Services;
@@ -65,7 +65,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IStudentProfileService, StudentProfileService>()
                 .AddScoped<ICompanyService, CompanyService>()
-                .AddScoped<ICuratorService, CuratorService>()
+                .AddScoped<ITeacherService, TeacherService>()
                 .AddScoped<IEmployerProfileService, EmployerProflieService>()
                 .AddScoped<ISkillService, SkillService>()
                 .AddScoped<ISpecializationService, SpecializationService>()
@@ -90,11 +90,11 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<LoginUserRequest>, LoginRequestValidator>()
                 .AddTransient<IValidator<RegisterStudentRequest>, RegisterStudentRequestValidator>()
                 .AddTransient<IValidator<RegisterCompanyRequest>, RegisterCompanyValidator>()
-                .AddTransient<IValidator<RegisterCuratorRequest>, RegisterCuratorValidator>()
+                .AddTransient<IValidator<RegisterTeacherRequest>, RegisterTeacherValidator>()
                 .AddTransient<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
                 .AddTransient<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
                 .AddTransient<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProflieValidator>()
-                .AddTransient<IValidator<UpdateCuratorRequest>, UpdateCuratorValidator>()
+                .AddTransient<IValidator<UpdateTeacherRequest>, UpdateTeacherValidator>()
                 
                 .AddTransient<IValidator<CreateResumeRequest>, CreateResumeValidator>()
                 .AddTransient<IValidator<UpdateResumeRequest>, UpdateResumeValidator>()

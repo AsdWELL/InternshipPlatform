@@ -1,6 +1,6 @@
 ﻿namespace InternshipPlatform.Domain.Entities
 {
-    public class Curator
+    public class Teacher
     {
         public int UserId { get; set; }
 

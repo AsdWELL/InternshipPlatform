@@ -16,7 +16,7 @@ namespace InternshipPlatform.Api.Authorization.Handlers
                 return;
 
             if (context.User.IsInRole(Roles.Employer) ||
-                context.User.IsInRole(Roles.Curator))
+                context.User.IsInRole(Roles.Teacher))
             {
                 context.Succeed(requirement);
                 return;

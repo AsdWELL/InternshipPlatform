@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace InternshipPlatform.Application.Dtos.Curator
+namespace InternshipPlatform.Application.Dtos.Teacher
 {
-    public class UpdateCuratorRequest
+    public class UpdateTeacherRequest
     {
         [JsonIgnore]
         public int UserId { get; set; }

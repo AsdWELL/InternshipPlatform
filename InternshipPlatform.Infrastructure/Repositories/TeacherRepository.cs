@@ -4,39 +4,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InternshipPlatform.Infrastructure.Repositories
 {
-    public class CuratorRepository(InternshipPlatformContext context) : ICuratorRepository
+    public class TeacherRepository(InternshipPlatformContext context) : ITeacherRepository
     {
-        public Task<bool> IsCuratorExists(int id)
+        public Task<bool> IsTeacherExists(int id)
         {
-            return context.Curators
+            return context.Teachers
                 .AsNoTracking()
                 .AnyAsync(c => c.UserId == id);
         }
 
-        public async Task AddCurator(Curator curator)
+        public async Task AddTeacher(Teacher curator)
         {
-            await context.Curators.AddAsync(curator);
+            await context.Teachers.AddAsync(curator);
         }
 
-        public Task<Curator?> GetCuratorById(int id)
+        public Task<Teacher?> GetTeacherById(int id)
         {
-            return context.Curators
+            return context.Teachers
                 .AsNoTracking()
                 .Include(c => c.User)
                 .Include(c => c.University)
                 .FirstOrDefaultAsync(c => c.UserId == id);
         }
 
-        public Task<Curator?> GetCuratorForUpdate(int id)
+        public Task<Teacher?> GetTeacherForUpdate(int id)
         {
-            return context.Curators
+            return context.Teachers
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.UserId == id);
         }
 
         public async Task UpdateAvatar(int userId, string? avatarPath)
         {
-            var curator = await context.Curators.FindAsync(userId);
+            var curator = await context.Teachers.FindAsync(userId);
 
             if (curator == null)
                 return;

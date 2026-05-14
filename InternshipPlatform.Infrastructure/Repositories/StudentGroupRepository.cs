@@ -15,7 +15,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return context.StudentGroups
                 .AsNoTracking()
                 .AnyAsync(g => g.UniversityId == 
-                    context.Curators
+                    context.Teachers
                         .AsNoTracking()
                         .Where(c => c.UserId == curatorId)
                         .Select(c => c.UniversityId)
@@ -32,7 +32,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task AddStudentGroup(StudentGroup studentGroup)
         {
-            var universityId = await context.Curators
+            var universityId = await context.Teachers
                 .Where(c => c.UserId == studentGroup.CuratorId)
                 .Select(c => c.UniversityId)
                 .FirstOrDefaultAsync();

@@ -1,6 +1,6 @@
 ﻿namespace InternshipPlatform.Application.Dtos.User
 {
-    public class RegisterCuratorRequest
+    public class RegisterTeacherRequest
     {
         public string Name { get; set; }
 

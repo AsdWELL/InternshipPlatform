@@ -9,7 +9,7 @@ namespace InternshipPlatform.Application.Interfaces.Services.Auth
 
         Task<AuthResponse> RegisterEmployer(RegisterCompanyRequest request);
 
-        Task<AuthResponse> RegisterCurator(RegisterCuratorRequest request);
+        Task<AuthResponse> RegisterTeacher(RegisterTeacherRequest request);
 
         Task<AuthResponse> Login(LoginUserRequest request);
 
