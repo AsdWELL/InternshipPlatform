@@ -41,6 +41,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<University> Universities { get; set; }
 
+        public DbSet<EducationalProgram> EducationalPrograms { get; set; }
+
         public DbSet<Teacher> Teachers { get; set; }
 
         public DbSet<StudentGroup> StudentGroups { get; set; }

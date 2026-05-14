@@ -1,5 +1,4 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentGroup;
-using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Mappers
@@ -8,14 +7,16 @@ namespace InternshipPlatform.Application.Mappers
     {
         public static StudentGroup ToDomain(
             this CreateStudentGroupRequest request,
-            string inviteCode)
+            string inviteCode,
+            string groupName,
+            EducationalProgram educationalProgram)
         {
             return new StudentGroup
             {
-                Name = StringNormalizer.NormalizeToUpper(request.Name)!,
-                Specialization = StringNormalizer.NormalizeName(request.Specialization)!,
+                Name = groupName,
+                EducationalProgramId = request.EducationalProgramId,
                 EnrollmentYear = request.EnrollmentYear,
-                GraduationYear = request.GraduationYear,
+                GraduationYear = request.EnrollmentYear + educationalProgram.DurationYears,
                 InviteCode = inviteCode,
                 CuratorId = request.CuratorId
             };
@@ -41,7 +42,8 @@ namespace InternshipPlatform.Application.Mappers
             {
                 Id = studentGroup.Id,
                 Name = studentGroup.Name,
-                Specialization = studentGroup.Specialization,
+                Specialization = studentGroup.EducationalProgram.Name,
+                SpecializationCode = studentGroup.EducationalProgram.SpecializationCode,
                 InviteCode = studentGroup.InviteCode,
                 EnrollmentYear = studentGroup.EnrollmentYear,
                 GraduationYear = studentGroup.GraduationYear,
@@ -61,7 +63,8 @@ namespace InternshipPlatform.Application.Mappers
                 CuratorPatronymic = studentGroup.Curator.Patronymic,
                 CuratorAvatarPath = studentGroup.Curator.AvatarPath,
                 Name = studentGroup.Name,
-                Specialization = studentGroup.Specialization,
+                Specialization = studentGroup.EducationalProgram.Name,
+                SpecializationCode = studentGroup.EducationalProgram.SpecializationCode,
                 InviteCode = studentGroup.InviteCode,
                 EnrollmentYear = studentGroup.EnrollmentYear,
                 GraduationYear = studentGroup.GraduationYear,

@@ -20,6 +20,8 @@ namespace InternshipPlatform.Application.Dtos.StudentGroup
 
         public string Specialization { get; set; }
 
+        public string SpecializationCode { get; set; }
+
         public int EnrollmentYear { get; set; }
 
         public int GraduationYear { get; set; }

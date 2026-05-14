@@ -10,7 +10,9 @@
 
         public University University { get; set; }
 
-        public string Specialization { get; set; }
+        public int EducationalProgramId { get; set; }
+
+        public EducationalProgram EducationalProgram { get; set; }
 
         public int EnrollmentYear { get; set; }
 

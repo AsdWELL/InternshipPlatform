@@ -12,7 +12,7 @@ namespace InternshipPlatform.Application.Mappers
                 Id = studentGroupApplication.Id,
                 University = studentGroupApplication.Group.University.Name,
                 GroupName = studentGroupApplication.Group.Name,
-                Specialization = studentGroupApplication.Group.Specialization,
+                Specialization = studentGroupApplication.Group.EducationalProgram.Name,
                 InviteCode = studentGroupApplication.Group.InviteCode,
                 CreatedAt = studentGroupApplication.CreatedAt
             };

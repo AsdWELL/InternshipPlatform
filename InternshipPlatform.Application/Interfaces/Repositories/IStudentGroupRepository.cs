@@ -8,6 +8,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         Task<bool> IsGroupExists(int curatorId, string groupName);
 
         Task<bool> IsCuratorOwnsGroup(int curatorId, int groupId);
+
+        Task<int> GetNextGroupNumber(int universityId, int educationalProgramId, int enrollmentYear);
         
         Task AddStudentGroup(StudentGroup studentGroup);
 

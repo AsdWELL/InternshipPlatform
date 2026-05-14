@@ -29,6 +29,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return await context.StudentProfiles
                 .AsNoTracking()
                 .Include(sp => sp.User)
+                .Include(sp => sp.Group)
+                    .ThenInclude(g => g.University)
+                .Include(sp => sp.Group)
+                    .ThenInclude(g => g.EducationalProgram)
                 .FirstOrDefaultAsync(sp => sp.User.Email == email);
         }
 
@@ -39,6 +43,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(sp => sp.User)
                 .Include(sp => sp.Group)
                     .ThenInclude(g => g.University)
+                .Include(sp => sp.Group)
+                    .ThenInclude(g => g.EducationalProgram)
                 .FirstOrDefaultAsync(st => st.UserId == userId);
         }
 

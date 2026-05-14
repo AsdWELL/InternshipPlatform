@@ -68,6 +68,7 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<IResumeViewRepository, ResumeViewRepository>()
                 .AddScoped<IVacancyViewRepository, VacancyViewRepository>()
                 .AddScoped<IUniversityRepository, UniversityRepository>()
+                .AddScoped<IEducationalProgramsRepository, EducationalProgramsRepository>()
                 .AddScoped<IStudentGroupRepository, StudentGroupRepository>()
                 .AddScoped<IStudentGroupApplicationRepository, StudentGroupApplicationRepository>()
                 .AddScoped<ICuratorGroupStatisticsRepository, CuratorGroupStatisticsRepository>()

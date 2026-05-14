@@ -20,7 +20,7 @@ namespace InternshipPlatform.Application.Mappers
                 GraduationYear = studentProfile?.Group?.GraduationYear,
                 MaxLink = studentProfile.MaxLink,
                 Phone = studentProfile.Phone,
-                Specialization = studentProfile?.Group?.Specialization,
+                Specialization = studentProfile?.Group?.EducationalProgram.Name,
                 TgLink = studentProfile.TgLink,
                 University = studentProfile?.Group?.University.Name,
                 VkLink = studentProfile.VkLink,

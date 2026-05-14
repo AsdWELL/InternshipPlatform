@@ -4,7 +4,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
 {
     public interface IStudentGroupService
     {
-        Task<StudentGroupInviteCodeResponse> CreateStudentGroup(CreateStudentGroupRequest request);
+        Task<CreateStudentGroupResponse> CreateStudentGroup(CreateStudentGroupRequest request);
 
         Task<List<StudentGroupResponse>> GetCuratorGroups(int curatorId);
 
@@ -12,6 +12,6 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<StudentGroupDetails?> GetGroupDetailsForStudent(int studentId);
 
-        Task<StudentGroupInviteCodeResponse> RefreshInviteCode(int curatorId, int groupId);
+        Task<CreateStudentGroupResponse> RefreshInviteCode(int curatorId, int groupId);
     }
 }

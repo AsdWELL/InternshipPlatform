@@ -159,6 +159,16 @@ CREATE TABLE "Universities" (
   "Id"   SERIAL NOT NULL,
   "Name" text NOT NULL UNIQUE,
   PRIMARY KEY ("Id"));
+CREATE TABLE "EducationalPrograms" (
+  "Id"   SERIAL NOT NULL,
+  "Name" text NOT NULL,
+  "UniversityId" integer NOT NULL,
+  "SpecializationCode" text NOT NULL,
+  "GroupCode" text NOT NULL,
+  "DurationYears" integer NOT NULL,
+  CONSTRAINT "unique_university_program" 
+	  UNIQUE ("Name", "UniversityId"),
+  PRIMARY KEY ("Id"));
 CREATE TABLE "Teachers" (
   "UserId"         integer NOT NULL,
   "UniversityId" integer NOT NULL,
@@ -175,7 +185,7 @@ CREATE TABLE "StudentGroups" (
   "Id" SERIAL NOT NULL,
   "Name" text NOT NULL,
   "UniversityId" integer NOT NULL,
-  "Specialization" text NOT NULL,
+  "EducationalProgramId" integer NOT NULL,
   "EnrollmentYear" integer NOT NULL,
   "GraduationYear" integer NOT NULL,
   "InviteCode" text NOT NULL UNIQUE,
@@ -237,6 +247,8 @@ CREATE INDEX "StudentGroups1"
   ON "StudentGroups" ("CuratorId");
 CREATE INDEX "StudentGroupRequests1"
   ON "StudentGroupApplications" ("GroupId");
+CREATE INDEX "EducationalPrograms1"
+  ON "EducationalPrograms" ("UniversityId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711692" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
@@ -271,6 +283,8 @@ ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573643" FOREIGN KEY ("S
 ALTER TABLE "VacancyViews" ADD CONSTRAINT "FKVacancyViews573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Teachers" ADD CONSTRAINT "FKTeachersPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Teachers" ADD CONSTRAINT "FKTeachersPr711692" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
+ALTER TABLE "EducationalPrograms" ADD CONSTRAINT "FKEducationalProgramsPr711692" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
+ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711690" FOREIGN KEY ("EducationalProgramId") REFERENCES "EducationalPrograms" ("Id");
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711691" FOREIGN KEY ("UniversityId") REFERENCES "Universities" ("Id");
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711692" FOREIGN KEY ("CuratorId") REFERENCES "Teachers" ("UserId");
 ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711691" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");

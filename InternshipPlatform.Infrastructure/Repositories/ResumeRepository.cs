@@ -98,6 +98,9 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(r => r.Specialization)
                 .Include(r => r.StudentProfile)
                     .ThenInclude(sp => sp.User)
+                .Include(r => r.StudentProfile)
+                    .ThenInclude(sp => sp.Group)
+                        .ThenInclude(g => g.EducationalProgram)
                 .Include(r => r.Skills)
                 .Include(r => r.WorkExperiences)
                 .FirstOrDefaultAsync(r => r.Id == id);

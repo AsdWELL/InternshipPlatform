@@ -60,6 +60,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(ga => ga.StudentId == studentId)
                 .Include(ga => ga.Group)
                     .ThenInclude(g => g.University)
+                .Include(ga => ga.Group)
+                    .ThenInclude(g => g.EducationalProgram)
                 .FirstOrDefaultAsync();
         }
 

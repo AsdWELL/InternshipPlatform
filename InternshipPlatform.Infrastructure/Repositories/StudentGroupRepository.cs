@@ -30,6 +30,19 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AnyAsync(g => g.Id == groupId && g.CuratorId == curatorId);
         }
 
+        public async Task<int> GetNextGroupNumber(int universityId, int educationalProgramId, int enrollmentYear)
+        {
+            var maxGroupNumber = await context.StudentGroups
+                .AsNoTracking()
+                .Where(g =>
+                    g.UniversityId == universityId &&
+                    g.EducationalProgramId == educationalProgramId &&
+                    g.EnrollmentYear == enrollmentYear)
+                .CountAsync();
+
+            return maxGroupNumber + 1;
+        }
+
         public async Task AddStudentGroup(StudentGroup studentGroup)
         {
             var universityId = await context.Teachers
@@ -60,6 +73,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return context.StudentGroups
                 .AsNoTracking()
                 .Include(g => g.StudentProfiles)
+                .Include(g => g.EducationalProgram)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
@@ -72,6 +86,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     .ThenInclude(g => g.StudentProfiles)
                 .Include(sp => sp.Group!)
                     .ThenInclude(g => g.Curator)
+                .Include(sp => sp.Group!)
+                    .ThenInclude(g => g.EducationalProgram)
                 .Select(sp => sp.Group!)
                 .FirstOrDefaultAsync();
         }

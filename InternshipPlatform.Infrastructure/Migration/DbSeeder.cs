@@ -38,6 +38,8 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinApplicationsPerVacancy = 5;
         private const int MaxApplicationsPerVacancy = 10;
 
+        private const int EducationalProgramsPerUniversity = 10;
+
         private const int MinGroupsPerCurator = 1;
         private const int MaxGroupsPerCurator = 3;
 
@@ -501,6 +503,72 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private void GenerateEducationalPrograms()
+        {
+            if (context.EducationalPrograms.Any())
+                return;
+
+            (string Name, string SpecializationCode, string GroupCode, int DurationYears)[] EducationalProgramTemplates =
+            [
+                ("Программная инженерия", "09.03.04", "ПИ", 4),
+                ("Информатика и вычислительная техника", "09.03.01", "ИВТ", 4),
+                ("Информационные системы и технологии", "09.03.02", "ИС", 4),
+                ("Прикладная информатика", "09.03.03", "ПС", 4),
+                ("Программная инженерия цифровых решений", "09.03.04", "ПЦ", 4),
+                ("Разработка информационных систем", "09.03.02", "РИ", 4),
+                ("Системный анализ и управление", "27.03.03", "СА", 4),
+                ("Искусственный интеллект и анализ данных", "09.03.01", "ИИ", 4),
+                ("Анализ данных и машинное обучение", "01.03.02", "АД", 4),
+                ("Кибербезопасность", "10.03.01", "КБ", 4),
+                ("Компьютерная безопасность", "10.05.01", "КС", 5),
+                ("Математическое обеспечение и администрирование информационных систем", "02.03.03", "МА", 4),
+                ("Бизнес-аналитика в IT", "38.03.05", "БА", 4),
+                ("DevOps и облачные технологии", "09.03.01", "ДО", 4),
+                ("Технологии разработки программного обеспечения", "09.03.04", "ТР", 4)
+            ];
+
+            var universities = context.Universities.ToList();
+            if (universities.Count == 0)
+                return;
+
+            if (EducationalProgramTemplates.Length < EducationalProgramsPerUniversity)
+                throw new InvalidOperationException(
+                    $"Количество шаблонов образовательных программ должно быть не меньше {EducationalProgramsPerUniversity}.");
+
+            Randomizer.Seed = new Random(RandomizerSeed + 6);
+
+            var faker = new Faker("ru");
+            var educationalPrograms = new List<EducationalProgram>();
+
+            foreach (var university in universities)
+            {
+                var selectedPrograms = faker.Random
+                    .Shuffle(EducationalProgramTemplates.ToList())
+                    .Take(EducationalProgramsPerUniversity)
+                    .ToList();
+
+                var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var programTemplate in selectedPrograms)
+                {
+                    if (!usedNames.Add(programTemplate.Name))
+                        continue;
+
+                    educationalPrograms.Add(new EducationalProgram
+                    {
+                        Name = programTemplate.Name,
+                        UniversityId = university.Id,
+                        SpecializationCode = programTemplate.SpecializationCode,
+                        GroupCode = programTemplate.GroupCode,
+                        DurationYears = programTemplate.DurationYears
+                    });
+                }
+            }
+
+            context.EducationalPrograms.AddRange(educationalPrograms);
+            context.SaveChanges();
+        }
+
         private void GenerateStudentGroups()
         {
             if (context.StudentGroups.Any())
@@ -510,29 +578,16 @@ namespace InternshipPlatform.Infrastructure.Migration
             if (curators.Count == 0)
                 return;
 
+            var educationalPrograms = context.EducationalPrograms.ToList();
+            if (educationalPrograms.Count == 0)
+                return;
+
             Randomizer.Seed = new Random(RandomizerSeed);
 
             var faker = new Faker("ru");
             var studentGroups = new List<StudentGroup>();
 
-            var specializationCodes = new Dictionary<string, string>
-            {
-                ["Программная инженерия"] = "ПИ",
-                ["Информатика и технологии программирования"] = "ИП",
-                ["Информационные системы и технологии"] = "ИС",
-                ["Прикладная информатика"] = "ПС",
-                ["Искусственный интеллект"] = "ИИ",
-                ["Кибербезопасность"] = "КБ",
-                ["Бизнес-аналитика"] = "БА",
-                ["Программная инженерия цифровых решений"] = "ПЦ",
-                ["Разработка информационных систем"] = "РИ",
-                ["Системный анализ и управление"] = "СА",
-                ["Компьютерная безопасность"] = "КС",
-                ["Математическое обеспечение и администрирование информационных систем"] = "МА",
-                ["Анализ данных и машинное обучение"] = "АД"
-            };
-
-            var codesCounter = specializationCodes.Values.ToDictionary(s => s, _ => 0);
+            var codesCounter = new Dictionary<(int, string, int), int>();
 
             int inviteCodeCounter = 1;
 
@@ -540,35 +595,24 @@ namespace InternshipPlatform.Infrastructure.Migration
             {
                 int groupsCount = faker.Random.Int(MinGroupsPerCurator, MaxGroupsPerCurator);
 
-                var usedGroupNamesForCurator = new HashSet<string>();
-
                 for (int i = 0; i < groupsCount; i++)
                 {
-                    var specialization = faker.PickRandom(specializationCodes.Keys.ToList());
-                    var specializationCode = specializationCodes[specialization];
-
+                    var educationalProgram = faker.PickRandom(educationalPrograms);
                     var enrollmentYear = faker.Random.Int(DateTime.UtcNow.Year - 6, DateTime.UtcNow.Year - 1);
-                    var graduationYear = enrollmentYear + faker.Random.Int(4, 5);
 
-                    var shortYear = (enrollmentYear % 100).ToString("D2");
+                    codesCounter.TryAdd((curator.UniversityId, educationalProgram.GroupCode, enrollmentYear), 0);
 
-                    string groupName;
-                    int safetyCounter = 0;
-
-                    do
-                    {
-                        groupName = $"{shortYear}{specializationCode}{codesCounter[specializationCode]++}";
-                        safetyCounter++;
-                    }
-                    while (!usedGroupNamesForCurator.Add(groupName) && safetyCounter < 20);
+                    var groupName = $"{enrollmentYear.ToString()[^2..]}" +
+                        $"{educationalProgram.GroupCode}" +
+                        $"{++codesCounter[(curator.UniversityId, educationalProgram.GroupCode, enrollmentYear)]}".ToUpperInvariant(); ;
 
                     studentGroups.Add(new StudentGroup
                     {
                         Name = groupName,
                         UniversityId = curator.UniversityId,
-                        Specialization = specialization,
+                        EducationalProgramId = educationalProgram.Id,
                         EnrollmentYear = enrollmentYear,
-                        GraduationYear = graduationYear,
+                        GraduationYear = enrollmentYear + educationalProgram.DurationYears,
                         InviteCode = $"TEST-{inviteCodeCounter:D4}",
                         CuratorId = curator.UserId
                     });
@@ -639,6 +683,10 @@ namespace InternshipPlatform.Infrastructure.Migration
             startTime = Environment.TickCount;
             GenerateChatsAndJobApplications();
             logger.LogInformation($"Чаты и отклики сгенерированы за {Environment.TickCount - startTime}мс\n");
+
+            startTime = Environment.TickCount;
+            GenerateEducationalPrograms();
+            logger.LogInformation($"Образовательные программы сгенерированы за {Environment.TickCount - startTime}мс");
 
             startTime = Environment.TickCount;
             GenerateStudentGroups();

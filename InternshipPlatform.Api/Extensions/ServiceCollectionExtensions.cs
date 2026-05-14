@@ -78,6 +78,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IResumeViewService, ResumeViewService>()
                 .AddScoped<IVacancyViewService, VacancyViewService>()
                 .AddScoped<IUniversityService, UniversityService>()
+                .AddScoped<IEducationalProgramsService, EducationalProgramsService>()
                 .AddScoped<IInviteCodeGenerator, InviteCodeGenerator>()
                 .AddScoped<IStudentGroupService, StudentGroupService>()
                 .AddScoped<IStudentGroupApplicationService, StudentGroupApplicationService>()
