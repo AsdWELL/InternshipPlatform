@@ -70,6 +70,8 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(sp => sp.UserId == studentId && sp.GroupId != null)
                 .Include(sp => sp.Group!)
                     .ThenInclude(g => g.StudentProfiles)
+                .Include(sp => sp.Group!)
+                    .ThenInclude(g => g.Curator)
                 .Select(sp => sp.Group!)
                 .FirstOrDefaultAsync();
         }

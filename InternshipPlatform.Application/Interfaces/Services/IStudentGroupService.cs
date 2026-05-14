@@ -8,7 +8,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<List<StudentGroupResponse>> GetCuratorGroups(int curatorId);
 
-        Task<StudentGroupDetails> GetGroupDetailsForCurator(int curatorId, int groupId);
+        Task<CuratorGroupDetails> GetGroupDetailsForCurator(int curatorId, int groupId);
 
         Task<StudentGroupDetails?> GetGroupDetailsForStudent(int studentId);
 

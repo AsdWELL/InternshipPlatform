@@ -35,11 +35,31 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static StudentGroupDetails ToDetails(this StudentGroup studentGroup)
+        public static CuratorGroupDetails ToCuratorDetails(this StudentGroup studentGroup)
+        {
+            return new CuratorGroupDetails
+            {
+                Id = studentGroup.Id,
+                Name = studentGroup.Name,
+                Specialization = studentGroup.Specialization,
+                InviteCode = studentGroup.InviteCode,
+                EnrollmentYear = studentGroup.EnrollmentYear,
+                GraduationYear = studentGroup.GraduationYear,
+                StudentsCount = studentGroup.StudentProfiles.Count,
+                Students = studentGroup.StudentProfiles.Select(sp => sp.ToItem()).ToList()
+            };
+        }
+
+        public static StudentGroupDetails ToStudentDetails(this StudentGroup studentGroup)
         {
             return new StudentGroupDetails
             {
                 Id = studentGroup.Id,
+                CuratorId = studentGroup.CuratorId,
+                CuratorName = studentGroup.Curator.Name,
+                CuratorSurname = studentGroup.Curator.Surname,
+                CuratorPatronymic = studentGroup.Curator.Patronymic,
+                CuratorAvatarPath = studentGroup.Curator.AvatarPath,
                 Name = studentGroup.Name,
                 Specialization = studentGroup.Specialization,
                 InviteCode = studentGroup.InviteCode,

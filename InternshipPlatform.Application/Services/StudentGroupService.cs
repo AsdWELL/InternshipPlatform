@@ -45,14 +45,14 @@ namespace InternshipPlatform.Application.Services
             return groupsResult.Select(g => g.ToResponse()).ToList();
         }
 
-        public async Task<StudentGroupDetails> GetGroupDetailsForCurator(int curatorId, int groupId)
+        public async Task<CuratorGroupDetails> GetGroupDetailsForCurator(int curatorId, int groupId)
         {
             await ThrowIfCuratorDoesNotOwnGroup(curatorId, groupId);
 
             var group = await studentGroupRepository.GetGroupDetailsByGroupId(groupId)
                 ?? throw new StudentGroupNotFoundException();
 
-            return group.ToDetails();
+            return group.ToCuratorDetails();
         }
 
         public async Task<StudentGroupDetails?> GetGroupDetailsForStudent(int studentId)
@@ -62,7 +62,7 @@ namespace InternshipPlatform.Application.Services
             if (group is null)
                 return null;
 
-            return group.ToDetails();
+            return group.ToStudentDetails();
         }
 
         public async Task<StudentGroupInviteCodeResponse> RefreshInviteCode(int curatorId, int groupId)
