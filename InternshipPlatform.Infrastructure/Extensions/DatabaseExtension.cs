@@ -1,4 +1,4 @@
-﻿using DbUp;
+using DbUp;
 using InternshipPlatform.Application.Interfaces;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Infrastructure.Migration;
@@ -61,6 +61,7 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<ISpecializationRepository, SpecializationRepository>()
                 .AddScoped<IResumeRepository, ResumeRepository>()
                 .AddScoped<IVacancyRepository, VacancyRepository>()
+                .AddScoped<IPracticeOfferRepository, PracticeOfferRepository>()
                 .AddScoped<IJobApplicationRepository, JobApplicationRepository>()
                 .AddScoped<IChatRepository, ChatRepository>()
                 .AddScoped<IMessageRepository, MessageRepository>()

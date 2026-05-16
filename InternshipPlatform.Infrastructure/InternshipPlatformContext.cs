@@ -1,4 +1,4 @@
-﻿using InternshipPlatform.Domain.Entities;
+using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace InternshipPlatform.Infrastructure
@@ -24,6 +24,8 @@ namespace InternshipPlatform.Infrastructure
         public DbSet<Resume> Resumes { get; set; }
 
         public DbSet<Vacancy> Vacancies { get; set; }
+
+        public DbSet<PracticeOffer> PracticeOffers { get; set; }
 
         public DbSet<JobApplicationStatus> ApplicationStatuses { get; set; }
 
@@ -137,6 +139,16 @@ namespace InternshipPlatform.Infrastructure
                 .HasMany(vacancy => vacancy.Views)
                 .WithOne(view => view.Vacancy)
                 .HasForeignKey(view => view.VacancyId);
+
+            modelBuilder.Entity<PracticeOffer>()
+                .HasOne(po => po.Company)
+                .WithMany()
+                .HasForeignKey(po => po.CompanyId);
+
+            modelBuilder.Entity<PracticeOffer>()
+                .HasOne(po => po.Specialization)
+                .WithMany()
+                .HasForeignKey(po => po.SpecializationId);
 
             modelBuilder.Entity<Chat>()
                 .HasOne(c => c.Company)

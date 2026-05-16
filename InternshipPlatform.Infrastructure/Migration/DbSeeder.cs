@@ -46,6 +46,12 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinStudentsPerGroup = 10;
         private const int MaxStudentsPerGroup = 30;
 
+        private const int MinPracticeOffersPerCompany = 1;
+        private const int MaxPracticeOffersPerCompany = 5;
+
+        private const int MinMaxStudentsPerPractice = 1;
+        private const int MaxMaxStudentsPerPractice = 8;
+
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
 
         private void GenerateStudents(List<User> users)
@@ -435,6 +441,72 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private void GeneratePracticeOffers()
+        {
+            if (context.PracticeOffers.Any())
+                return;
+
+            var companies = context.Companies.ToList();
+            var specializations = context.Specializations.ToList();
+
+            if (companies.Count == 0 || specializations.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed + 7);
+
+            var practiceTitles = new[]
+            {
+                "Предложение на производственную практику для .NET-разработчика",
+                "Предложение на учебную практику для backend-разработчика",
+                "Предложение на практику для frontend-разработчика",
+                "Предложение на практику для fullstack-разработчика",
+                "Предложение на практику для QA Engineer",
+                "Предложение на практику для бизнес-аналитика",
+                "Предложение на практику для системного аналитика",
+                "Предложение на практику для DevOps Engineer",
+                "Предложение на практику для Data Analyst",
+                "Предложение на практику для Python Developer"
+            };
+
+            var practiceDescriptions = new[]
+            {
+                "Компания приглашает студентов на учебную и производственную практику с возможностью участия в реальных проектах под руководством наставника.",
+                "Практика подойдёт студентам, которые хотят получить первый опыт командной разработки и познакомиться с рабочими процессами в IT-компании.",
+                "Во время практики студент будет участвовать в выполнении прикладных задач, изучать внутренние процессы компании и осваивать используемый стек технологий.",
+                "Практикант будет подключён к задачам проекта, получит наставника и возможность развивать профессиональные навыки на реальных кейсах.",
+                "Предлагаем пройти практику в команде разработки, тестирования или аналитики с перспективой дальнейшей стажировки."
+            };
+
+            var faker = new Faker("ru");
+            var practiceOffers = new List<PracticeOffer>();
+
+            foreach (var company in companies)
+            {
+                var offersCount = faker.Random.Int(MinPracticeOffersPerCompany, MaxPracticeOffersPerCompany);
+
+                for (int i = 0; i < offersCount; i++)
+                {
+                    var specialization = faker.PickRandom(specializations);
+                    var isRemote = faker.Random.Bool(0.35f);
+
+                    practiceOffers.Add(new PracticeOffer
+                    {
+                        Title = faker.PickRandom(practiceTitles),
+                        Description = faker.PickRandom(practiceDescriptions),
+                        IsRemote = isRemote,
+                        Region = isRemote ? null : faker.Address.City(),
+                        IsActive = faker.Random.Bool(0.85f),
+                        SpecializationId = specialization.Id,
+                        CompanyId = company.Id,
+                        MaxStudents = faker.Random.Int(MinMaxStudentsPerPractice, MaxMaxStudentsPerPractice)
+                    });
+                }
+            }
+
+            context.PracticeOffers.AddRange(practiceOffers);
+            context.SaveChanges();
+        }
+
         private void GenerateChatsAndJobApplications()
         {
             if (context.Applications.Any())
@@ -679,6 +751,10 @@ namespace InternshipPlatform.Infrastructure.Migration
             startTime = Environment.TickCount;
             GenerateVacancies();
             logger.LogInformation($"Вакансии комипаний сгенерированы за {Environment.TickCount - startTime}мс\n");
+
+            startTime = Environment.TickCount;
+            GeneratePracticeOffers();
+            logger.LogInformation($"Предложения по практике сгенерированы за {Environment.TickCount - startTime}мс");
 
             startTime = Environment.TickCount;
             GenerateChatsAndJobApplications();

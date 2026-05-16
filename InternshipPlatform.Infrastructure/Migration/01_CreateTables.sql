@@ -50,6 +50,17 @@ CREATE TABLE "Vacancies" (
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 
   PRIMARY KEY ("Id"));
+CREATE TABLE "PracticeOffers" (
+  "Id"               SERIAL NOT NULL, 
+  "Title"            text NOT NULL, 
+  "Description"      text, 
+  "IsRemote"         bool NOT NULL, 
+  "Region"           text, 
+  "IsActive"         bool NOT NULL, 
+  "MaxStudents" integer NOT NULL,
+  "SpecializationId" integer NOT NULL, 
+  "CompanyId"        integer NOT NULL, 
+  PRIMARY KEY ("Id"));
 CREATE TABLE "FavoriteVacancies" (
 	"Id" SERIAL NOT NULL,
 	"StudentId" integer NOT NULL,
@@ -215,6 +226,14 @@ CREATE INDEX "Vacancies3"
   ON "Vacancies" ("Title");
 CREATE INDEX "Vacancies4" 
   ON "Vacancies" ("Region");
+CREATE INDEX "PracticeOffers1" 
+  ON "PracticeOffers" ("CompanyId");
+CREATE INDEX "PracticeOffers2" 
+  ON "PracticeOffers" ("SpecializationId");
+CREATE INDEX "PracticeOffers3" 
+  ON "PracticeOffers" ("Title");
+CREATE INDEX "PracticeOffers4" 
+  ON "PracticeOffers" ("Region");
 CREATE INDEX "Applications1" 
   ON "Applications" ("ResumeId");
 CREATE INDEX "Applications2" 
@@ -261,6 +280,8 @@ ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa373177" FOREIGN KEY ("
 ALTER TABLE "SkillsToVacancy" ADD CONSTRAINT "FKSkillsToVa581449" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes64954" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "PracticeOffers" ADD CONSTRAINT "FKPracticeOffers845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "PracticeOffers" ADD CONSTRAINT "FKPracticeOffers430548" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321884" FOREIGN KEY ("ApplicationStatusId") REFERENCES "ApplicationStatuses" ("Id");

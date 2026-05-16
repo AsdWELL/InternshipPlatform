@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using InternshipPlatform.Api.Authorization;
 using InternshipPlatform.Api.Authorization.Handlers;
 using InternshipPlatform.Api.Authorization.Requirements;
@@ -6,6 +6,7 @@ using InternshipPlatform.Application.Dtos.Company;
 using InternshipPlatform.Application.Dtos.EmployerProflie;
 using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Kafka;
+using InternshipPlatform.Application.Dtos.PracticeOffer;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentGroup;
 using InternshipPlatform.Application.Dtos.StudentGroupApplication;
@@ -19,6 +20,7 @@ using InternshipPlatform.Application.Services;
 using InternshipPlatform.Application.Validators.Auth;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
+using InternshipPlatform.Application.Validators.PracticeOffer;
 using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentGroup;
 using InternshipPlatform.Application.Validators.StudentGroupApplication;
@@ -71,6 +73,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<ISpecializationService, SpecializationService>()
                 .AddScoped<IResumeService, ResumeService>()
                 .AddScoped<IVacancyService, VacancyService>()
+                .AddScoped<IPracticeOfferService, PracticeOfferService>()
                 .AddScoped<IJobApplicationService, JobApplicationService>()
                 .AddScoped<IChatService, ChatService>()
                 .AddScoped<IMessageService, MessageService>()
@@ -106,6 +109,10 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<CreateVacancyRequest>, CreateVacancyValidator>()
                 .AddTransient<IValidator<UpdateVacancyRequest>, UpdateVacancyValidator>()
                 .AddTransient<IValidator<SearchVacancyParameters>, SearchVacancyValidator>()
+
+                .AddTransient<IValidator<CreatePracticeOfferRequest>, CreatePracticeOfferValidator>()
+                .AddTransient<IValidator<UpdatePracticeOfferRequest>, UpdatePracticeOfferValidator>()
+                .AddTransient<IValidator<SearchPracticeOfferParameters>, SearchPracticeOfferValidator>()
                 
                 .AddTransient<IValidator<GetStudentApplicationsParameters>, GetStudentApplicationsValidator>()
                 .AddTransient<IValidator<GetEmployerApplicationsParameters>, GetEmployerApplicationsValidator>()
