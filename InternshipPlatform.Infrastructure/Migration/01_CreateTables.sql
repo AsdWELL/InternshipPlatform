@@ -50,6 +50,12 @@ CREATE TABLE "Vacancies" (
   "SpecializationId" integer NOT NULL, 
   "CompanyId"        integer NOT NULL, 
   PRIMARY KEY ("Id"));
+CREATE TABLE "PracticeMaterials" (
+  "Id" SERIAL NOT NULL,
+  "PracticeOfferId" integer NOT NULL,
+  "Title" text NOT NULL,
+  "FilePath" text NOT NULL,
+  PRIMARY KEY ("Id"));
 CREATE TABLE "PracticeOffers" (
   "Id"               SERIAL NOT NULL, 
   "Title"            text NOT NULL, 
@@ -68,7 +74,7 @@ CREATE TABLE "FavoriteVacancies" (
 	CONSTRAINT "unique_favorites" 
 	  UNIQUE ("StudentId", "VacancyId"),
 	PRIMARY KEY ("Id"));
-CREATE TABLE "Applications" (
+CREATE TABLE "JobApplications" (
   "Id"                  SERIAL NOT NULL, 
   "VacancyId"           integer NOT NULL, 
   "ResumeId"            integer NOT NULL,
@@ -110,13 +116,13 @@ CREATE TABLE "WorkExperiences" (
 CREATE TABLE "SkillsToResume" (
   "SkillId"  integer NOT NULL, 
   "ResumeId" integer NOT NULL, 
-  PRIMARY KEY ("SkillId", 
-  "ResumeId"));
+  PRIMARY KEY ("ResumeId",
+  "SkillId"));
 CREATE TABLE "SkillsToVacancy" (
   "SkillId"  integer NOT NULL, 
   "VacancyId" integer NOT NULL, 
-  PRIMARY KEY ("SkillId", 
-  "VacancyId"));
+  PRIMARY KEY ("VacancyId", 
+  "SkillId"));
 CREATE TABLE "Chats" (
   "Id"            SERIAL NOT NULL, 
   "CompanyId"     integer NOT NULL,
@@ -143,28 +149,6 @@ CREATE TABLE "VacancyViews" (
   "VacancyId" integer NOT NULL,
   "StudentId" integer NOT NULL,
   "ViewDate" timestamp NOT NULL,
-  PRIMARY KEY ("Id"));
-CREATE TABLE "SubscriptionPlans" (
-  "Id"                SERIAL NOT NULL, 
-  "Name"              text NOT NULL, 
-  "Description"       text NOT NULL, 
-  "Price"             integer NOT NULL, 
-  "DurationDays"      integer NOT NULL, 
-  "MaxVacancies"      integer NOT NULL, 
-  "VacancyPeriodDays" integer NOT NULL, 
-  PRIMARY KEY ("Id"));
-CREATE TABLE "SubscribtionStatuses" (
-  "Id"   SERIAL NOT NULL, 
-  "Name" text NOT NULL UNIQUE, 
-  PRIMARY KEY ("Id"));
-CREATE TABLE "Subscriptions" (
-  "Id"          SERIAL NOT NULL, 
-  "PeriodStart" timestamp NOT NULL, 
-  "PeriodEnd"   timestamp NOT NULL, 
-  "CanceledAt"  timestamp, 
-  "PlanId"      integer NOT NULL, 
-  "StatusId"    integer NOT NULL, 
-  "UserId"      integer NOT NULL, 
   PRIMARY KEY ("Id"));
 CREATE TABLE "Universities" (
   "Id"   SERIAL NOT NULL,
@@ -210,6 +194,50 @@ CREATE TABLE "StudentGroupApplications" (
   "StudentId" integer NOT NULL UNIQUE,
   "CreatedAt" timestamp NOT NULL,
   PRIMARY KEY ("Id"));
+CREATE TABLE "PracticePeriods" (
+  "Id" SERIAL NOT NULL,
+  "SupervisorId" integer NOT NULL,
+  "EducationalProgramId" integer NOT NULL,
+  "CourseNumber" integer NOT NULL,
+  "AcademicYearStart" integer NOT NULL,
+  "StartDate" date NOT NULL,
+  "EndDate" date NOT NULL,
+  PRIMARY KEY ("Id"));
+CREATE TABLE "PracticePeriodsGroup" (
+  "StudentGroupId" integer NOT NULL,
+  "PracticePeriodId" integer NOT NULL,
+  PRIMARY KEY ("StudentGroupId", 
+  "PracticePeriodId"));
+CREATE TABLE "PracticeApplications" (
+  "Id" SERIAL NOT NULL,
+  "StudentId" integer NOT NULL UNIQUE,
+  "PracticeOfferId" integer NOT NULL,
+  "PracticePeriodId" integer NOT NULL,
+  "CreatedAt" timestamp NOT NULL,
+  PRIMARY KEY ("Id"));
+CREATE TABLE "StudentPractices" (
+  "Id" SERIAL NOT NULL,
+  "StudentId" integer NOT NULL,
+  "PracticeOfferId" integer NOT NULL,
+  "PracticePeriodId" integer NOT NULL,
+  CONSTRAINT "unique_practice_per_period" 
+	  UNIQUE ("StudentId", "PracticePeriodId"),
+  PRIMARY KEY ("Id"));
+CREATE TABLE "PracticeSubmissionStatuses" (
+  "Id" SERIAL NOT NULL,
+  "Name" text NOT NULL UNIQUE,
+  PRIMARY KEY ("Id"));
+CREATE TABLE "PracticeSubmissions" (
+  "Id" SERIAL NOT NULL,
+  "ReportFilePath" text NOT NULL,
+  "SolutionPath" text,
+  "SolutionUrl" text,
+  "UpdatedAt" timestamp NOT NULL,
+  "ReviewedAt" timestamp,
+  "Grade" integer,
+  "StudentPracticesId" integer NOT NULL,
+  "StatusId" integer NOT NULL,
+  PRIMARY KEY ("Id"));
 CREATE UNIQUE INDEX "Users1" 
   ON "Users" ("Email");
 CREATE INDEX "Users2" 
@@ -234,10 +262,12 @@ CREATE INDEX "PracticeOffers3"
   ON "PracticeOffers" ("Title");
 CREATE INDEX "PracticeOffers4" 
   ON "PracticeOffers" ("Region");
+CREATE INDEX "PracticeMaterials1"
+  ON "PracticeMaterials" ("PracticeOfferId");
 CREATE INDEX "Applications1" 
-  ON "Applications" ("ResumeId");
+  ON "JobApplications" ("ResumeId");
 CREATE INDEX "Applications2" 
-  ON "Applications" ("VacancyId");
+  ON "JobApplications" ("VacancyId");
 CREATE INDEX "Resumes1" 
   ON "Resumes" ("StudentId");
 CREATE INDEX "Resumes2" 
@@ -268,6 +298,14 @@ CREATE INDEX "StudentGroupRequests1"
   ON "StudentGroupApplications" ("GroupId");
 CREATE INDEX "EducationalPrograms1"
   ON "EducationalPrograms" ("UniversityId");
+CREATE INDEX "PractisePeriods1"
+  ON "PracticePeriods" ("EducationalProgramId");
+CREATE INDEX "PractisePeriods2"
+  ON "PracticePeriods" ("SupervisorId");
+CREATE INDEX "PracticeApplications1"
+  ON "PracticeApplications" ("PracticePeriodId");
+CREATE INDEX "StudentPractices1"
+  ON "StudentPractices" ("PracticePeriodId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711692" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
@@ -282,10 +320,11 @@ ALTER TABLE "Resumes" ADD CONSTRAINT "FKResumes64954" FOREIGN KEY ("Specializati
 ALTER TABLE "Vacancies" ADD CONSTRAINT "FKVacancies845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "PracticeOffers" ADD CONSTRAINT "FKPracticeOffers845540" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "PracticeOffers" ADD CONSTRAINT "FKPracticeOffers430548" FOREIGN KEY ("SpecializationId") REFERENCES "Specializations" ("Id");
-ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
-ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321884" FOREIGN KEY ("ApplicationStatusId") REFERENCES "ApplicationStatuses" ("Id");
-ALTER TABLE "Applications" ADD CONSTRAINT "FKApplications321885" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "PracticeMaterials" ADD CONSTRAINT "FKPracticeMaterials430548" FOREIGN KEY ("PracticeOfferId") REFERENCES "PracticeOffers" ("Id");
+ALTER TABLE "JobApplications" ADD CONSTRAINT "FKApplications397797" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "JobApplications" ADD CONSTRAINT "FKApplications15717" FOREIGN KEY ("ResumeId") REFERENCES "Resumes" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "JobApplications" ADD CONSTRAINT "FKApplications321884" FOREIGN KEY ("ApplicationStatusId") REFERENCES "ApplicationStatuses" ("Id");
+ALTER TABLE "JobApplications" ADD CONSTRAINT "FKApplications321885" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573641" FOREIGN KEY ("CompanyId") REFERENCES "Companies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573642" FOREIGN KEY ("VacancyId") REFERENCES "Vacancies" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "Chats" ADD CONSTRAINT "FKChats573643" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
@@ -310,3 +349,15 @@ ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711691" FOREIGN KEY
 ALTER TABLE "StudentGroups" ADD CONSTRAINT "FKStudentGroupsPr711692" FOREIGN KEY ("CuratorId") REFERENCES "Teachers" ("UserId");
 ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711691" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
 ALTER TABLE "StudentGroupApplications" ADD CONSTRAINT "FKStudentGroupRequestsPr711692" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId");
+ALTER TABLE "PracticePeriods" ADD CONSTRAINT "FKPractisePeriodsPr711692" FOREIGN KEY ("SupervisorId") REFERENCES "Teachers" ("UserId");
+ALTER TABLE "PracticePeriods" ADD CONSTRAINT "FKPractisePeriodsPr711690" FOREIGN KEY ("EducationalProgramId") REFERENCES "EducationalPrograms" ("Id");
+ALTER TABLE "PracticePeriodsGroup" ADD CONSTRAINT "FKPracticePeriodsGroup373177" FOREIGN KEY ("StudentGroupId") REFERENCES "StudentGroups" ("Id") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "PracticePeriodsGroup" ADD CONSTRAINT "FKPracticePeriodsGroup581449" FOREIGN KEY ("PracticePeriodId") REFERENCES "PracticePeriods" ("Id");
+ALTER TABLE "PracticeApplications" ADD CONSTRAINT "FKPracticeApplications739148" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "PracticeApplications" ADD CONSTRAINT "FKPracticeApplications430548" FOREIGN KEY ("PracticeOfferId") REFERENCES "PracticeOffers" ("Id");
+ALTER TABLE "PracticeApplications" ADD CONSTRAINT "FKPracticeApplications581449" FOREIGN KEY ("PracticePeriodId") REFERENCES "PracticePeriods" ("Id");
+ALTER TABLE "StudentPractices" ADD CONSTRAINT "FKStudentPractices739148" FOREIGN KEY ("StudentId") REFERENCES "StudentProfiles" ("UserId") ON UPDATE Cascade ON DELETE Cascade;
+ALTER TABLE "StudentPractices" ADD CONSTRAINT "FKStudentPractices430548" FOREIGN KEY ("PracticeOfferId") REFERENCES "PracticeOffers" ("Id");
+ALTER TABLE "StudentPractices" ADD CONSTRAINT "FKStudentPractices581449" FOREIGN KEY ("PracticePeriodId") REFERENCES "PracticePeriods" ("Id");
+ALTER TABLE "PracticeSubmissions" ADD CONSTRAINT "FKPracticeSubmissions581449" FOREIGN KEY ("StudentPracticeId") REFERENCES "StudentPractices" ("Id");
+ALTER TABLE "PracticeSubmissions" ADD CONSTRAINT "FKPracticeSubmissions581440" FOREIGN KEY ("StatusId") REFERENCES "PracticeSubmissionStatuses" ("Id");

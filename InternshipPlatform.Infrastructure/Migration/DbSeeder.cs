@@ -509,7 +509,7 @@ namespace InternshipPlatform.Infrastructure.Migration
 
         private void GenerateChatsAndJobApplications()
         {
-            if (context.Applications.Any())
+            if (context.JobApplications.Any())
                 return;
 
             var vacancies = context.Vacancies.ToList();
@@ -571,7 +571,7 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.Chats.AddRange(chats);
             context.SaveChanges();
 
-            context.Applications.AddRange(jobApplications);
+            context.JobApplications.AddRange(jobApplications);
             context.SaveChanges();
         }
 

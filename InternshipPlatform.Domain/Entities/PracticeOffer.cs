@@ -23,5 +23,7 @@
         public Company Company { get; set; }
 
         public int MaxStudents { get; set; }
+
+        public List<PracticeMaterial> Materials { get; set; }
     }
 }

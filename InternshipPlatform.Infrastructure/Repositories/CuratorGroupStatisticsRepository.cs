@@ -29,7 +29,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     StudentProfile = sp,
                     ResumesCount = context.Resumes
                         .Count(r => r.StudentId == sp.UserId),
-                    ApplicationsCount = context.Applications
+                    ApplicationsCount = context.JobApplications
                         .Count(a => a.Resume.StudentId == sp.UserId)
                 })
                 .FirstAsync();
@@ -37,7 +37,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<StudentApplicationsStatistics> GetStudentApplicationsStatistics(int studentId)
         {
-            var statusCounts = await context.Applications
+            var statusCounts = await context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Resume.StudentId == studentId)
                 .GroupBy(a => a.ApplicationStatusId)

@@ -27,9 +27,11 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<PracticeOffer> PracticeOffers { get; set; }
 
+        public DbSet<PracticeMaterial> PracticeMaterials { get; set; }
+
         public DbSet<JobApplicationStatus> ApplicationStatuses { get; set; }
 
-        public DbSet<JobApplication> Applications { get; set; }
+        public DbSet<JobApplication> JobApplications { get; set; }
 
         public DbSet<Chat> Chats { get; set; }
 
@@ -50,6 +52,16 @@ namespace InternshipPlatform.Infrastructure
         public DbSet<StudentGroup> StudentGroups { get; set; }
 
         public DbSet<StudentGroupApplication> StudentGroupApplications { get; set; }
+
+        public DbSet<PracticePeriod> PracticePeriods { get; set; }
+
+        public DbSet<PracticeApplication> PracticeApplicaitons { get; set; }
+
+        public DbSet<StudentPractice> StudentPractices { get; set; }
+
+        public DbSet<PracticeSubmissionStatus> PracticeSubmissionStatuses { get; set; }
+
+        public DbSet<PracticeSubmission> PracticeSubmissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -150,6 +162,11 @@ namespace InternshipPlatform.Infrastructure
                 .WithMany()
                 .HasForeignKey(po => po.SpecializationId);
 
+            modelBuilder.Entity<PracticeOffer>()
+                .HasMany(po => po.Materials)
+                .WithOne()
+                .HasForeignKey(pm => pm.PracticeOfferId);
+
             modelBuilder.Entity<Chat>()
                 .HasOne(c => c.Company)
                 .WithMany()
@@ -189,6 +206,69 @@ namespace InternshipPlatform.Infrastructure
                 .HasOne(r => r.Group)
                 .WithMany()
                 .HasForeignKey(r => r.GroupId);
+
+            modelBuilder.Entity<PracticePeriod>()
+                .HasOne(p => p.Supervisor)
+                .WithMany()
+                .HasForeignKey(p => p.SupervisorId);
+
+            modelBuilder.Entity<PracticePeriod>()
+                .HasOne(p => p.EducationalProgram)
+                .WithMany()
+                .HasForeignKey(p => p.EducationalProgramId);
+
+            modelBuilder.Entity<StudentGroup>()
+                .HasMany(g => g.PracticePeriods)
+                .WithMany()
+                .UsingEntity(
+                    "PracticePeriodsGroup",
+                    r => r.HasOne(typeof(PracticePeriod))
+                          .WithMany()
+                          .HasForeignKey("PracticePeriodId"),
+                    l => l.HasOne(typeof(StudentGroup))
+                          .WithMany()
+                          .HasForeignKey("StudentGroupId"),
+                    j => j.HasKey("PracticePeriodId", "StudentGroupId"));
+
+            modelBuilder.Entity<PracticeApplication>()
+                .HasOne(pa => pa.Student)
+                .WithMany()
+                .HasForeignKey(pa => pa.StudentId);
+            
+            modelBuilder.Entity<PracticeApplication>()
+                .HasOne(pa => pa.PracticeOffer)
+                .WithMany()
+                .HasForeignKey(pa => pa.PracticeOfferId);
+
+            modelBuilder.Entity<PracticeApplication>()
+                .HasOne(pa => pa.PracticePeriod)
+                .WithMany()
+                .HasForeignKey(pa => pa.PracticePeriodId);
+
+            modelBuilder.Entity<StudentPractice>()
+                .HasOne(sp => sp.Student)
+                .WithMany()
+                .HasForeignKey(sp => sp.StudentId);
+
+            modelBuilder.Entity<StudentPractice>()
+                .HasOne(sp => sp.PracticeOffer)
+                .WithMany()
+                .HasForeignKey(sp => sp.PracticeOfferId);
+
+            modelBuilder.Entity<StudentPractice>()
+                .HasOne(sp => sp.PracticePeriod)
+                .WithMany()
+                .HasForeignKey(sp => sp.PracticePeriodId);
+
+            modelBuilder.Entity<PracticeSubmission>()
+                .HasOne(ps => ps.StudentPractice)
+                .WithOne(sp => sp.PracticeSubmission)
+                .HasForeignKey<PracticeSubmission>(ps => ps.StudentPracticeId);
+
+            modelBuilder.Entity<PracticeSubmission>()
+                .HasOne(ps => ps.Status)
+                .WithMany()
+                .HasForeignKey(ps => ps.StatusId);
         }
     }
 }

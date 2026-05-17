@@ -25,5 +25,7 @@
         public Teacher Curator { get; set; }
 
         public List<StudentProfile> StudentProfiles { get; set; } = [];
+
+        public List<PracticePeriod> PracticePeriods { get; set; } = [];
     }
 }

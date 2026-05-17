@@ -11,7 +11,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
     {
         public async Task<bool> HasStudentActiveApplicationOnVacancy(int resumeId, int vacancyId)
         {
-            return await context.Applications
+            return await context.JobApplications
                 .AsNoTracking()
                 .AnyAsync(a => a.VacancyId == vacancyId
                             && a.Resume.StudentId == context.Resumes
@@ -24,12 +24,12 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task AddJobApplication(JobApplication application)
         {
-            await context.Applications.AddAsync(application);
+            await context.JobApplications.AddAsync(application);
         }
 
         public async Task<JobApplication?> GetStudentApplicationForUpdate(int studentId, int applicationId)
         {
-            return await context.Applications
+            return await context.JobApplications
                 .FirstOrDefaultAsync(a =>
                     a.Id == applicationId &&
                     a.Resume.StudentId == studentId);
@@ -37,7 +37,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<JobApplication?> GetEmployerApplicationForUpdate(int employerId, int applicationId)
         {
-            return await context.Applications
+            return await context.JobApplications
                 .FirstOrDefaultAsync(a =>
                     a.Id == applicationId &&
                     a.Vacancy.CompanyId ==
@@ -49,7 +49,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<PagedResult<JobApplication>> GetStudentApplications(GetStudentApplicationsParameters request)
         {
-            var query = context.Applications
+            var query = context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Resume.StudentId == request.StudentId);
 
@@ -79,7 +79,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<PagedResult<JobApplication>> GetEmployerApplications(GetEmployerApplicationsParameters request)
         {
-            var query = context.Applications
+            var query = context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Vacancy.CompanyId ==
                         context.EmployerProfiles
