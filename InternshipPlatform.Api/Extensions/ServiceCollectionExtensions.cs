@@ -87,7 +87,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IInviteCodeGenerator, InviteCodeGenerator>()
                 .AddScoped<IStudentGroupService, StudentGroupService>()
                 .AddScoped<IStudentGroupApplicationService, StudentGroupApplicationService>()
-                .AddScoped<ICuratorGroupStatisticsService, CuratorGroupStatisticsService>();
+                .AddScoped<ICuratorGroupStatisticsService, CuratorGroupStatisticsService>()
+                .AddScoped<IPracticePeriodService, PracticePeriodService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)

@@ -14,6 +14,8 @@ namespace InternshipPlatform.Application.Dtos.StudentGroup
 
         public string? CuratorPatronymic { get; set; }
 
+        public string? CuratorEmail { get; set; }
+
         public string? CuratorAvatarPath { get; set; }
 
         public string Name { get; set; }

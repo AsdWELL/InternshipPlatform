@@ -61,6 +61,7 @@ namespace InternshipPlatform.Application.Mappers
                 CuratorName = studentGroup.Curator.Name,
                 CuratorSurname = studentGroup.Curator.Surname,
                 CuratorPatronymic = studentGroup.Curator.Patronymic,
+                CuratorEmail = studentGroup.Curator.User.Email,
                 CuratorAvatarPath = studentGroup.Curator.AvatarPath,
                 Name = studentGroup.Name,
                 Specialization = studentGroup.EducationalProgram.Name,

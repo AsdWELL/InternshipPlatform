@@ -3,6 +3,7 @@ using InternshipPlatform.Application.Dtos.Auth;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
 using InternshipPlatform.Application.Values;
 using InternshipPlatform.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -49,8 +50,14 @@ namespace InternshipPlatform.Infrastructure.Migration
         private const int MinPracticeOffersPerCompany = 1;
         private const int MaxPracticeOffersPerCompany = 5;
 
-        private const int MinMaxStudentsPerPractice = 1;
-        private const int MaxMaxStudentsPerPractice = 8;
+        private const int MinMaxStudentsPerPractice = 4;
+        private const int MaxMaxStudentsPerPractice = 20;
+
+        private const int MinPracticeDurationWeeks = 4;
+        private const int MaxPracticeDurationWeeks = 8;
+
+        private const int ExtraPastPracticeChancePercent = 45;
+        private const int ExtraFuturePracticeChancePercent = 35;
 
         private TokenOptions TokenOptionsValue => tokenOptions.Value;
 
@@ -736,6 +743,210 @@ namespace InternshipPlatform.Infrastructure.Migration
             context.SaveChanges();
         }
 
+        private PracticePeriod CreatePracticePeriod(
+            Faker faker,
+            int supervisorId,
+            int educationalProgramId,
+            int courseNumber,
+            int academicYearStart,
+            DateOnly today,
+            bool mustBeCurrent,
+            bool forcePast = false,
+            bool forceFuture = false)
+        {
+            var durationWeeks = faker.Random.Int(MinPracticeDurationWeeks, MaxPracticeDurationWeeks);
+            var durationDays = durationWeeks * 7;
+
+            DateOnly startDate;
+            DateOnly endDate;
+
+            if (mustBeCurrent)
+            {
+                var startedDaysAgo = faker.Random.Int(0, Math.Max(1, durationDays / 2));
+                startDate = today.AddDays(-startedDaysAgo);
+                endDate = startDate.AddDays(durationDays);
+            }
+            else if (forcePast)
+            {
+                var baseDate = new DateOnly(academicYearStart + 1, 2, 1);
+                startDate = baseDate.AddDays(faker.Random.Int(-30, 60));
+                endDate = startDate.AddDays(durationDays);
+
+                if (endDate >= today)
+                {
+                    endDate = today.AddDays(-faker.Random.Int(30, 90));
+                    startDate = endDate.AddDays(-durationDays);
+                }
+            }
+            else if (forceFuture)
+            {
+                var baseDate = new DateOnly(academicYearStart, 10, 1);
+                startDate = baseDate.AddDays(faker.Random.Int(0, 120));
+                endDate = startDate.AddDays(durationDays);
+
+                if (startDate <= today)
+                {
+                    startDate = today.AddDays(faker.Random.Int(30, 120));
+                    endDate = startDate.AddDays(durationDays);
+                }
+            }
+            else
+            {
+                startDate = today;
+                endDate = today.AddDays(durationDays);
+            }
+
+            return new PracticePeriod
+            {
+                SupervisorId = supervisorId,
+                EducationalProgramId = educationalProgramId,
+                CourseNumber = courseNumber,
+                AcademicYearStart = academicYearStart,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+        }
+
+        private void GeneratePracticePeriods()
+        {
+            if (context.PracticePeriods.Any())
+                return;
+
+            var groups = context.StudentGroups
+                .Include(g => g.PracticePeriods)
+                .ToList();
+
+            var teachers = context.Teachers.ToList();
+            var educationalPrograms = context.EducationalPrograms.ToList();
+
+            if (groups.Count == 0 || teachers.Count == 0 || educationalPrograms.Count == 0)
+                return;
+
+            Randomizer.Seed = new Random(RandomizerSeed);
+
+            var faker = new Faker("ru");
+            var practicePeriods = new List<PracticePeriod>();
+
+            var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
+
+            int currentAcademicYearStart = DateTime.UtcNow.Month >= 9
+                ? DateTime.UtcNow.Year
+                : DateTime.UtcNow.Year - 1;
+
+            var programsById = educationalPrograms.ToDictionary(p => p.Id);
+
+            var groupsByProgram = groups
+                .Where(g => programsById.ContainsKey(g.EducationalProgramId))
+                .GroupBy(g => g.EducationalProgramId)
+                .ToList();
+
+            foreach (var programGroup in groupsByProgram)
+            {
+                var educationalProgramId = programGroup.Key;
+                var educationalProgram = programsById[educationalProgramId];
+
+                var supervisor = faker.PickRandom(teachers);
+
+                var groupsForProgram = programGroup.ToList();
+
+                var currentGroups = groupsForProgram
+                    .Select(g => new
+                    {
+                        Group = g,
+                        CourseNumber = currentAcademicYearStart - g.EnrollmentYear + 1
+                    })
+                    .Where(x => x.CourseNumber >= 1 && x.CourseNumber <= educationalProgram.DurationYears)
+                    .GroupBy(x => x.CourseNumber)
+                    .ToList();
+
+                foreach (var currentCourseGroup in currentGroups)
+                {
+                    var practicePeriod = CreatePracticePeriod(
+                        faker,
+                        supervisor.UserId,
+                        educationalProgramId,
+                        currentCourseGroup.Key,
+                        currentAcademicYearStart,
+                        today,
+                        mustBeCurrent: true);
+
+                    foreach (var item in currentCourseGroup)
+                        practicePeriod.StudentGroups.Add(item.Group);
+
+                    practicePeriods.Add(practicePeriod);
+                }
+
+                if (faker.Random.Int(1, 100) <= ExtraPastPracticeChancePercent)
+                {
+                    int pastAcademicYearStart = currentAcademicYearStart - 1;
+
+                    var pastGroups = groupsForProgram
+                        .Select(g => new
+                        {
+                            Group = g,
+                            CourseNumber = pastAcademicYearStart - g.EnrollmentYear + 1
+                        })
+                        .Where(x => x.CourseNumber >= 1 && x.CourseNumber <= educationalProgram.DurationYears)
+                        .GroupBy(x => x.CourseNumber)
+                        .ToList();
+
+                    foreach (var pastCourseGroup in pastGroups)
+                    {
+                        var practicePeriod = CreatePracticePeriod(
+                            faker,
+                            supervisor.UserId,
+                            educationalProgramId,
+                            pastCourseGroup.Key,
+                            pastAcademicYearStart,
+                            today,
+                            mustBeCurrent: false,
+                            forcePast: true);
+
+                        foreach (var item in pastCourseGroup)
+                            practicePeriod.StudentGroups.Add(item.Group);
+
+                        practicePeriods.Add(practicePeriod);
+                    }
+                }
+
+                if (faker.Random.Int(1, 100) <= ExtraFuturePracticeChancePercent)
+                {
+                    int futureAcademicYearStart = currentAcademicYearStart + 1;
+
+                    var futureGroups = groupsForProgram
+                        .Select(g => new
+                        {
+                            Group = g,
+                            CourseNumber = futureAcademicYearStart - g.EnrollmentYear + 1
+                        })
+                        .Where(x => x.CourseNumber >= 1 && x.CourseNumber <= educationalProgram.DurationYears)
+                        .GroupBy(x => x.CourseNumber)
+                        .ToList();
+
+                    foreach (var futureCourseGroup in futureGroups)
+                    {
+                        var practicePeriod = CreatePracticePeriod(
+                            faker,
+                            supervisor.UserId,
+                            educationalProgramId,
+                            futureCourseGroup.Key,
+                            futureAcademicYearStart,
+                            today,
+                            mustBeCurrent: false,
+                            forceFuture: true);
+
+                        foreach (var item in futureCourseGroup)
+                            practicePeriod.StudentGroups.Add(item.Group);
+
+                        practicePeriods.Add(practicePeriod);
+                    }
+                }
+            }
+
+            context.PracticePeriods.AddRange(practicePeriods);
+            context.SaveChanges();
+        }
+
         public void Seed()
         {
             int totalTime = Environment.TickCount;
@@ -771,6 +982,10 @@ namespace InternshipPlatform.Infrastructure.Migration
             startTime = Environment.TickCount;
             AssignStudentsToGroups();
             logger.LogInformation($"Студенты распределены по группам за {Environment.TickCount - startTime}мс");
+
+            startTime = Environment.TickCount;
+            GeneratePracticePeriods();
+            logger.LogInformation($"Периоды практики сгенерированы за {Environment.TickCount - startTime}мс");
 
             logger.LogInformation($"Общее время генерации данных = {Environment.TickCount - totalTime}мс\n");
         }

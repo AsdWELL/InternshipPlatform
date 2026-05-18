@@ -48,6 +48,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(ga => ga.Group.CuratorId == curatorId)
                 .Include(ga => ga.StudentProfile)
+                    .ThenInclude(sp => sp.User)
                 .Include(ga => ga.Group)
                 .OrderByDescending(ga => ga.CreatedAt)
                 .ToListAsync();

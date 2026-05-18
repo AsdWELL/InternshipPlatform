@@ -19,5 +19,7 @@
         public DateOnly StartDate { get; set; }
 
         public DateOnly EndDate { get; set; }
+
+        public List<StudentGroup> StudentGroups { get; set; } = [];
     }
 }

@@ -73,6 +73,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return context.StudentGroups
                 .AsNoTracking()
                 .Include(g => g.StudentProfiles)
+                    .ThenInclude(sp => sp.User)
                 .Include(g => g.EducationalProgram)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
@@ -86,6 +87,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     .ThenInclude(g => g.StudentProfiles)
                 .Include(sp => sp.Group!)
                     .ThenInclude(g => g.Curator)
+                        .ThenInclude(c => c.User)
                 .Include(sp => sp.Group!)
                     .ThenInclude(g => g.EducationalProgram)
                 .Select(sp => sp.Group!)

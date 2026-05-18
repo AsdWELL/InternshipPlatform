@@ -74,6 +74,7 @@ namespace InternshipPlatform.Infrastructure.Extensions
                 .AddScoped<IStudentGroupRepository, StudentGroupRepository>()
                 .AddScoped<IStudentGroupApplicationRepository, StudentGroupApplicationRepository>()
                 .AddScoped<ICuratorGroupStatisticsRepository, CuratorGroupStatisticsRepository>()
+                .AddScoped<IPracticePeriodRepository, PracticePeriodRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

@@ -219,7 +219,7 @@ namespace InternshipPlatform.Infrastructure
 
             modelBuilder.Entity<StudentGroup>()
                 .HasMany(g => g.PracticePeriods)
-                .WithMany()
+                .WithMany(p => p.StudentGroups)
                 .UsingEntity(
                     "PracticePeriodsGroup",
                     r => r.HasOne(typeof(PracticePeriod))
