@@ -19,7 +19,7 @@ BEGIN
 
     IF EXISTS (
         SELECT 1
-        FROM "Applications" a
+        FROM "JobApplications" a
         JOIN "Resumes" r ON r."Id" = a."ResumeId"
         WHERE a."VacancyId" = NEW."VacancyId"
           AND r."StudentId" = v_student_id
@@ -35,9 +35,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS trg_check_single_active_application_per_student_vacancy
-ON "Applications";
+ON "JobApplications";
 
 CREATE TRIGGER trg_check_single_active_application_per_student_vacancy
-BEFORE INSERT OR UPDATE ON "Applications"
+BEFORE INSERT OR UPDATE ON "JobApplications"
 FOR EACH ROW
 EXECUTE FUNCTION check_single_active_application_per_student_vacancy();

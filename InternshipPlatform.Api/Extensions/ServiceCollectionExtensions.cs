@@ -64,6 +64,7 @@ namespace InternshipPlatform.Api.Extensions
         {
             return services
                 .AddScoped<IImageService, ImageService>()
+                .AddScoped<IFileStorageService, FileStorageService>()
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IStudentProfileService, StudentProfileService>()
                 .AddScoped<ICompanyService, CompanyService>()
@@ -74,6 +75,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IResumeService, ResumeService>()
                 .AddScoped<IVacancyService, VacancyService>()
                 .AddScoped<IPracticeOfferService, PracticeOfferService>()
+                .AddScoped<IPracticeMaterialService, PracticeMaterialService>()
                 .AddScoped<IJobApplicationService, JobApplicationService>()
                 .AddScoped<IChatService, ChatService>()
                 .AddScoped<IMessageService, MessageService>()

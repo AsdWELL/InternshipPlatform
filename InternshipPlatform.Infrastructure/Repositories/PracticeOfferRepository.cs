@@ -53,6 +53,16 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
         }
 
+        public async Task<PracticeOffer?> GetPracticeOfferWithMaterialsById(int practiceOfferId)
+        {
+            return await context.PracticeOffers
+                .AsNoTracking()
+                .Include(po => po.Company)
+                .Include(po => po.Specialization)
+                .Include(po => po.Materials)
+                .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
+        }
+
         public async Task<PracticeOffer?> GetPracticeOfferForUpdate(int practiceOfferId)
         {
             return await context.PracticeOffers

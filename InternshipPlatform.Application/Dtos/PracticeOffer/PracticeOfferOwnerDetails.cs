@@ -1,4 +1,5 @@
 using InternshipPlatform.Application.Dtos.Company;
+using InternshipPlatform.Application.Dtos.PracticeMaterial;
 using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Dtos.PracticeOffer
@@ -22,5 +23,7 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
         public Specialization Specialization { get; set; }
 
         public CompanyResponse Company { get; set; }
+
+        public List<PracticeMaterialResponse> Materials { get; set; }
     }
 }

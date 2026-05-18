@@ -3,9 +3,9 @@
 # Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-RUN mkdir -p /app/wwwroot/uploads \
-    && chown -R $APP_UID /app/wwwroot/uploads \
-    && chmod -R 775 /app/wwwroot/uploads
+RUN mkdir -p /app/wwwroot/uploads /app/storage \
+    && chown -R $APP_UID /app/wwwroot/uploads /app/storage \
+    && chmod -R 775 /app/wwwroot/uploads /app/storage
 USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081

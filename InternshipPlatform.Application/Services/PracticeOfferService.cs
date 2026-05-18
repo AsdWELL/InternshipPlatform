@@ -85,7 +85,7 @@ namespace InternshipPlatform.Application.Services
         {
             await ThrowIfEmployerDoesNotOwnPracticeOffer(employerId, practiceOfferId);
 
-            var practiceOffer = await practiceOfferRepository.GetPracticeOfferById(practiceOfferId)
+            var practiceOffer = await practiceOfferRepository.GetPracticeOfferWithMaterialsById(practiceOfferId)
                 ?? throw new PracticeOfferNotFoundException();
 
             return practiceOffer.ToOwnerDetails();

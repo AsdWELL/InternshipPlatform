@@ -82,7 +82,8 @@ namespace InternshipPlatform.Application.Mappers
                 IsActive = practiceOffer.IsActive,
                 MaxStudents = practiceOffer.MaxStudents,
                 Specialization = practiceOffer.Specialization,
-                Company = practiceOffer.Company.ToResponse()
+                Company = practiceOffer.Company.ToResponse(),
+                Materials = practiceOffer.Materials.Select(m => m.ToResponse()).ToList()
             };
         }
     }
