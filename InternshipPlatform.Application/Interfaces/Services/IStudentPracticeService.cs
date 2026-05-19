@@ -9,7 +9,7 @@ namespace InternshipPlatform.Application.Interfaces.Services
 
         Task<FileDownloadResult> DownloadStudentPracticeMaterial(int studentId, int materialId);
 
-        Task<PracticeSubmissionResponse> UpsertStudentPracticeSubmission(UploadPracticeSubmissionRequest request);
+        Task<PracticeSubmissionResponse> UploadStudentPracticeSubmission(int studentId, UploadPracticeSubmissionRequest request);
 
         Task<FileDownloadResult> DownloadStudentReport(int studentId, int studentPracticeId);
 

@@ -8,6 +8,7 @@ using InternshipPlatform.Application.Dtos.JobApplication;
 using InternshipPlatform.Application.Dtos.Kafka;
 using InternshipPlatform.Application.Dtos.PracticeApplication;
 using InternshipPlatform.Application.Dtos.PracticeOffer;
+using InternshipPlatform.Application.Dtos.PracticeSubmission;
 using InternshipPlatform.Application.Dtos.Resume;
 using InternshipPlatform.Application.Dtos.StudentGroup;
 using InternshipPlatform.Application.Dtos.StudentGroupApplication;
@@ -23,6 +24,7 @@ using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
 using InternshipPlatform.Application.Validators.PracticeApplication;
 using InternshipPlatform.Application.Validators.PracticeOffer;
+using InternshipPlatform.Application.Validators.PracticeSubmission;
 using InternshipPlatform.Application.Validators.Resume;
 using InternshipPlatform.Application.Validators.StudentGroup;
 using InternshipPlatform.Application.Validators.StudentGroupApplication;
@@ -91,7 +93,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IStudentGroupApplicationService, StudentGroupApplicationService>()
                 .AddScoped<ICuratorGroupStatisticsService, CuratorGroupStatisticsService>()
                 .AddScoped<IPracticePeriodService, PracticePeriodService>()
-                .AddScoped<IPracticeApplicationService, PracticeApplicationService>();
+                .AddScoped<IPracticeApplicationService, PracticeApplicationService>()
+                .AddScoped<IStudentPracticeService, StudentPracticeService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -121,6 +124,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<SearchPracticeOfferParameters>, SearchPracticeOfferValidator>()
 
                 .AddTransient<IValidator<CreatePracticeApplicationRequest>, CreatePracticeApplicationValidator>()
+                .AddTransient<IValidator<UploadPracticeSubmissionRequest>, UploadPracticeSubmissionValidator>()
+                .AddTransient<IValidator<GradePracticeSubmissionRequest>, GradePracticeSubmissionValidator>()
                 
                 .AddTransient<IValidator<GetStudentApplicationsParameters>, GetStudentApplicationsValidator>()
                 .AddTransient<IValidator<GetEmployerApplicationsParameters>, GetEmployerApplicationsValidator>()

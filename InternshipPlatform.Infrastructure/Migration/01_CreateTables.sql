@@ -229,8 +229,8 @@ CREATE TABLE "PracticeSubmissionStatuses" (
   PRIMARY KEY ("Id"));
 CREATE TABLE "PracticeSubmissions" (
   "Id" SERIAL NOT NULL,
-  "ReportFilePath" text NOT NULL,
-  "ReportFileName" text NOT NULL,
+  "ReportFilePath" text,
+  "ReportFileName" text,
   "SolutionFileName" text,
   "SolutionPath" text,
   "SolutionUrl" text,

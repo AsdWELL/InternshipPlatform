@@ -63,6 +63,8 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<PracticeSubmission> PracticeSubmissions { get; set; }
 
+        public DbSet<SubmissionComment> SubmissionComments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -269,6 +271,16 @@ namespace InternshipPlatform.Infrastructure
                 .HasOne(ps => ps.Status)
                 .WithMany()
                 .HasForeignKey(ps => ps.StatusId);
+
+            modelBuilder.Entity<SubmissionComment>()
+                .HasOne(sc => sc.PracticeSubmission)
+                .WithMany()
+                .HasForeignKey(sc => sc.PracticeSubmissionId);
+
+            modelBuilder.Entity<SubmissionComment>()
+                .HasOne(sc => sc.User)
+                .WithMany()
+                .HasForeignKey(sc => sc.SenderId);
         }
     }
 }

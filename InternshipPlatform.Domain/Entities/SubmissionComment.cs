@@ -10,6 +10,8 @@
 
         public int PracticeSubmissionId { get; set; }
 
+        public PracticeSubmission PracticeSubmission { get; set; }
+
         public int SenderId { get; set; }
 
         public User User { get; set; }

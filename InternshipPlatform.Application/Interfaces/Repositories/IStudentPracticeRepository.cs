@@ -27,7 +27,5 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         Task<PracticeMaterial?> GetStudentPracticeMaterial(int studentId, int materialId);
 
         Task AddPracticeSubmission(PracticeSubmission submission);
-
-        Task AddPracticeSubmissionStatus(PracticeSubmissionStatus status);
     }
 }

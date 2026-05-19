@@ -1,7 +1,7 @@
-﻿INSERT INTO "PracticeSubmissionStatuses" ("Name")
+INSERT INTO "PracticeSubmissionStatuses" ("Name")
 VALUES
     ('Отправлено'),
-    ('Требуются исправления')
+    ('Требуются исправления'),
     ('Решение принято'),
     ('Оценено')
 ON CONFLICT ("Name") DO NOTHING;

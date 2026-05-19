@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
 
-        public string ReportFilePath { get; set; }
+        public string? ReportFilePath { get; set; }
 
-        public string ReportFileName { get; set; }
+        public string? ReportFileName { get; set; }
         
         public string? SolutionFileName { get; set; }
 

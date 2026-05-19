@@ -132,8 +132,7 @@ namespace InternshipPlatform.Infrastructure.Services
             return Task.FromResult<FileDownloadResult?>(new FileDownloadResult
             {
                 Stream = stream,
-                ContentType = contentType,
-                FileName = Path.GetFileName(fullPath)
+                ContentType = contentType
             });
         }
 
