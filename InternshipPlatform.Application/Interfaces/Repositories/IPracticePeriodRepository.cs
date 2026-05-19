@@ -4,6 +4,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 {
     public interface IPracticePeriodRepository
     {
+        Task<PracticePeriod?> GetCurrentStudentPracticePeriod(int studentId);
+
         Task<List<PracticePeriod>> GetStudentPracticePeriods(int studentId);
 
         Task<PracticePeriod?> GetStudentPracticePeriodDetails(int studentId, int practicePeriodId);

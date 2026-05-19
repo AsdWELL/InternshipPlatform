@@ -6,6 +6,39 @@ namespace InternshipPlatform.Infrastructure.Repositories
 {
     public class PracticePeriodRepository(InternshipPlatformContext context) : IPracticePeriodRepository
     {
+        public async Task<PracticePeriod?> GetCurrentStudentPracticePeriod(int studentId)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var semesterStart = today.Month switch
+            {
+                >= 9 and <= 12 => new DateOnly(today.Year, 9, 1),
+                >= 1 and <= 7 => new DateOnly(today.Year, 1, 1),
+                _ => (DateOnly?)null
+            };
+
+            var semesterEnd = today.Month switch
+            {
+                >= 9 and <= 12 => new DateOnly(today.Year, 12, 31),
+                >= 1 and <= 7 => new DateOnly(today.Year, 7, 31),
+                _ => (DateOnly?)null
+            };
+
+            if (semesterStart is null || semesterEnd is null)
+                return null;
+
+            return await context.PracticePeriods
+                .AsNoTracking()
+                .Where(p =>
+                    p.StartDate >= semesterStart.Value &&
+                    p.StartDate <= semesterEnd.Value)
+                .Where(p => p.StudentGroups.Any(g =>
+                    g.StudentProfiles.Any(sp => sp.UserId == studentId)))
+                .Include(p => p.EducationalProgram)
+                .Include(p => p.Supervisor)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<PracticePeriod>> GetStudentPracticePeriods(int studentId)
         {
             return await context.PracticePeriods

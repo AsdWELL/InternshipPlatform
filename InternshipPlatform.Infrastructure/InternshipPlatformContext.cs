@@ -55,7 +55,7 @@ namespace InternshipPlatform.Infrastructure
 
         public DbSet<PracticePeriod> PracticePeriods { get; set; }
 
-        public DbSet<PracticeApplication> PracticeApplicaitons { get; set; }
+        public DbSet<PracticeApplication> PracticeApplications { get; set; }
 
         public DbSet<StudentPractice> StudentPractices { get; set; }
 
