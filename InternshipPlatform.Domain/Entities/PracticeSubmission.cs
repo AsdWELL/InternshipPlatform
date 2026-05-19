@@ -6,6 +6,10 @@
 
         public string ReportFilePath { get; set; }
 
+        public string ReportFileName { get; set; }
+        
+        public string? SolutionFileName { get; set; }
+
         public string? SolutionPath { get; set; }
 
         public string? SolutionUrl { get; set; }

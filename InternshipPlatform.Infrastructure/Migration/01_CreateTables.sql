@@ -230,6 +230,8 @@ CREATE TABLE "PracticeSubmissionStatuses" (
 CREATE TABLE "PracticeSubmissions" (
   "Id" SERIAL NOT NULL,
   "ReportFilePath" text NOT NULL,
+  "ReportFileName" text NOT NULL,
+  "SolutionFileName" text,
   "SolutionPath" text,
   "SolutionUrl" text,
   "UpdatedAt" timestamp NOT NULL,
@@ -237,6 +239,13 @@ CREATE TABLE "PracticeSubmissions" (
   "Grade" integer,
   "StudentPracticeId" integer NOT NULL,
   "StatusId" integer NOT NULL,
+  PRIMARY KEY ("Id"));
+CREATE TABLE "SubmissionComments" (
+  "Id" SERIAL NOT NULL,
+  "Content" text NOT NULL,
+  "CreatedAt" timestamp NOT NULL,
+  "PracticeSubmissionId" integer NOT NULL,
+  "SenderId" integer NOT NULL,
   PRIMARY KEY ("Id"));
 CREATE UNIQUE INDEX "Users1" 
   ON "Users" ("Email");
@@ -304,6 +313,8 @@ CREATE INDEX "PracticeApplications1"
   ON "PracticeApplications" ("PracticePeriodId");
 CREATE INDEX "StudentPractices1"
   ON "StudentPractices" ("PracticePeriodId");
+CREATE INDEX "SubmissionComments1"
+  ON "SubmissionComments" ("PracticeSubmissionId");
 ALTER TABLE "Users" ADD CONSTRAINT "FKUsers379039" FOREIGN KEY ("RoleId") REFERENCES "Roles" ("Id") ON DELETE Restrict;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711691" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE "StudentProfiles" ADD CONSTRAINT "FKStudentsPr711692" FOREIGN KEY ("GroupId") REFERENCES "StudentGroups" ("Id");
@@ -356,3 +367,5 @@ ALTER TABLE "StudentPractices" ADD CONSTRAINT "FKStudentPractices430548" FOREIGN
 ALTER TABLE "StudentPractices" ADD CONSTRAINT "FKStudentPractices581449" FOREIGN KEY ("PracticePeriodId") REFERENCES "PracticePeriods" ("Id");
 ALTER TABLE "PracticeSubmissions" ADD CONSTRAINT "FKPracticeSubmissions581449" FOREIGN KEY ("StudentPracticeId") REFERENCES "StudentPractices" ("Id");
 ALTER TABLE "PracticeSubmissions" ADD CONSTRAINT "FKPracticeSubmissions581440" FOREIGN KEY ("StatusId") REFERENCES "PracticeSubmissionStatuses" ("Id");
+ALTER TABLE "SubmissionComments" ADD CONSTRAINT "FKSubmissionComments581440" FOREIGN KEY ("PracticeSubmissionId") REFERENCES "PracticeSubmissions" ("Id");
+ALTER TABLE "SubmissionComments" ADD CONSTRAINT "FKSubmissionComments581441" FOREIGN KEY ("SenderId") REFERENCES "Users" ("Id");

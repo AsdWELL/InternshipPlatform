@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Migration\08_InsertSubmissionStatuses.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Migration\02_CreateTriggers.sql" />
   </ItemGroup>
 
