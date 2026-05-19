@@ -12,15 +12,15 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task AddPracticeOffer(PracticeOffer practiceOffer);
 
-        Task<List<PracticeOffer>> GetCompanyPracticeOffers(int companyId);
+        Task<List<PracticeOfferResult>> GetCompanyPracticeOffers(int companyId);
 
-        Task<PracticeOffer?> GetPracticeOfferById(int practiceOfferId);
+        Task<PracticeOfferResult?> GetPracticeOfferById(int practiceOfferId);
 
-        Task<PracticeOffer?> GetPracticeOfferWithMaterialsById(int practiceOfferId);
+        Task<PracticeOfferResult?> GetPracticeOfferWithMaterialsById(int practiceOfferId);
 
         Task<PracticeOffer?> GetPracticeOfferForUpdate(int practiceOfferId);
 
-        Task<PagedResult<PracticeOffer>> SearchPracticeOffers(SearchPracticeOfferParameters parameters);
+        Task<PagedResult<PracticeOfferResult>> SearchPracticeOffers(SearchPracticeOfferParameters parameters);
 
         Task DeletePracticeOffer(int practiceOfferId);
     }

@@ -18,6 +18,8 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
 
         public bool IsActive { get; set; }
 
+        public int AvailablePlacesCount { get; set; }
+
         public int MaxStudents { get; set; }
 
         public Specialization Specialization { get; set; }

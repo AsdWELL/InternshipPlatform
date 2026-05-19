@@ -10,6 +10,8 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
 
         public string Specialization { get; set; }
 
+        public int AvailablePlacesCount { get; set; }
+
         public int MaxStudents { get; set; }
 
         public string CompanyName { get; set; }

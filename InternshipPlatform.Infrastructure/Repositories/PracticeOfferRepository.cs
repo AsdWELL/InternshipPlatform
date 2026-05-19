@@ -33,7 +33,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             await context.PracticeOffers.AddAsync(practiceOffer);
         }
 
-        public async Task<List<PracticeOffer>> GetCompanyPracticeOffers(int companyId)
+        public async Task<List<PracticeOfferResult>> GetCompanyPracticeOffers(int companyId)
         {
             return await context.PracticeOffers
                 .AsNoTracking()
@@ -41,26 +41,46 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(po => po.Company)
                 .Include(po => po.Specialization)
                 .OrderByDescending(po => po.Id)
+                .Select(o => new PracticeOfferResult
+                {
+                    PracticeOffer = o,
+                    AvailablePlacesCount = o.MaxStudents -
+                        context.StudentPractices.Count(sp => sp.PracticeOfferId == o.Id)
+                })
                 .ToListAsync();
         }
 
-        public async Task<PracticeOffer?> GetPracticeOfferById(int practiceOfferId)
+        public async Task<PracticeOfferResult?> GetPracticeOfferById(int practiceOfferId)
         {
             return await context.PracticeOffers
                 .AsNoTracking()
+                .Where(po => po.Id == practiceOfferId)
                 .Include(po => po.Company)
                 .Include(po => po.Specialization)
-                .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
+                .Select(o => new PracticeOfferResult
+                {
+                    PracticeOffer = o,
+                    AvailablePlacesCount = o.MaxStudents -
+                        context.StudentPractices.Count(sp => sp.PracticeOfferId == o.Id)
+                })
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<PracticeOffer?> GetPracticeOfferWithMaterialsById(int practiceOfferId)
+        public async Task<PracticeOfferResult?> GetPracticeOfferWithMaterialsById(int practiceOfferId)
         {
             return await context.PracticeOffers
                 .AsNoTracking()
+                .Where(po => po.Id == practiceOfferId)
                 .Include(po => po.Company)
                 .Include(po => po.Specialization)
                 .Include(po => po.Materials)
-                .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
+                .Select(o => new PracticeOfferResult
+                {
+                    PracticeOffer = o,
+                    AvailablePlacesCount = o.MaxStudents -
+                        context.StudentPractices.Count(sp => sp.PracticeOfferId == o.Id)
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<PracticeOffer?> GetPracticeOfferForUpdate(int practiceOfferId)
@@ -69,7 +89,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
         }
 
-        public async Task<PagedResult<PracticeOffer>> SearchPracticeOffers(SearchPracticeOfferParameters parameters)
+        public async Task<PagedResult<PracticeOfferResult>> SearchPracticeOffers(SearchPracticeOfferParameters parameters)
         {
             IQueryable<PracticeOffer> query = context.PracticeOffers
                 .AsNoTracking()
@@ -110,9 +130,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .ThenByDescending(po => po.Id)
                 .Skip(parameters.PageIndex * parameters.PageSize)
                 .Take(parameters.PageSize)
+                .Select(o => new PracticeOfferResult
+                {
+                    PracticeOffer = o,
+                    AvailablePlacesCount = o.MaxStudents -
+                        context.StudentPractices.Count(sp => sp.PracticeOfferId == o.Id)
+                })
                 .ToListAsync();
 
-            return new PagedResult<PracticeOffer>
+            return new PagedResult<PracticeOfferResult>
             {
                 Items = items,
                 TotalCount = totalCount

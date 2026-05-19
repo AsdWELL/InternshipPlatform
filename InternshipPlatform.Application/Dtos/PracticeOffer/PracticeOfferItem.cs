@@ -8,7 +8,7 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
 
         public bool IsRemote { get; set; }
 
-        public int AvailablePositions { get; set; }
+        public int AvailablePlacesCount { get; set; }
 
         public int MaxStudents { get; set; }
 

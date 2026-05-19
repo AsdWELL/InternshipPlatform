@@ -1,3 +1,4 @@
+using InternshipPlatform.Application.Dtos.PracticeApplication;
 using InternshipPlatform.Application.Dtos.PracticeOffer;
 using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
@@ -23,14 +24,17 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static PracticeOfferItem ToItem(this PracticeOffer practiceOffer)
+        public static PracticeOfferItem ToItem(this PracticeOfferResult result)
         {
+            var practiceOffer = result.PracticeOffer;
+            
             return new PracticeOfferItem
             {
                 Id = practiceOffer.Id,
                 Title = practiceOffer.Title,
                 IsRemote = practiceOffer.IsRemote,
                 Specialization = practiceOffer.Specialization.Name,
+                AvailablePlacesCount = result.AvailablePlacesCount,
                 MaxStudents = practiceOffer.MaxStudents,
                 CompanyId = practiceOffer.CompanyId,
                 CompanyName = practiceOffer.Company.Name,
@@ -39,14 +43,17 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static PracticeOfferOwnerItem ToOwnerItem(this PracticeOffer practiceOffer)
+        public static PracticeOfferOwnerItem ToOwnerItem(this PracticeOfferResult result)
         {
+            var practiceOffer = result.PracticeOffer;
+            
             return new PracticeOfferOwnerItem
             {
                 Id = practiceOffer.Id,
                 Title = practiceOffer.Title,
                 IsRemote = practiceOffer.IsRemote,
                 Specialization = practiceOffer.Specialization.Name,
+                AvailablePlacesCount = result.AvailablePlacesCount,
                 MaxStudents = practiceOffer.MaxStudents,
                 CompanyName = practiceOffer.Company.Name,
                 CompanyLogoPath = practiceOffer.Company.LogoPath,
@@ -55,8 +62,10 @@ namespace InternshipPlatform.Application.Mappers
             };
         }
 
-        public static PracticeOfferDetails ToDetails(this PracticeOffer practiceOffer)
+        public static PracticeOfferDetails ToDetails(this PracticeOfferResult result)
         {
+            var practiceOffer = result.PracticeOffer; 
+            
             return new PracticeOfferDetails
             {
                 Id = practiceOffer.Id,
@@ -64,14 +73,17 @@ namespace InternshipPlatform.Application.Mappers
                 Description = practiceOffer.Description,
                 IsRemote = practiceOffer.IsRemote,
                 Region = practiceOffer.Region,
+                AvailablePlacesCount = result.AvailablePlacesCount,
                 MaxStudents = practiceOffer.MaxStudents,
                 Specialization = practiceOffer.Specialization,
                 Company = practiceOffer.Company.ToResponse()
             };
         }
 
-        public static PracticeOfferOwnerDetails ToOwnerDetails(this PracticeOffer practiceOffer)
+        public static PracticeOfferOwnerDetails ToOwnerDetails(this PracticeOfferResult result)
         {
+            var practiceOffer = result.PracticeOffer; 
+            
             return new PracticeOfferOwnerDetails
             {
                 Id = practiceOffer.Id,
@@ -80,6 +92,7 @@ namespace InternshipPlatform.Application.Mappers
                 IsRemote = practiceOffer.IsRemote,
                 Region = practiceOffer.Region,
                 IsActive = practiceOffer.IsActive,
+                AvailablePlacesCount = result.AvailablePlacesCount,
                 MaxStudents = practiceOffer.MaxStudents,
                 Specialization = practiceOffer.Specialization,
                 Company = practiceOffer.Company.ToResponse(),

@@ -15,7 +15,7 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
 
         public string? Region { get; set; }
 
-        public int AvailablePositions { get; set; }
+        public int AvailablePlacesCount { get; set; }
 
         public int MaxStudents { get; set; }
 

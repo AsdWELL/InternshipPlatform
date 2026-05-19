@@ -65,20 +65,20 @@ namespace InternshipPlatform.Application.Services
             var practiceOffers = await practiceOfferRepository.GetCompanyPracticeOffers(companyId);
 
             return practiceOffers
-                .Where(po => po.IsActive)
+                .Where(po => po.PracticeOffer.IsActive)
                 .Select(po => po.ToItem())
                 .ToList();
         }
 
         public async Task<PracticeOfferDetails> GetPracticeOfferDetailsForStudent(int practiceOfferId)
         {
-            var practiceOffer = await practiceOfferRepository.GetPracticeOfferById(practiceOfferId)
+            var result = await practiceOfferRepository.GetPracticeOfferById(practiceOfferId)
                 ?? throw new PracticeOfferNotFoundException();
 
-            if (!practiceOffer.IsActive)
+            if (!result.PracticeOffer.IsActive)
                 throw new PracticeOfferNotFoundException();
 
-            return practiceOffer.ToDetails();
+            return result.ToDetails();
         }
 
         public async Task<PracticeOfferOwnerDetails> GetPracticeOfferDetailsForOwner(int employerId, int practiceOfferId)
