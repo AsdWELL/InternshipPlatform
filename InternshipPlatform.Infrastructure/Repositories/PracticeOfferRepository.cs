@@ -83,10 +83,17 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<PracticeOffer?> GetPracticeOfferForUpdate(int practiceOfferId)
+        public async Task<PracticeOfferResult?> GetPracticeOfferForUpdate(int practiceOfferId)
         {
             return await context.PracticeOffers
-                .FirstOrDefaultAsync(po => po.Id == practiceOfferId);
+                .Where(po => po.Id == practiceOfferId)
+                .Select(o => new PracticeOfferResult
+                {
+                    PracticeOffer = o,
+                    AvailablePlacesCount = o.MaxStudents -
+                        context.StudentPractices.Count(sp => sp.PracticeOfferId == o.Id)
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<PagedResult<PracticeOfferResult>> SearchPracticeOffers(SearchPracticeOfferParameters parameters)

@@ -18,7 +18,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<PracticeOfferResult?> GetPracticeOfferWithMaterialsById(int practiceOfferId);
 
-        Task<PracticeOffer?> GetPracticeOfferForUpdate(int practiceOfferId);
+        Task<PracticeOfferResult?> GetPracticeOfferForUpdate(int practiceOfferId);
 
         Task<PagedResult<PracticeOfferResult>> SearchPracticeOffers(SearchPracticeOfferParameters parameters);
 

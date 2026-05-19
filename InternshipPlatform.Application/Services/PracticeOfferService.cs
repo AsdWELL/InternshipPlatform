@@ -105,8 +105,20 @@ namespace InternshipPlatform.Application.Services
             if (request.SpecializationId.HasValue)
                 await ThrowIfSpecializationNotExists(request.SpecializationId.Value);
 
-            var practiceOffer = await practiceOfferRepository.GetPracticeOfferForUpdate(request.Id)
+            var result = await practiceOfferRepository.GetPracticeOfferForUpdate(request.Id)
                 ?? throw new PracticeOfferNotFoundException();
+
+            var practiceOffer = result.PracticeOffer;
+
+            if (request.MaxStudents is not null)
+            {
+                var applicationsCount = practiceOffer.MaxStudents - result.AvailablePlacesCount;
+
+                if (request.MaxStudents < applicationsCount)
+                    throw new InvalidPracticeOfferMaxStudentsCountException(applicationsCount, request.MaxStudents.Value);
+                
+                practiceOffer.MaxStudents = request.MaxStudents.Value;
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Title))
                 practiceOffer.Title = StringNormalizer.NormalizeRequired(request.Title);
@@ -122,9 +134,6 @@ namespace InternshipPlatform.Application.Services
 
             if (request.IsActive is not null)
                 practiceOffer.IsActive = request.IsActive.Value;
-
-            if (request.MaxStudents is not null)
-                practiceOffer.MaxStudents = request.MaxStudents.Value;
 
             if (request.SpecializationId is not null)
                 practiceOffer.SpecializationId = request.SpecializationId.Value;
