@@ -23,5 +23,7 @@ namespace InternshipPlatform.Application.Dtos.PracticeOffer
         public string? Region { get; set; }
 
         public int? SpecializationId { get; set; }
+
+        public bool HidePracticesWithoutPlaces { get; set;}
     }
 }

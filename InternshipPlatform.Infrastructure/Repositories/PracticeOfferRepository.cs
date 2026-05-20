@@ -130,6 +130,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
             if (parameters.SpecializationId is not null)
                 query = query.Where(po => po.SpecializationId == parameters.SpecializationId.Value);
 
+            if (parameters.HidePracticesWithoutPlaces)
+                query = query.Where(po => context.StudentPractices.Count(sp => sp.PracticeOfferId == po.Id) < po.MaxStudents);
+
+
             var totalCount = await query.CountAsync();
 
             var items = await query
