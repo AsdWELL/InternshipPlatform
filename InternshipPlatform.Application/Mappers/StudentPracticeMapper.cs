@@ -81,7 +81,8 @@ namespace InternshipPlatform.Application.Mappers
                         FileName = m.FileName
                     })
                     .ToList(),
-                Submission = practice.PracticeSubmission?.ToResponse()
+                Submission = practice.PracticeSubmission?.ToResponse(),
+                Comments = practice.PracticeSubmission?.Comments.Select(c => c.ToResponse()).ToList()
             };
         }
 
@@ -117,7 +118,8 @@ namespace InternshipPlatform.Application.Mappers
                 PracticePeriodId = practice.PracticePeriodId,
                 StartDate = practice.PracticePeriod.StartDate,
                 EndDate = practice.PracticePeriod.EndDate,
-                Submission = practice.PracticeSubmission?.ToResponse()
+                Submission = practice.PracticeSubmission?.ToResponse(),
+                Comments = practice.PracticeSubmission?.Comments.Select(c => c.ToResponseForEmployer()).ToList()
             };
         }
 
@@ -156,7 +158,8 @@ namespace InternshipPlatform.Application.Mappers
                 PracticePeriodId = practice.PracticePeriodId,
                 StartDate = practice.PracticePeriod.StartDate,
                 EndDate = practice.PracticePeriod.EndDate,
-                Submission = practice.PracticeSubmission?.ToResponse()
+                Submission = practice.PracticeSubmission?.ToResponse(),
+                Comments = practice.PracticeSubmission?.Comments.Select(c => c.ToResponseForTeacher()).ToList()
             };
         }
     }

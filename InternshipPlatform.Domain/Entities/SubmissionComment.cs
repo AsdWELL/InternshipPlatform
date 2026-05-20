@@ -16,7 +16,7 @@
 
         public User User { get; set; }
 
-        public Company? Company { get; set; }
+        public EmployerProfile? Employer { get; set; }
 
         public Teacher? Teacher { get; set; }
     }

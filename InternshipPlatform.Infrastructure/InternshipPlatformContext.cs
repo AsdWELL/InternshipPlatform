@@ -274,13 +274,27 @@ namespace InternshipPlatform.Infrastructure
 
             modelBuilder.Entity<SubmissionComment>()
                 .HasOne(sc => sc.PracticeSubmission)
-                .WithMany()
+                .WithMany(ps => ps.Comments)
                 .HasForeignKey(sc => sc.PracticeSubmissionId);
 
             modelBuilder.Entity<SubmissionComment>()
                 .HasOne(sc => sc.User)
                 .WithMany()
                 .HasForeignKey(sc => sc.SenderId);
+
+            modelBuilder.Entity<SubmissionComment>()
+                .HasOne(sc => sc.Teacher)
+                .WithMany()
+                .HasPrincipalKey(t => t.UserId)
+                .HasForeignKey(sc => sc.SenderId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<SubmissionComment>()
+                .HasOne(sc => sc.Employer)
+                .WithMany()
+                .HasPrincipalKey(e => e.UserId)
+                .HasForeignKey(sc => sc.SenderId)
+                .IsRequired(false);
         }
     }
 }

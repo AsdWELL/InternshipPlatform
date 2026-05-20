@@ -27,5 +27,7 @@
         public int StatusId { get; set; }
 
         public PracticeSubmissionStatus Status { get; set; }
+
+        public List<SubmissionComment> Comments { get; set; } = [];
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace InternshipPlatform.Application.Dtos.PracticeSubmission
+﻿using InternshipPlatform.Application.Dtos.SubmissionComment;
+
+namespace InternshipPlatform.Application.Dtos.PracticeSubmission
 {
     public class EmployerStudentPracticeDetails
     {
@@ -27,5 +29,7 @@
         public DateOnly EndDate { get; set; }
 
         public PracticeSubmissionResponse? Submission { get; set; }
+
+        public List<SubmissionCommentResponse>? Comments { get; set; }
     }
 }

@@ -94,7 +94,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<ICuratorGroupStatisticsService, CuratorGroupStatisticsService>()
                 .AddScoped<IPracticePeriodService, PracticePeriodService>()
                 .AddScoped<IPracticeApplicationService, PracticeApplicationService>()
-                .AddScoped<IStudentPracticeService, StudentPracticeService>();
+                .AddScoped<IStudentPracticeService, StudentPracticeService>()
+                .AddScoped<ISubmissionCommentService, SubmissionCommentService>();
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection services)

@@ -1,4 +1,5 @@
 ﻿using InternshipPlatform.Application.Dtos.PracticeMaterial;
+using InternshipPlatform.Application.Dtos.SubmissionComment;
 
 namespace InternshipPlatform.Application.Dtos.PracticeSubmission
 {
@@ -33,5 +34,7 @@ namespace InternshipPlatform.Application.Dtos.PracticeSubmission
         public List<PracticeMaterialResponse> Materials { get; set; } = [];
 
         public PracticeSubmissionResponse? Submission { get; set; }
+
+        public List<SubmissionCommentResponse>? Comments { get; set; }
     }
 }

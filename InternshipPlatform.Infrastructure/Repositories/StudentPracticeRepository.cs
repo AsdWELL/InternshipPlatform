@@ -33,6 +33,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                     .ThenInclude(pp => pp.Supervisor)
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Employer)
+                            .ThenInclude(ep => ep!.Company)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Teacher)
                 .FirstOrDefaultAsync();
         }
 
@@ -101,6 +108,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(sp => sp.PracticePeriod)
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Employer)
+                            .ThenInclude(ep => ep!.Company)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Teacher)
                 .FirstOrDefaultAsync();
         }
 
@@ -148,6 +162,13 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(sp => sp.PracticePeriod)
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Employer)
+                            .ThenInclude(ep => ep!.Company)
+                .Include(sp => sp.PracticeSubmission)
+                    .ThenInclude(ps => ps!.Comments)
+                        .ThenInclude(c => c.Teacher)
                 .FirstOrDefaultAsync();
         }
 
