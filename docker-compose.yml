@@ -82,7 +82,7 @@ services:
       - kafka-data:/tmp/kafka-logs
 
   kafka-init:
-    image: bitnami/kafka:3.7.1-debian-12-r9
+    image: bitnamilegacy/kafka:3.7.1-debian-12-r9
     depends_on:
         kafka:
             condition: service_healthy
