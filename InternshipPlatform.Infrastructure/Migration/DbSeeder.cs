@@ -762,8 +762,7 @@ namespace InternshipPlatform.Infrastructure.Migration
 
             if (mustBeCurrent)
             {
-                var startedDaysAgo = faker.Random.Int(0, Math.Max(1, durationDays / 2));
-                startDate = today.AddDays(-startedDaysAgo);
+                startDate = today.AddDays(faker.Random.Int(1, 5));
                 endDate = startDate.AddDays(durationDays);
             }
             else if (forcePast)

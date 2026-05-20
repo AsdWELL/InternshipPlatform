@@ -42,6 +42,17 @@ namespace InternshipPlatform.Application.Services
             return file;
         }
 
+        private void ThrowIfPracticeNotActivce(PracticePeriod practicePeriod)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            if (practicePeriod.StartDate > today)
+                throw new PracticeHasNotStartedException();
+
+            if (practicePeriod.EndDate < today)
+                throw new PracticeAlreadyEndedException();
+        }
+
         public async Task<StudentCurrentPracticeResponse> GetCurrentStudentPractice(int studentId)
         {
             var practice = await studentPracticeRepository.GetCurrentStudentPractice(studentId)
@@ -71,6 +82,8 @@ namespace InternshipPlatform.Application.Services
                 .GetCurrentStudentPracticeForSubmissionUpdate(studentId)
                 ?? throw new StudentPracticeNotFoundException();
 
+            ThrowIfPracticeNotActivce(practice.PracticePeriod);
+            
             var oldReportPath = practice.PracticeSubmission?.ReportFilePath;
             var oldSolutionPath = practice.PracticeSubmission?.SolutionPath;
 

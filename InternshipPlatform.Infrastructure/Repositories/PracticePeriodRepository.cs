@@ -1,4 +1,5 @@
 using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,30 +9,16 @@ namespace InternshipPlatform.Infrastructure.Repositories
     {
         public async Task<PracticePeriod?> GetCurrentStudentPracticePeriod(int studentId)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var semesterDates = SemesterDatesUtils.GetCurrentSemesterDates();
 
-            var semesterStart = today.Month switch
-            {
-                >= 9 and <= 12 => new DateOnly(today.Year, 9, 1),
-                >= 1 and <= 7 => new DateOnly(today.Year, 1, 1),
-                _ => (DateOnly?)null
-            };
-
-            var semesterEnd = today.Month switch
-            {
-                >= 9 and <= 12 => new DateOnly(today.Year, 12, 31),
-                >= 1 and <= 7 => new DateOnly(today.Year, 7, 31),
-                _ => (DateOnly?)null
-            };
-
-            if (semesterStart is null || semesterEnd is null)
+            if (semesterDates is null)
                 return null;
 
             return await context.PracticePeriods
                 .AsNoTracking()
                 .Where(p =>
-                    p.StartDate >= semesterStart.Value &&
-                    p.StartDate <= semesterEnd.Value)
+                    p.StartDate >= semesterDates.Start&&
+                    p.StartDate <= semesterDates.End)
                 .Where(p => p.StudentGroups.Any(g =>
                     g.StudentProfiles.Any(sp => sp.UserId == studentId)))
                 .Include(p => p.EducationalProgram)

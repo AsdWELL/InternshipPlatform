@@ -1,4 +1,5 @@
 using InternshipPlatform.Application.Interfaces.Repositories;
+using InternshipPlatform.Application.Utils;
 using InternshipPlatform.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +14,17 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<StudentPractice?> GetCurrentStudentPractice(int studentId)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var semesterDates = SemesterDatesUtils.GetCurrentSemesterDates();
+
+            if (semesterDates is null)
+                return null;
 
             return await context.StudentPractices
                 .AsNoTracking()
                 .Where(sp => sp.StudentId == studentId)
-                .Where(sp => sp.PracticePeriod.StartDate <= today && sp.PracticePeriod.EndDate >= today)
+                .Where(sp =>
+                    sp.PracticePeriod.StartDate >= semesterDates.Start &&
+                    sp.PracticePeriod.StartDate <= semesterDates.End)
                 .Include(sp => sp.PracticeOffer)
                     .ThenInclude(po => po.Company)
                 .Include(sp => sp.PracticeOffer)
@@ -32,13 +38,19 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
         public async Task<StudentPractice?> GetCurrentStudentPracticeForSubmissionUpdate(int studentId)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var semesterDates = SemesterDatesUtils.GetCurrentSemesterDates();
+
+            if (semesterDates is null)
+                return null;
 
             return await context.StudentPractices
                 .Where(sp => sp.StudentId == studentId)
-                .Where(sp => sp.PracticePeriod.StartDate <= today && sp.PracticePeriod.EndDate >= today)
+                .Where(sp =>
+                    sp.PracticePeriod.StartDate >= semesterDates.Start &&
+                    sp.PracticePeriod.StartDate <= semesterDates.End)
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.PracticePeriod)
                 .FirstOrDefaultAsync();
         }
 
