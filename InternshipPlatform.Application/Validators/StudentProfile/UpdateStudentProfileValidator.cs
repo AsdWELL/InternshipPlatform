@@ -90,7 +90,8 @@ namespace InternshipPlatform.Application.Validators.StudentProfile
                 .When(x => x.BirthdayDate is not null);
 
             RuleFor(x => x.Phone)
-                .Matches(@"^(\+7|7|8)\d{10}$").WithMessage("Неверный формат телефона");
+                .Matches(@"^(\+7|7|8)\d{10}$").WithMessage("Неверный формат телефона")
+                .When(x => !string.IsNullOrWhiteSpace(x.Phone));
 
             RuleFor(x => x.VkLink)
                 .Must(x => ValidOptionalUrl(x, "vk.com", "www.vk.com"))
