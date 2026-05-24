@@ -11,7 +11,6 @@ namespace InternshipPlatform.Application.Mappers
             {
                 UserId = employerProfile.UserId,
                 Email = employerProfile.User.Email,
-                IsVerified = employerProfile.User.IsVerified,
                 Company = employerProfile.Company.ToResponse()
             };
         }

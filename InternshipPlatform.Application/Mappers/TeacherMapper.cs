@@ -19,7 +19,6 @@ namespace InternshipPlatform.Application.Mappers
                 TgLink = curator.TgLink,
                 MaxLink = curator.MaxLink,
                 AvatarPath = curator.AvatarPath,
-                IsVerified = curator.User.IsVerified,
                 University = curator.University.Name
             };
         }

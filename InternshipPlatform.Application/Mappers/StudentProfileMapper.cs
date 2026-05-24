@@ -11,7 +11,6 @@ namespace InternshipPlatform.Application.Mappers
             {
                 UserId = studentProfile.UserId,
                 Email = studentProfile.User.Email,
-                IsVerified = studentProfile.User.IsVerified,
                 Name = studentProfile.Name,
                 Surname = studentProfile.Surname,
                 Patronymic = studentProfile.Patronymic,

@@ -207,8 +207,7 @@ namespace InternshipPlatform.Infrastructure.Migration
                 .RuleFor(u => u.Email, (f, u) => $"{u.Role.Name.ToLower()}_{count++}@mail.ru")
                 .RuleFor(u => u.PasswordHash, _ => passwordHash)
                 .RuleFor(u => u.RefreshToken, _ => tokenService.GenerateRefreshToken())
-                .RuleFor(u => u.RefreshTokenExpiredAt, _ => refreshTokenExpiredAt)
-                .RuleFor(u => u.IsVerified, _ => false);
+                .RuleFor(u => u.RefreshTokenExpiredAt, _ => refreshTokenExpiredAt);
 
             var users = userFaker.Generate(UsersAmount);
 

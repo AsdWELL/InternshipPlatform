@@ -6,8 +6,6 @@
 
         public string Email { get; set; }
 
-        public bool IsVerified { get; set; }
-
         public string University { get; set; }
 
         public string Name { get; set; }

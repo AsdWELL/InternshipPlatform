@@ -1,8 +1,7 @@
 CREATE TABLE "Users" (
   "Id"                    SERIAL NOT NULL, 
   "Email"                 text UNIQUE, 
-  "PasswordHash"          text NOT NULL, 
-  "IsVerified"            bool NOT NULL, 
+  "PasswordHash"          text NOT NULL,
   "RefreshToken"          text, 
   "RefreshTokenExpiredAt" timestamp NOT NULL, 
   "RoleId"                integer NOT NULL, 

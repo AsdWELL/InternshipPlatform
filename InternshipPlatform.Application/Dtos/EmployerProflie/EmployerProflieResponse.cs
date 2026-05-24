@@ -8,8 +8,6 @@ namespace InternshipPlatform.Application.Dtos.EmployerProflie
 
         public string Email { get; set; }
 
-        public bool IsVerified { get; set; }
-
         public CompanyResponse Company { get; set; }
     }
 }
