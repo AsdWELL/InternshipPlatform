@@ -3,9 +3,9 @@ using InternshipPlatform.Application.Dtos.EmployerProflie;
 
 namespace InternshipPlatform.Application.Validators.EmployerProfile
 {
-    public class UpdateEmployerProflieValidator : AbstractValidator<UpdateEmployerProfileRequest>
+    public class UpdateEmployerProfileValidator : AbstractValidator<UpdateEmployerProfileRequest>
     {
-        public UpdateEmployerProflieValidator()
+        public UpdateEmployerProfileValidator()
         {
             RuleFor(x => x.Email)
                 .Cascade(CascadeMode.Stop)

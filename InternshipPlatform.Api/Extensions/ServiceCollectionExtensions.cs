@@ -73,7 +73,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<IStudentProfileService, StudentProfileService>()
                 .AddScoped<ICompanyService, CompanyService>()
                 .AddScoped<ITeacherService, TeacherService>()
-                .AddScoped<IEmployerProfileService, EmployerProflieService>()
+                .AddScoped<IEmployerProfileService, EmployerProfileService>()
                 .AddScoped<ISkillService, SkillService>()
                 .AddScoped<ISpecializationService, SpecializationService>()
                 .AddScoped<IResumeService, ResumeService>()
@@ -107,7 +107,7 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<RegisterTeacherRequest>, RegisterTeacherValidator>()
                 .AddTransient<IValidator<UpdateCompanyRequest>, UpdateCompanyValidator>()
                 .AddTransient<IValidator<UpdateStudentProfileRequest>, UpdateStudentProfileValidator>()
-                .AddTransient<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProflieValidator>()
+                .AddTransient<IValidator<UpdateEmployerProfileRequest>, UpdateEmployerProfileValidator>()
                 .AddTransient<IValidator<UpdateTeacherRequest>, UpdateTeacherValidator>()
                 
                 .AddTransient<IValidator<CreateResumeRequest>, CreateResumeValidator>()

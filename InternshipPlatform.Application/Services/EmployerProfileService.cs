@@ -11,7 +11,7 @@ using InternshipPlatform.Application.Utils;
 
 namespace InternshipPlatform.Application.Services
 {
-    public class EmployerProflieService(
+    public class EmployerProfileService(
         IUserRepository userRepository,
         IEmployerProfileRepository employerProfileRepository,
         ICompanyRepository companyRepository,
