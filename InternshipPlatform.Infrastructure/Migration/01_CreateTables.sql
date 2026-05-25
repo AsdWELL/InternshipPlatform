@@ -1,6 +1,6 @@
 CREATE TABLE "Users" (
   "Id"                    SERIAL NOT NULL, 
-  "Email"                 text UNIQUE, 
+  "Email"                 text UNIQUE NOT NULL, 
   "PasswordHash"          text NOT NULL,
   "RefreshToken"          text, 
   "RefreshTokenExpiredAt" timestamp NOT NULL, 
