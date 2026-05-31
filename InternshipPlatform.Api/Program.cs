@@ -17,6 +17,7 @@ builder.Services.AddDatabase(builder.Configuration)
                 .AddRepositories()
                 .AddServices()
                 .AddValidators()
+                .AddNotifiers()
                 .AddKafka(builder.Configuration);
 
 builder.Services

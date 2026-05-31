@@ -113,6 +113,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        public Task<string?> GetStudentEmailByResumeId(int resumeId)
+        {
+            return context.Resumes
+                .AsNoTracking()
+                .Where(r => r.Id == resumeId)
+                .Select(r => r.StudentProfile.User.Email)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<ResumeResult>> GetStudentResumes(int studentId)
         {
             return await context.Resumes

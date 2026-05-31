@@ -13,7 +13,7 @@ namespace InternshipPlatform.Api.Controllers.JobApplication
     public class StudentApplicationsController(IJobApplicationService applicationService) : AuthorizedUserController
     {
         [HttpPost]
-        public async Task<IActionResult> CreateJobApplication([FromBody] CreateJobApplicaionRequest request)
+        public async Task<IActionResult> CreateJobApplication([FromBody] CreateJobApplicationRequest request)
         {
             request.UserId = UserId;
 

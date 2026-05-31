@@ -5,10 +5,12 @@ using InternshipPlatform.Application.Exceptions.JobApplication;
 using InternshipPlatform.Application.Exceptions.Resume;
 using InternshipPlatform.Application.Exceptions.Vacancy;
 using InternshipPlatform.Application.Interfaces;
+using InternshipPlatform.Application.Interfaces.Notifiers;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
 using InternshipPlatform.Application.Values;
+using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Services
 {
@@ -17,14 +19,19 @@ namespace InternshipPlatform.Application.Services
         IChatService chatService,
         IResumeRepository resumeRepository,
         IVacancyRepository vacancyRepository,
+        IEmployerProfileRepository employerProfileRepository,
+        IStudentProfileRepository studentProfileRepository,
+        IJobApplicationNotifier jobApplicationNotifier,
         IUnitOfWork unitOfWork) : IJobApplicationService
     {
-        public async Task<int> CreateJobApplicationByStudent(CreateJobApplicaionRequest request)
+        public async Task<int> CreateJobApplicationByStudent(CreateJobApplicationRequest request)
         {
             if (!await resumeRepository.IsStudentOwnsResume(request.UserId, request.ResumeId))
                 throw new ResumeNotFoundException();
 
-            if (!await vacancyRepository.IsVacancyExistsAndActive(request.VacancyId))
+            var vacancy = await vacancyRepository.GetVacancyById(request.VacancyId);
+
+            if (vacancy is null || !vacancy.IsActive)
                 throw new VacancyNotFoundException();
 
             if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
@@ -42,16 +49,23 @@ namespace InternshipPlatform.Application.Services
 
             await unitOfWork.SaveChangesAsync();
 
+            var employerEmail = await employerProfileRepository.GetEmployerEmailByCompanyId(vacancy.CompanyId);
+
+            if (!string.IsNullOrEmpty(employerEmail))
+                await jobApplicationNotifier.NotifyEmployerAboutStatusChangedAsync(employerEmail, vacancy.Title, JobApplicationStatuses.Pending);
+
             return application.Id;
         }
 
-        public async Task<int> CreateJobApplicationByEmployer(CreateJobApplicaionRequest request)
+        public async Task<int> CreateJobApplicationByEmployer(CreateJobApplicationRequest request)
         {
             if (!await vacancyRepository.IsEmployerOwnsVacancy(request.UserId, request.VacancyId))
                 throw new VacancyNotFoundException();
 
-            var resume = await resumeRepository.GetResumeById(request.ResumeId)
-                ?? throw new ResumeNotFoundException();
+            var resume = await resumeRepository.GetResumeById(request.ResumeId);
+            
+            if (resume is null || !resume.IsActive) 
+                throw new ResumeNotFoundException();
 
             if (await applicationRepository.HasStudentActiveApplicationOnVacancy(request.ResumeId, request.VacancyId))
                 throw new ActiveApplicationAlreadyExistsException();
@@ -68,6 +82,14 @@ namespace InternshipPlatform.Application.Services
             await applicationRepository.AddJobApplication(application);
 
             await unitOfWork.SaveChangesAsync();
+
+            var vacancy = await vacancyRepository.GetVacancyById(request.VacancyId)
+                ?? throw new VacancyNotFoundException();
+
+            var studentEmail = await studentProfileRepository.GetStudentEmailById(resume.StudentId);
+
+            if (!string.IsNullOrEmpty(studentEmail))
+                await jobApplicationNotifier.NotifyStudentAboutStatusChangedAsync(studentEmail, vacancy, JobApplicationStatuses.InterviewInvited);
 
             return application.Id;
         }
@@ -148,6 +170,22 @@ namespace InternshipPlatform.Application.Services
                 await chatService.CloseChatByApplicationId(request.UserId, request.Role!, request.ApplicationId);
 
             await unitOfWork.SaveChangesAsync();
+
+            var vacancy = await vacancyRepository.GetVacancyById(application.VacancyId)
+                ?? throw new VacancyNotFoundException();
+
+            if (request.Role == Roles.Employer)
+            {
+                var studentEmail = await resumeRepository.GetStudentEmailByResumeId(application.ResumeId);
+                if (!string.IsNullOrEmpty(studentEmail))
+                    await jobApplicationNotifier.NotifyStudentAboutStatusChangedAsync(studentEmail, vacancy, request.ApplicationStatus);
+            }
+            else if (request.Role == Roles.Student)
+            {
+                var employerEmail = await employerProfileRepository.GetEmployerEmailByCompanyId(vacancy.CompanyId);
+                if (!string.IsNullOrEmpty(employerEmail))
+                    await jobApplicationNotifier.NotifyEmployerAboutStatusChangedAsync(employerEmail, vacancy.Title, request.ApplicationStatus);
+            }
         }
     }
 }

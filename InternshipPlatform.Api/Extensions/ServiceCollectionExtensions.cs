@@ -18,7 +18,9 @@ using InternshipPlatform.Application.Dtos.User;
 using InternshipPlatform.Application.Dtos.Vacancy;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Interfaces.Services.Auth;
+using InternshipPlatform.Application.Interfaces.Notifiers;
 using InternshipPlatform.Application.Services;
+using InternshipPlatform.Application.Services.Notifiers;
 using InternshipPlatform.Application.Validators.Auth;
 using InternshipPlatform.Application.Validators.EmployerProfile;
 using InternshipPlatform.Application.Validators.JobApplication;
@@ -134,6 +136,13 @@ namespace InternshipPlatform.Api.Extensions
                 .AddTransient<IValidator<CreateStudentGroupRequest>, CreateStudentGroupValidator>()
                 
                 .AddTransient<IValidator<CreateStudentGroupApplicationRequest>, CreateStudentGroupApplicationValidator>();
+        }
+
+        public static IServiceCollection AddNotifiers(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<INotificationProducer, NotificationProducer>()
+                .AddScoped<IJobApplicationNotifier, JobApplicationNotifier>();
         }
 
         public static IServiceCollection AddPolicies(this IServiceCollection services)

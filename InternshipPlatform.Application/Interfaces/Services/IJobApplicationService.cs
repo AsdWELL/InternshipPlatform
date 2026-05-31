@@ -5,9 +5,9 @@ namespace InternshipPlatform.Application.Interfaces.Services
 {
     public interface IJobApplicationService
     {
-        Task<int> CreateJobApplicationByStudent(CreateJobApplicaionRequest request);
+        Task<int> CreateJobApplicationByStudent(CreateJobApplicationRequest request);
 
-        Task<int> CreateJobApplicationByEmployer(CreateJobApplicaionRequest request);
+        Task<int> CreateJobApplicationByEmployer(CreateJobApplicationRequest request);
 
         Task<PagedResponse<StudentApplicationResponse>> GetStudentApplications(GetStudentApplicationsParameters request);
 

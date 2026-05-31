@@ -2,7 +2,7 @@
 
 namespace InternshipPlatform.Application.Dtos.JobApplication
 {
-    public class CreateJobApplicaionRequest
+    public class CreateJobApplicationRequest
     {
         [JsonIgnore]
         public int UserId { get; set; }

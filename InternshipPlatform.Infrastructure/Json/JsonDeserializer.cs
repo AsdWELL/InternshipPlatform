@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace InternshipPlatform.Application.Json
+namespace InternshipPlatform.Infrastructure.Json
 {
     public class JsonDeserializer<T> : IDeserializer<T> where T : class, new()
     {

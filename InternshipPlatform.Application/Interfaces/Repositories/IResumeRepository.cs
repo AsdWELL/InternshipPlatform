@@ -22,6 +22,8 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<Resume?> GetResumeForUpdate(int id);
 
+        Task<string?> GetStudentEmailByResumeId(int resumeId);
+
         Task<PagedResult<Resume>> GetRecommendedResumes(int companyId, int pageIndex, int pageSize);
 
         Task<PagedResult<Resume>> GetRecommendedResumesForVacancy(int vacancyId, int pageIndex, int pageSize);

@@ -32,5 +32,14 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Include(ep => ep.User)
                 .FirstOrDefaultAsync(ep => ep.UserId == employerId);
         }
+
+        public async Task<string?> GetEmployerEmailByCompanyId(int companyId)
+        {
+            return await context.EmployerProfiles
+                .AsNoTracking()
+                .Where(ep => ep.CompanyId == companyId)
+                .Select(ep => ep.User.Email)
+                .FirstOrDefaultAsync();
+        }
     }
 }

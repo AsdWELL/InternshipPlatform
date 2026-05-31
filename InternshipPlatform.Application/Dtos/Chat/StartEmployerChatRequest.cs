@@ -11,6 +11,6 @@ namespace InternshipPlatform.Application.Dtos.Chat
 
         public int VacancyId { get; set; }
 
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Confluent.Kafka;
 using InternshipPlatform.Application.Dtos.Kafka;
-using InternshipPlatform.Application.Json;
+using InternshipPlatform.Application.Interfaces.Services;
+using InternshipPlatform.Infrastructure.Json;
 using Microsoft.Extensions.Options;
 
-namespace InternshipPlatform.Application.Services
+namespace InternshipPlatform.Infrastructure.Services
 {
-    public class NotificationProducer(IOptions<KafkaSettings> kafkaOptions)
+    public class NotificationProducer(IOptions<KafkaSettings> kafkaOptions) : INotificationProducer
     {
         private const string Topic = "PlatformNotifications";
 

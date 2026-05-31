@@ -64,5 +64,14 @@ namespace InternshipPlatform.Infrastructure.Repositories
 
             student.AvatarPath = avatarPath;
         }
+
+        public async Task<string?> GetStudentEmailById(int userId)
+        {
+            return await context.StudentProfiles
+                .AsNoTracking()
+                .Where(sp => sp.UserId == userId)
+                .Select(sp => sp.User.Email)
+                .FirstOrDefaultAsync();
+        }
     }
 }

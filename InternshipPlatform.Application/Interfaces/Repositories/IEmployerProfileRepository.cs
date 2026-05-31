@@ -11,5 +11,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
         Task<EmployerProfile?> GetEmployerProfileById(int employerId);
 
         Task<EmployerProfile?> GetEmployerProfileForUpdate(int employerId);
+
+        Task<string?> GetEmployerEmailByCompanyId(int companyId);
     }
 }

@@ -7,7 +7,7 @@ namespace InternshipPlatform.Application.Mappers
     public static class JobApplicationMapper
     {
         public static JobApplication ToDomain(
-            this CreateJobApplicaionRequest request,
+            this CreateJobApplicationRequest request,
             string role,
             int chatId)
         {

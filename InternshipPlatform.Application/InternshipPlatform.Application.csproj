@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-	<PackageReference Include="Confluent.Kafka" Version="2.12.0" />
   </ItemGroup>
 
 	<ItemGroup>
