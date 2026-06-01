@@ -2,6 +2,7 @@ using InternshipPlatform.Application.Dtos.PracticeApplication;
 using InternshipPlatform.Application.Exceptions.PracticeApplication;
 using InternshipPlatform.Application.Exceptions.PracticeOffer;
 using InternshipPlatform.Application.Interfaces;
+using InternshipPlatform.Application.Interfaces.Notifiers;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
@@ -14,6 +15,9 @@ namespace InternshipPlatform.Application.Services
         IStudentPracticeRepository studentPracticeRepository,
         IPracticePeriodRepository practicePeriodRepository,
         IPracticeOfferRepository practiceOfferRepository,
+        IEmployerProfileRepository employerProfileRepository,
+        IStudentProfileRepository studentProfileRepository,
+        IPracticeApplicationNotifier practiceApplicationNotifier,
         IUnitOfWork unitOfWork) : IPracticeApplicationService
     {
         private static bool IsApplicationPeriodClosed(PracticePeriod practicePeriod)
@@ -34,7 +38,10 @@ namespace InternshipPlatform.Application.Services
             if (IsApplicationPeriodClosed(practicePeriod))
                 throw new PracticeApplicationPeriodAlreadyStartedException();
 
-            if (!await practiceOfferRepository.IsPracticeOfferExistsAndActive(request.PracticeOfferId))
+            var result = await practiceOfferRepository.GetPracticeOfferById(request.PracticeOfferId);
+            var practiceOffer = result?.PracticeOffer;
+
+            if (practiceOffer is null || !practiceOffer.IsActive)
                 throw new PracticeOfferNotFoundException();
 
             if (!await practiceApplicationRepository.HasPracticeOfferAvailablePlaces(request.PracticeOfferId))
@@ -47,6 +54,11 @@ namespace InternshipPlatform.Application.Services
 
             await practiceApplicationRepository.AddPracticeApplication(application);
             await unitOfWork.SaveChangesAsync();
+
+            var employerEmail = await employerProfileRepository.GetEmployerEmailByCompanyId(practiceOffer.CompanyId);
+
+            if (!string.IsNullOrEmpty(employerEmail))
+                await practiceApplicationNotifier.NotifyEmployerAboutNewApplication(employerEmail, practiceOffer.Title);
 
             return application.Id;
         }
@@ -121,6 +133,12 @@ namespace InternshipPlatform.Application.Services
                 await practiceApplicationRepository.DeletePracticeApplication(application.Id);
 
             await unitOfWork.SaveChangesAsync();
+
+            var studentEmail = await studentProfileRepository.GetStudentEmailById(application.StudentId);
+            var practiceOffer = (await practiceOfferRepository.GetPracticeOfferById(application.PracticeOfferId))?.PracticeOffer;
+
+            if (!string.IsNullOrEmpty(studentEmail) && practiceOffer is not null)
+                await practiceApplicationNotifier.NotifyStudentApplicationAccepted(studentEmail, practiceOffer);
         }
 
         public async Task RejectPracticeApplication(int employerId, int applicationId)
@@ -132,6 +150,14 @@ namespace InternshipPlatform.Application.Services
             await practiceApplicationRepository.DeletePracticeApplication(result.PracticeApplication.Id);
 
             await unitOfWork.SaveChangesAsync();
+
+            var application = result.PracticeApplication;
+
+            var studentEmail = await studentProfileRepository.GetStudentEmailById(application.StudentId);
+            var practiceOffer = (await practiceOfferRepository.GetPracticeOfferById(application.PracticeOfferId))?.PracticeOffer;
+
+            if (!string.IsNullOrEmpty(studentEmail) && practiceOffer is not null)
+                await practiceApplicationNotifier.NotifyStudentApplicationRejected(studentEmail, practiceOffer);
         }
     }
 }
