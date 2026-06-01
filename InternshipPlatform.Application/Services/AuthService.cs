@@ -68,12 +68,12 @@ namespace InternshipPlatform.Application.Services
 
             if (!string.IsNullOrWhiteSpace(request.InviteCode))
             {
-                var groupId = await studentGroupRepository.GetGroupIdByInviteCode(request.InviteCode)
+                var group = await studentGroupRepository.GetGroupByInviteCode(request.InviteCode)
                     ?? throw new InviteCodeNotFoundException();
 
                 await studentGroupApplicationRepository.AddStudentGroupApplication(new StudentGroupApplication
                 {
-                    GroupId = groupId,
+                    GroupId = group.Id,
                     StudentProfile = studentProfile,
                     CreatedAt = DateTime.UtcNow,
                 });

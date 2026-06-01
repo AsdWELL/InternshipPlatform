@@ -94,14 +94,15 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public Task<int?> GetGroupIdByInviteCode(string inviteCode)
+        public Task<StudentGroup?> GetGroupByInviteCode(string inviteCode)
         {
             var normalizedCode = StringNormalizer.NormalizeToUpper(inviteCode)!;
             
             return context.StudentGroups
                 .AsNoTracking()
                 .Where(g => g.InviteCode == normalizedCode)
-                .Select(g => (int?)g.Id)
+                .Include(sp => sp.Curator)
+                    .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync();
         }
 

@@ -1,7 +1,9 @@
 ﻿using InternshipPlatform.Application.Dtos.StudentGroupApplication;
 using InternshipPlatform.Application.Exceptions.StudentGroup;
 using InternshipPlatform.Application.Exceptions.StudentGroupApplication;
+using InternshipPlatform.Application.Exceptions.StudentProfile;
 using InternshipPlatform.Application.Interfaces;
+using InternshipPlatform.Application.Interfaces.Notifiers;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
@@ -13,29 +15,38 @@ namespace InternshipPlatform.Application.Services
         IStudentProfileRepository studentProfileRepository,
         IStudentGroupApplicationRepository studentGroupApplicationRepository,
         IStudentGroupRepository studentGroupRepository,
+        IStudentGroupApplicationNotifier applicationNotifier,
         IUnitOfWork unitOfWork) : IStudentGroupApplicationService
     {
         public async Task<int> CreateStudentGroupApplication(CreateStudentGroupApplicationRequest request)
         {
-            if (await studentProfileRepository.IsStudentHasGroup(request.StudentId))
+            var studentProfile = await studentProfileRepository.GetStudentById(request.StudentId)
+                ?? throw new StudentProfileNotFoundException();
+
+            if (studentProfile.GroupId is not null)
                 throw new StudentAlreadyHasGroupException();
             
             if (await studentGroupApplicationRepository.IsStudentHasGroupApplication(request.StudentId))
                 throw new StudentAlreadyHasGroupApplicationException();
             
-            var groupId = await studentGroupRepository.GetGroupIdByInviteCode(request.InviteCode)
+            var group = await studentGroupRepository.GetGroupByInviteCode(request.InviteCode)
                 ?? throw new InviteCodeNotFoundException();
 
             var studentGroupApplication = new StudentGroupApplication
             {
                 StudentId = request.StudentId,
-                GroupId = groupId,
+                GroupId = group.Id,
                 CreatedAt = DateTime.UtcNow
             };
 
             await studentGroupApplicationRepository.AddStudentGroupApplication(studentGroupApplication);
 
             await unitOfWork.SaveChangesAsync();
+
+            await applicationNotifier.NotifyCuratorAboutNewApplication(
+                group.Curator.User.Email,
+                $"{studentProfile.Surname} {studentProfile.Name} {studentProfile.Patronymic}",
+                group.Name);
 
             return studentGroupApplication.Id;
         }
@@ -82,6 +93,8 @@ namespace InternshipPlatform.Application.Services
             student.GroupId = application.GroupId;
 
             await unitOfWork.SaveChangesAsync();
+
+            await applicationNotifier.NotifyStudentApplicationAccepted(application.StudentProfile.User.Email, application.Group.Name);
         }
 
         public async Task RejectGroupApplication(int curatorId, int applicationId)
@@ -92,7 +105,8 @@ namespace InternshipPlatform.Application.Services
             await studentGroupApplicationRepository.DeleteStudentGroupApplication(application);
 
             await unitOfWork.SaveChangesAsync();
-        }
 
+            await applicationNotifier.NotifyStudentApplicationRejected(application.StudentProfile.User.Email, application.Group.Name);
+        }
     }
 }

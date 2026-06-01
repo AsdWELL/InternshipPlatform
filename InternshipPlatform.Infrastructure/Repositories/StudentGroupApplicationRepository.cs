@@ -71,6 +71,7 @@ namespace InternshipPlatform.Infrastructure.Repositories
             return context.StudentGroupApplications
                 .Include(a => a.Group)
                 .Include(a => a.StudentProfile)
+                    .ThenInclude(sp => sp.User)
                 .FirstOrDefaultAsync(a =>
                     a.Id == applicationId &&
                     a.Group.CuratorId == curatorId);

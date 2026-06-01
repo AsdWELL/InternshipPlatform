@@ -19,7 +19,7 @@ namespace InternshipPlatform.Application.Interfaces.Repositories
 
         Task<StudentGroup?> GetGroupDetailsForStudent(int studentId);
 
-        Task<int?> GetGroupIdByInviteCode(string inviteCode);
+        Task<StudentGroup?> GetGroupByInviteCode(string inviteCode);
 
         Task<bool> IsInviteCodeExists(string inviteCode);
 
