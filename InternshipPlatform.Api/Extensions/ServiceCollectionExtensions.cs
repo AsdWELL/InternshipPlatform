@@ -144,7 +144,8 @@ namespace InternshipPlatform.Api.Extensions
                 .AddScoped<INotificationProducer, NotificationProducer>()
                 .AddScoped<IJobApplicationNotifier, JobApplicationNotifier>()
                 .AddScoped<IPracticeApplicationNotifier, PracticeApplicationNotifier>()
-                .AddScoped<IStudentGroupApplicationNotifier, StudentGroupApplicationNotifier>();
+                .AddScoped<IStudentGroupApplicationNotifier, StudentGroupApplicationNotifier>()
+                .AddScoped<IStudentPracticeNotifier, StudentPracticeNotifier>();
         }
 
         public static IServiceCollection AddPolicies(this IServiceCollection services)

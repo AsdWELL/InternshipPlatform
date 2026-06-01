@@ -4,6 +4,7 @@ using InternshipPlatform.Application.Exceptions.PracticeMaterial;
 using InternshipPlatform.Application.Exceptions.PracticeSubmission;
 using InternshipPlatform.Application.Exceptions.StudentPractice;
 using InternshipPlatform.Application.Interfaces;
+using InternshipPlatform.Application.Interfaces.Notifiers;
 using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
@@ -15,6 +16,7 @@ namespace InternshipPlatform.Application.Services
     public class StudentPracticeService(
         IStudentPracticeRepository studentPracticeRepository,
         IFileStorageService fileStorageService,
+        IStudentPracticeNotifier studentPracticeNotifier,
         IUnitOfWork unitOfWork) : IStudentPracticeService
     {
         private static bool CanStudentUpdateSubmission(PracticeSubmission submission)
@@ -234,6 +236,10 @@ namespace InternshipPlatform.Application.Services
             submission.ReviewedAt = DateTime.UtcNow;
 
             await unitOfWork.SaveChangesAsync();
+
+            await studentPracticeNotifier.NotifyStudentPracticeAccepted(
+                practice.Student.User.Email,
+                practice.PracticeOffer.Company.Name);
         }
 
         public async Task SendStudentPracticeSubmissionToRevision(int employerId, int studentPracticeId)
@@ -251,6 +257,10 @@ namespace InternshipPlatform.Application.Services
             submission.ReviewedAt = DateTime.UtcNow;
 
             await unitOfWork.SaveChangesAsync();
+
+            await studentPracticeNotifier.NotifyStudentPracticeRejected(
+                practice.Student.User.Email,
+                practice.PracticeOffer.Company.Name);
         }
 
         public async Task<List<TeacherStudentPracticeItem>> GetTeacherStudentPractices(int teacherId)
@@ -310,6 +320,8 @@ namespace InternshipPlatform.Application.Services
             submission.ReviewedAt = DateTime.UtcNow;
 
             await unitOfWork.SaveChangesAsync();
+
+            await studentPracticeNotifier.NotifyStudentPracticeGraded(practice.Student.User.Email, request.Grade);
         }
     }
 }

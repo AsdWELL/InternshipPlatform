@@ -128,6 +128,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
                         ep.CompanyId == sp.PracticeOffer.CompanyId))
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.Student)
+                    .ThenInclude(st => st.User)
+                .Include(sp => sp.PracticeOffer)
+                    .ThenInclude(po => po.Company)
                 .FirstOrDefaultAsync();
         }
 
@@ -179,6 +183,10 @@ namespace InternshipPlatform.Infrastructure.Repositories
                 .Where(sp => sp.PracticePeriod.SupervisorId == teacherId)
                 .Include(sp => sp.PracticeSubmission)
                     .ThenInclude(ps => ps!.Status)
+                .Include(sp => sp.Student)
+                    .ThenInclude(s => s.User)
+                .Include(sp => sp.PracticeOffer)
+                    .ThenInclude(po => po.Company)
                 .FirstOrDefaultAsync();
         }
 
