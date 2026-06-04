@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		docker-compose-kafka.yml = docker-compose-kafka.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{32C9A899-5398-4D40-B8E7-D710E7432042}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{D010FA6A-DE73-4AAF-9425-B22E94CB9130}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D010FA6A-DE73-4AAF-9425-B22E94CB9130}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D010FA6A-DE73-4AAF-9425-B22E94CB9130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C9A899-5398-4D40-B8E7-D710E7432042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C9A899-5398-4D40-B8E7-D710E7432042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C9A899-5398-4D40-B8E7-D710E7432042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C9A899-5398-4D40-B8E7-D710E7432042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

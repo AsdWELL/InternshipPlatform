@@ -115,7 +115,7 @@ namespace InternshipPlatform.Application.Services
             var chats = await chatRepository.GetStudentChats(studentId);
 
             return chats.Select(c => c.ToItem())
-                .OrderByDescending(c => c.LastMessage.CreatedAt)
+                .OrderByDescending(c => c.LastMessage?.CreatedAt)
                 .ToList();
         }
 

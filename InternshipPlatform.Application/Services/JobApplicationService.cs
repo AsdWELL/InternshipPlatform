@@ -10,7 +10,6 @@ using InternshipPlatform.Application.Interfaces.Repositories;
 using InternshipPlatform.Application.Interfaces.Services;
 using InternshipPlatform.Application.Mappers;
 using InternshipPlatform.Application.Values;
-using InternshipPlatform.Domain.Entities;
 
 namespace InternshipPlatform.Application.Services
 {
